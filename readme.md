@@ -45,11 +45,11 @@ The only built in target is .net Trace - for any other target you can inject a d
 
 ### Channels
 
-|Technical Name|Friendly Name |
-|--------------|--------------|
-|Dev           |Development   |
-|Ins           |Infrastructure|
-|Pro           |Protocol      |
+|Value|Technical Name|Friendly Name |
+|-----|--------------|--------------|
+|22692|Dev           |Development   |
+|19913|Ins           |Infrastructure|
+|15952|Pro           |Protocol      |
 
 ### Levels
 

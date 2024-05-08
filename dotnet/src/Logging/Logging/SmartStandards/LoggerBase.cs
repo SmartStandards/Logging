@@ -136,8 +136,7 @@ namespace Logging.SmartStandards {
 
     private static void DefaultLogMethod(int level, int id, string messageTemplate, object[] args) {
 
-      if (InnerTraceSource is null)
-        return;
+      if (InnerTraceSource is null) return;
 
       TraceEventType eventType;
 

@@ -23,14 +23,14 @@ namespace Logging.SmartStandards {
     [TestMethod()]
     public void TraceMethods_WithNamedPlaceholders_ShouldEmitEscapedFormatString() {
 
-      LoggerBase<DevLogger>.LogInformation(123, "Text without placeholders");
+      DevLogger.LogInformation(123, "Text without placeholders");
 
-      LoggerBase<InfrastructureLogger>.LogWarning(222, "{thingy} space is low: {space} MB", "Disk", 5);
+      InfrastructureLogger.LogWarning(222, "{thingy} space is low: {space} MB", "Disk", 5);
 
-      LoggerBase<ProtocolLogger>.LogError(
+      ProtocolLogger.LogError(
         333,
         "User \"{UserLogonName}\" does not have sufficient rights to perform \"{Interaction}\" on environment \"{Environment}\".",
-        new[] { "Müller", "Delete", "Productive" }
+        "Müller", "Delete", "Productive"
       );
 
       LoggerBase<DevLogger>.LogCritical(-12345, null, null);

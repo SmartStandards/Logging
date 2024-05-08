@@ -8,4 +8,14 @@
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>System</Import_RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\SmartStandardsTraceLogPipe.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CheapInMemoryLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\ProtocolLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InfrastructureLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggingArgsResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggingHelper.cs" />
+  </ItemGroup>
 </Project>

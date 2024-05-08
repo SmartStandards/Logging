@@ -3,8 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace></RootNamespace>
-    <Nullable>disable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>    
     <IsPackable>false</IsPackable>     
   </PropertyGroup>
 
@@ -16,10 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Logging.net6.0\Logging.net6.0.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
 </Project>

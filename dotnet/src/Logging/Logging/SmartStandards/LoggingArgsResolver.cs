@@ -9,7 +9,7 @@ namespace Logging.SmartStandards {
   /// <remarks>
   ///   This copy was made to avoid a dependency to the SmartStandards.Essentials package.
   /// </remarks>
-  internal static class LoggingArgsResolver {
+  internal static class LoggingArgsResolvingExtensions {
 
     public static string TryResolveArgs(this string extendee, Object[] args, int startIndex = 0) {
 
@@ -18,7 +18,7 @@ namespace Logging.SmartStandards {
       if (args.Length == 0) { return extendee; }
 
       StringBuilder sb = new StringBuilder(extendee, (int)(extendee.Length * 1.5));
-      return LoggingArgsResolver.TryResolveArgs(sb, args, startIndex)?.ToString();
+      return LoggingArgsResolvingExtensions.TryResolveArgs(sb, args, startIndex)?.ToString();
     }
 
     public static StringBuilder TryResolveArgs(this StringBuilder extendee, Object[] args, int startIndex = 0) {

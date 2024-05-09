@@ -5,8 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4130D21C-FE8F-4925-93E7-217B4AF1B7D9}"
 	ProjectSection(SolutionItems) = preProject
-		..\vers\changelog.md = ..\vers\changelog.md
-		..\README.md = ..\README.md
+		.editorconfig = .editorconfig
 		SmartStandards.Logging.nuspec = SmartStandards.Logging.nuspec
 	EndProjectSection
 EndProject
@@ -23,6 +22,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{911E9786-3347-476A-89D8-6AB7EA3D6320}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logging.Tests", "test\Logging.Tests\Logging.Tests.csproj", "{D0CD47CF-A4BE-408D-A621-0CD099CFB76F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{34EE4D8B-0B40-44A1-B852-DD8DBB46A74B}"
+	ProjectSection(SolutionItems) = preProject
+		..\vers\changelog.md = ..\vers\changelog.md
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

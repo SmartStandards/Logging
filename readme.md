@@ -8,7 +8,7 @@ The only built in target is .net Trace - for any other target you can inject a d
 
 # Get Started
 
-For dotnet, install the **Snowflake44 by SmartStandards Nuget Package**.
+For dotnet, install the **SmartStandards Logging" Nuget Package**.
 
 ## Emitting Log Messages
 

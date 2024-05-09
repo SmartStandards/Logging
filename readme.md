@@ -8,7 +8,7 @@ The only built in target is .net Trace - for any other target you can inject a d
 
 # Get Started
 
-For dotnet, install the **"SmartStandards Logging"** Nuget Package**.
+For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 
 ## Emitting Log Messages
 

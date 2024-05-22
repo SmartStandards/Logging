@@ -8,7 +8,7 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
+- Internal change: Used a copy of PlaceholderExtensions instead of an own implementation (ArgsResolver)
 
 
 

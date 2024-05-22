@@ -8,4 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* Initial Commit (Solution-Template only)
+*(none)*
+
+
+
+## v 0.1.0
+released **2024-05-08**, including:
+ - Initial Commit (Solution-Template only)
+
+
+

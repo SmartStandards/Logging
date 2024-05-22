@@ -1,12 +1,14 @@
 # SmartStandards Logging
 
+[![Build status](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_apis/build/status/Logging)](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_build/latest?definitionId=17) • [Change Log](./vers/changelog.md)
+
 First of all, SmartStandards Logging is a stack of best practice conventions of how logging can be done (independent of any technology).
 Plus, a lightweight .net library (no dependencies) which allows to emit logging to any target (.net Trace, console, SeriLog, etc.).
 The only built in target is .net Trace - for any other target you can inject a delegate which redirects messages to anywhere you want.
 
-[![Build status](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_apis/build/status/Logging)](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_build/latest?definitionId=17)
+# Get Started
 
-# Quick Start
+For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 
 ## Emitting Log Messages
 
@@ -72,6 +74,3 @@ Represents a complete log entry as a single, specially formatted string (with al
 |With Level     |[LevelAsAlpha3]:ResolvedMessage  |`"[Err]:File not found on Disk!"`    |
 |With Level + Id|[LevelAsAlpha3]Id:ResolvedMessage|"`[Err]4711:File not found on Disk!"`|
 
-# Behaviour
-
-(documentation yet missing)

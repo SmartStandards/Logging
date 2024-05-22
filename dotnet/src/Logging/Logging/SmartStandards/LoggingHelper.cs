@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.SmartStandards;
+using System.Text;
 
 namespace Logging.SmartStandards {
 
@@ -33,7 +34,7 @@ namespace Logging.SmartStandards {
       if (statusMessageTemplate != null && statusMessageTemplate.Length > 0) {
         int startIndex = sb.Length;
         sb.Append(statusMessageTemplate);
-        sb.TryResolveArgs(statusMessageArgs, startIndex);
+        sb.ResolvePlaceholders(statusMessageArgs);
       }
 
       return sb.ToString();

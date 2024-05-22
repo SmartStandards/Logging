@@ -15,7 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InfrastructureLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggerBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggingArgsResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggingHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\CopyOfPlaceholderExtensions .cs" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,8 @@ This files contains a version history including all changes relevant for semanti
 
 - Internal change: Used a copy of PlaceholderExtensions instead of an own implementation (ArgsResolver)
 
+## v 0.1.1
+- New Feature: Various Loggers
 
 
 ## v 0.1.0

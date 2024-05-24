@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-- Bug Fix: LogMethod hooks were internal (now public)
+*(none)*
+
+
+
+## v 0.1.3
+released **2024-05-24**, including:
+ - Bug Fix: LogMethod hooks were internal (now public)
 
 
 

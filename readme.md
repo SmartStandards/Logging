@@ -21,17 +21,19 @@ For dotnet, install the **"SmartStandards Logging"** Nuget Package.
       "Müller", "Delete", "Productive"
     );
 
-## Recieving Log Messages (via Trace)
+## Registering log handlers
 
-    public static class MyTraceLogger {
+    ILogger dotNetDevLogger = loggerfactory.CreateLogger("Dev");
 
-      private static void Initialize() {
-        SmartStandardsTraceLogPipe.Initialize(OnLog);
-      }
-      private static void OnLog(string channelName, int level, int id, string messageTemplate, string[] messageArgs) {
-        // your code
-      }
-    }
+    ILogger dotNetInfrastructureLogger = loggerfactory.CreateLogger("Ins");
+
+    ILogger dotNetProtocolLogger = loggerfactory.CreateLogger("Pro");
+
+    DevLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetDevLogger.Log(level, id, messageTemplate, args);
+
+    InfrastructureLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetInfrastructureLogger.Log(level, id, messageTemplate, args);
+
+    ProtocolLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetProtocolLogger.Log(level, id, messageTemplate, args);
 
 # Structure
 
@@ -39,7 +41,7 @@ For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 
 |Property       |Type    |Example Value                  |Semantic                                                         |
 |---------------|--------|-------------------------------|-----------------------------------------------------------------|
-|Channel        |Integer |                              0|Reflects the audience (see below).                               |
+|Channel        |Integer |                              0|Aka "category". Reflects the audience (see below).               |
 |Level          |Integer |                              4|See below.                                                       |
 |Id             |Integer |                           4711|Can be used as return (and error) code for functions (see below).|
 |MessageTemplate|String  |"{thing} not found on {place}."|Contains named placeholders (curly braces).                      |
@@ -47,11 +49,16 @@ For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 
 ### Channels
 
-|Value|Technical Name|Friendly Name |
-|-----|--------------|--------------|
-|22692|Dev           |Development   |
-|19913|Ins           |Infrastructure|
-|15952|Pro           |Protocol      |
+- In .net core logging this is called "category", in .net trace "source name"
+
+- In contrast to other concepts which suggest to use this to specify "the name of the application that generated the message", 
+  we use this to specify an abstract target group for a message.
+
+|Value|Technical Name|Friendly Name |Target group                                                                    |
+|-----|--------------|--------------|--------------------------------------------------------------------------------|
+|22692|Dev           |Development   |Developers of a software component who want to do bug fixing.                   |
+|19913|Ins           |Infrastructure|Dev ops people who want to monitor the health of their infrastructure.          |
+|15952|Pro           |Protocol      |End users (business people) who want to judge the outcome of a business process.| 
 
 ### Levels
 

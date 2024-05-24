@@ -9,8 +9,9 @@
     <Import_RootNamespace>System</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LogToTraceAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\SmartStandardsTraceLogPipe.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CheapInMemoryLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CheapInMemorySink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\ProtocolLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InfrastructureLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />

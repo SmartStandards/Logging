@@ -7,9 +7,8 @@ namespace Logging.SmartStandards {
   /// </summary>
   /// <remarks>
   ///   The character of the messages shoud be "for internal use".
-  ///   Usually, these messages are stored in a file or database.
   ///   The messages should reflect issues that were caused at design time by a bug in the code and can be fixed by developers.
-  ///   Examples: Invalid argument, parsing error, etc.
+  ///   Examples: Invalid argument, out of range error, etc.
   /// </remarks>
   public class DevLogger : LoggerBase<DevLogger> {
 
@@ -20,10 +19,11 @@ namespace Logging.SmartStandards {
     public const string ChannelName = "Dev";
 
     /// <summary>
-    ///   Hook. Inject your log handler delegate here.
-    ///   This will override the default log handler (which uses System.Diagnostics.Trace to emit messages).
+    ///   Hook. Inject your log emitting handler here.
+    ///   Signature: void LogMethod(int level, int id, string messageTemplate, object[] args)
+    ///   This will override the default handler (which uses System.Diagnostics.Trace to emit messages).
     /// </summary>
-    protected static Action<int, int, string, object[]> LogMethod {
+    public static Action<string, int, int, string, object[]> LogMethod {
       get {
         return LoggerBase<DevLogger>.InternalLogMethod;
       }

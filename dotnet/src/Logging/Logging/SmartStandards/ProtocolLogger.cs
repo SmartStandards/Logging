@@ -7,10 +7,9 @@ namespace Logging.SmartStandards {
   /// </summary>
   /// <remarks>
   ///   This is the only "public" channel that targets an audience that is not the provider of a component.
-  ///   Usually, these messages are presented at the UI (or returned as service response).
-  ///   The messages should reflect issues that were caused at runtime by a user (or service request) 
+  ///   The messages should reflect issues that were caused at runtime by a user (or service request)
   ///   and can be fixed by him (or the developer of the requesting component).
-  ///   Examples: Wrong input, bad configuration, insufficient permissions, etc.
+  ///   Examples: Wrong input, insufficient permissions, etc.
   /// </remarks>
   public class ProtocolLogger : LoggerBase<ProtocolLogger> {
 
@@ -21,10 +20,11 @@ namespace Logging.SmartStandards {
     public const string ChannelName = "Pro";
 
     /// <summary>
-    ///   Hook. Inject your log handler delegate here.
-    ///   This will override the default log handler (which uses System.Diagnostics.Trace to emit messages).
+    ///   Hook. Inject your log emitting handler here.
+    ///   Signature: void LogMethod(int level, int id, string messageTemplate, object[] args)
+    ///   This will override the default handler (which uses System.Diagnostics.Trace to emit messages).
     /// </summary>
-    protected static Action<int, int, string, object[]> LogMethod {
+    public static Action<string, int, int, string, object[]> LogMethod {
       get {
         return LoggerBase<ProtocolLogger>.InternalLogMethod;
       }

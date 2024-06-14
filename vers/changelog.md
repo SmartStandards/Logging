@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* **new Feature**: Added convenience overloads for all LogMethods that allows to supply an Exception object in order to be serialized internally.
+*(none)*
+
+
+
+## v 0.2.0
+released **2024-06-14**, including:
+ - **new Feature**: Added convenience overloads for all LogMethods that allows to supply an Exception object in order to be serialized internally.
 
 
 

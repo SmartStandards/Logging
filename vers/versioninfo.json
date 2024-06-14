@@ -1,13 +1,13 @@
 {
-  "currentVersion": "0.1.3",
-  "currentVersionWithSuffix": "0.1.3",
+  "currentVersion": "0.2.0",
+  "currentVersionWithSuffix": "0.2.0",
   "releaseType": "official",
-  "previousVersion": "0.1.2",
-  "changeGrade": "patch",
+  "previousVersion": "0.1.3",
+  "changeGrade": "minor",
   "currentMajor": 0,
-  "currentMinor": 1,
-  "currentPatch": 3,
-  "versionDateInfo": "2024-05-24",
-  "versionTimeInfo": "14:56:26",
-  "versionNotes": "- Bug Fix: LogMethod hooks were internal (now public)\n"
+  "currentMinor": 2,
+  "currentPatch": 0,
+  "versionDateInfo": "2024-06-14",
+  "versionTimeInfo": "14:19:20",
+  "versionNotes": "- new Feature: Added convenience overloads for all LogMethods that allows to supply an Exception object in order to be serialized internally.\n"
 }

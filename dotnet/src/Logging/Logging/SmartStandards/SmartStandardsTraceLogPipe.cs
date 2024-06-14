@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Logging.Tests")]
 
 namespace Logging.SmartStandards {
 
@@ -18,7 +21,7 @@ namespace Logging.SmartStandards {
 
     private static bool _Semaphore;
 
-    private Action<string, int, int, string, object[]> _OnLog;
+    private OnLogMethod _OnLog;
 
     private SmartStandardsTraceLogPipe() { // Constructor is private, because this must be a single instance
     }
@@ -36,7 +39,7 @@ namespace Logging.SmartStandards {
     ///   Order dependency: This has to be done before initializing any trace sources 
     ///   (= before any usage of a logger, because the loggers implicitely wire up their internal trace source on first usage).
     /// </remarks>
-    public static void Initialize(Action<string, int, int, string, object[]> onLog) {
+    public static void Initialize(OnLogMethod onLog) {
 
       if (_Semaphore) throw new Exception("Do not initialize more than once!");
 
@@ -55,13 +58,40 @@ namespace Logging.SmartStandards {
       _Semaphore = true;
     }
 
+    /// <summary>
+    ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
+    ///   Wires into the DevLogger, InfrastructureLogger or ProtocolLogger,
+    ///   but only if their LoggingMethod's are redirected.
+    /// </summary>
+    public static void InitializeAsLoggerInput() {
+      Initialize(
+        (string channelName, int level, int id, string messageTemplate, object[] messageArgs) => {
+          if (channelName == DevLogger.ChannelName) {
+            if (DevLogger.IsRedirected) {
+              DevLogger.Log(level, id, messageTemplate, messageArgs);
+            }
+          }
+          else if (channelName == InfrastructureLogger.ChannelName) {
+            if (InfrastructureLogger.IsRedirected) {
+              InfrastructureLogger.Log(level, id, messageTemplate, messageArgs);
+            }
+          }
+          else if (channelName == ProtocolLogger.ChannelName) {
+            if (ProtocolLogger.IsRedirected) {
+              ProtocolLogger.Log(level, id, messageTemplate, messageArgs);
+            }
+          }
+        }
+      );
+    }
+
     public override void TraceEvent(
       TraceEventCache eventCache, string source, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
 
       // Filter
 
-      if (source != "Dev" && source != "Ins" && source != "Pro") return;
+      if (source != DevLogger.ChannelName && source != InfrastructureLogger.ChannelName && source != ProtocolLogger.ChannelName) return;
 
       // De-sanitize named placeholders
 

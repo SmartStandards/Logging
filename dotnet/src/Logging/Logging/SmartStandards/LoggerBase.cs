@@ -3,6 +3,8 @@ using System.Reflection;
 
 namespace Logging.SmartStandards {
 
+  public delegate void OnLogMethod(string source, int level, int eventId, string messageTemplate, object[] args);
+
   /// <summary>
   ///   Base class to be inherited by channel-specific loggers.
   ///   Implements a built-in default handler, which is pushing messages to System.Diagnostics.Trace.
@@ -35,6 +37,12 @@ namespace Logging.SmartStandards {
 
     private static Action<string, int, int, string, object[]> _InternalLogMethod;
 
+    internal static bool IsRedirected {
+      get {
+        return (_InternalLogMethod != null);
+      }
+    }
+
     /// <summary>
     ///   Hook for injecting external log handler delegates.
     ///   The inherited classes must implement a boilerplate Property "LogMethod" and pass the values from/to here,
@@ -61,14 +69,27 @@ namespace Logging.SmartStandards {
       InternalLogMethod.Invoke(InternalChannelName, 5, id, messageTemplate, args);
     }
 
+    public static void LogCritical(int id, Exception ex) {
+      LogCritical(id, ex.Serialize());
+    }
+
     public static void LogError(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, 4, id, messageTemplate, args);
+    }
+
+    public static void LogError(int id, Exception ex) {
+      LogError(id, ex.Serialize());
     }
 
     public static void LogWarning(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, 3, id, messageTemplate, args);
     }
 
+    public static void LogWarning(int id, Exception ex) {
+      LogWarning(id, ex.Serialize());
+    }
+
+    //HACK: warum noch einmal ohne array? und das nur bei info?
     public static void LogInformation(int id, string messageTemplate) {
       InternalLogMethod.Invoke(InternalChannelName, 2, id, messageTemplate, null);
     }
@@ -77,12 +98,24 @@ namespace Logging.SmartStandards {
       InternalLogMethod.Invoke(InternalChannelName, 2, id, messageTemplate, args);
     }
 
+    public static void LogInformation(int id, Exception ex) {
+      LogInformation(id, ex.Serialize());
+    }
+
     public static void LogDebug(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, 1, id, messageTemplate, args);
     }
 
+    public static void LogDebug(int id, Exception ex) {
+      LogDebug(id, ex.Serialize());
+    }
+
     public static void LogTrace(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, 0, id, messageTemplate, args);
+    }
+
+    public static void LogTrace(int id, Exception ex) {
+      LogTrace(id, ex.Serialize());
     }
 
     public static void LogReturnCodeAsError(int id, string messageTemplate, object[] args) {
@@ -104,4 +137,5 @@ namespace Logging.SmartStandards {
     }
 
   }
+
 }

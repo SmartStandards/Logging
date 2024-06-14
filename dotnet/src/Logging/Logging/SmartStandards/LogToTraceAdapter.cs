@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Logging.SmartStandards {
@@ -41,7 +42,7 @@ namespace Logging.SmartStandards {
       return traceSource;
     }
 
-    internal static void LogToTrace(string channelName, int level, int id, string messageTemplate, object[] args) {
+    internal static void LogToTrace(string channelName, int level, int id, string messageTemplate, params object[] args) {
 
       TraceSource traceSource = GetTraceSourcePerChannelName(channelName);
 

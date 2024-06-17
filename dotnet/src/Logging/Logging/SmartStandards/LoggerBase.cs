@@ -89,11 +89,6 @@ namespace Logging.SmartStandards {
       LogWarning(id, ex.Serialize());
     }
 
-    //HACK: warum noch einmal ohne array? und das nur bei info?
-    public static void LogInformation(int id, string messageTemplate) {
-      InternalLogMethod.Invoke(InternalChannelName, 2, id, messageTemplate, null);
-    }
-
     public static void LogInformation(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, 2, id, messageTemplate, args);
     }

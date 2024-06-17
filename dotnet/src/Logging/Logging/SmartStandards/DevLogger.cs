@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 
 namespace Logging.SmartStandards {
 
@@ -27,8 +28,12 @@ namespace Logging.SmartStandards {
       get {
         return LoggerBase<DevLogger>.InternalLogMethod;
       }
-      set {
-        LoggerBase<DevLogger>.InternalLogMethod = value;
+    }
+
+    public static void ConfigureRedirection(Action<string, int, int, string, object[]> logMethod, bool enableTraceListener = true) {
+      LoggerBase<DevLogger>.InternalLogMethod = logMethod;
+      if (enableTraceListener && !SmartStandardsTraceLogPipe.IsInitialized) {
+        SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
       }
     }
 

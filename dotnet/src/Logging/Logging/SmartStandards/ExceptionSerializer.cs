@@ -14,7 +14,7 @@ namespace Logging.SmartStandards {
     /// <param name="includeStacktrace"></param>
     /// <returns></returns>
     public static string Serialize(this Exception ex, bool includeStacktrace = true) {
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(1000);
       string messageMainLine = ex.Message ;
       AppendRecursive(ex, sb, ref messageMainLine, includeStacktrace);
       sb.Insert(0, messageMainLine + Environment.NewLine);

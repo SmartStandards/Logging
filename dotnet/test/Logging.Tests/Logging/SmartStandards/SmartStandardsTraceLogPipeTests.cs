@@ -15,16 +15,17 @@ namespace Logging.SmartStandards {
     //  string capturedMessage;
     //  int receivedMessages = 0;
     //  SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
-    //  DevLogger.LogMethod = (string c, int l, int id, string msg, object[] args) => {
+    //  DevLogger.ConfigureRedirection(
+    //    (string c, int l, int id, string msg, object[] args) => {
     //    capturedMessage = msg;
     //    receivedMessages++;
-    //  };
+    //  }, false);
 
-    //  LogToTraceAdapter.LogToTrace("Dev", 3,0, ExceptionSerializerTests.CreateMockException().Serialize());
+    //  LogToTraceAdapter.LogToTrace("Dev", 3, 0, ExceptionSerializerTests.CreateMockException().Serialize());
 
     //  string msg = ExceptionSerializerTests.CreateMockException().Serialize();
-    //  for(int i = 0;i < 30; i++) {
-    //    Task.Run(() => { 
+    //  for (int i = 0; i < 30; i++) {
+    //    Task.Run(() => {
     //      Thread.Sleep(1000);
     //      LogToTraceAdapter.LogToTrace("Dev", 3, 0, msg);
     //    });

@@ -28,8 +28,12 @@ namespace Logging.SmartStandards {
       get {
         return LoggerBase<ProtocolLogger>.InternalLogMethod;
       }
-      set {
-        LoggerBase<ProtocolLogger>.InternalLogMethod = value;
+    }
+
+    public static void ConfigureRedirection(Action<string, int, int, string, object[]> logMethod, bool enableTraceListener = true) {
+      LoggerBase<ProtocolLogger>.InternalLogMethod = logMethod;
+      if (enableTraceListener && !SmartStandardsTraceLogPipe.IsInitialized) {
+        SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
       }
     }
 

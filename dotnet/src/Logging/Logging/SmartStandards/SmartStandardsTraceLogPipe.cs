@@ -26,6 +26,12 @@ namespace Logging.SmartStandards {
     private SmartStandardsTraceLogPipe() { // Constructor is private, because this must be a single instance
     }
 
+    public static bool IsInitialized {
+      get {
+        return _Semaphore;
+      }
+    }
+
     /// <summary>
     ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
     ///   Wires up your actual logging sink by registering a callback delegate.

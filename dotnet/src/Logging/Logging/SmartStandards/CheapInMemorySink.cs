@@ -59,9 +59,9 @@ namespace Logging.SmartStandards {
             _TraceIsInitialized = true;
           }
 
-          DevLogger.LogMethod = null;
-          InfrastructureLogger.LogMethod = null;
-          ProtocolLogger.LogMethod = null;
+          DevLogger.ConfigureRedirection(null, false);
+          InfrastructureLogger.ConfigureRedirection(null, false);
+          ProtocolLogger.ConfigureRedirection(null, false);
 
           _CurrentlyUsingDirectOrTrace = 2;
         }
@@ -70,11 +70,11 @@ namespace Logging.SmartStandards {
 
         if (_CurrentlyUsingDirectOrTrace != 1) {
 
-          DevLogger.LogMethod = (channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args);
+          DevLogger.ConfigureRedirection((channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args), false);
 
-          InfrastructureLogger.LogMethod = (channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args);
+          InfrastructureLogger.ConfigureRedirection((channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args), false);
 
-          ProtocolLogger.LogMethod = (channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args);
+          ProtocolLogger.ConfigureRedirection((channelName, level, id, messageTemplate, args) => OnLog("direct", channelName, level, id, messageTemplate, args), false);
 
         }
 

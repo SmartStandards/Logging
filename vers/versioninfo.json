@@ -1,13 +1,13 @@
 {
-  "currentVersion": "0.2.0",
-  "currentVersionWithSuffix": "0.2.0",
+  "currentVersion": "0.3.0",
+  "currentVersionWithSuffix": "0.3.0",
   "releaseType": "official",
-  "previousVersion": "0.1.3",
-  "changeGrade": "minor",
+  "previousVersion": "0.2.0",
+  "changeGrade": "major",
   "currentMajor": 0,
-  "currentMinor": 2,
+  "currentMinor": 3,
   "currentPatch": 0,
-  "versionDateInfo": "2024-06-14",
-  "versionTimeInfo": "14:19:20",
-  "versionNotes": "- new Feature: Added convenience overloads for all LogMethods that allows to supply an Exception object in order to be serialized internally.\n"
+  "versionDateInfo": "2024-06-17",
+  "versionTimeInfo": "11:05:06",
+  "versionNotes": "- breaking Change: Added 'ConfigureRedirection'-Methods as replacement for Setters of the LogMethod-Properties\n"
 }

@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* **breaking Change**: Added 'ConfigureRedirection'-Methods as replacement for Setters of the LogMethod-Properties
+*(none)*
+
+
+
+## v 0.3.0
+released **2024-06-17**, including:
+ - **breaking Change**: Added 'ConfigureRedirection'-Methods as replacement for Setters of the LogMethod-Properties
 
 
 

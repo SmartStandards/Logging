@@ -95,7 +95,7 @@ namespace Logging.SmartStandards {
 
     private static void FallbackExceptionLogMethod(string chnl, bool receivedViaTrace, int lvl,int id, Exception ex) {
       string serializedException = ex.Serialize();
-      InternalLogMethod.Invoke(chnl, receivedViaTrace, lvl, id, serializedException, null);
+      InternalLogMethod.Invoke(chnl, receivedViaTrace, lvl, id, serializedException, new object[] { ex });
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]

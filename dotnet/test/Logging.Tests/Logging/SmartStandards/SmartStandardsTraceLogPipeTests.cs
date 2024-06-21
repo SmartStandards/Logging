@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Discovery;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading;
@@ -22,7 +23,7 @@ namespace Logging.SmartStandards {
         logExceptionMethod: null,
         forwardDirectInputToTracing: true, // <<<<<<<<<<< DIRECT input
         forwardTracingInputToLogMehod: true // <<<<<<<<< TRACING input
-      ); 
+      );
 
       //Test DIRECT input
       DevLogger.LogWarning(0, "AAA");
@@ -52,11 +53,12 @@ namespace Logging.SmartStandards {
         forwardTracingInputToLogMehod: true
       );
 
+      Exception ex = new Exception("Kaputt");
 
       //Test indirect TRACING input
-      LogToTraceAdapter.LogToTrace("Dev", 3, 0, "An Exception", new Exception("Kaputt"));
+      LogToTraceAdapter.LogToTrace("Dev", 3, 0, ex.Serialize(), new Exception("Kaputt"));
 
-      Assert.AreEqual("An Exception", UnitTestTraceListener.LastMessageTemplate);
+      Assert.AreEqual("Kaputt\r\n__System.Exception__", UnitTestTraceListener.LastMessageTemplate);
       Assert.AreEqual(1, UnitTestTraceListener.LastArgs.Length);
 
       Assert.IsNotNull(capturedExceptionFromLogMethod);

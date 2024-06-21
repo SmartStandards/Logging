@@ -44,7 +44,8 @@ namespace Logging.SmartStandards {
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[0]);
       Assert.AreEqual(1, CheapInMemorySink.CollectedIds[0]);
       Assert.AreEqual("Text without placeholders, zero args provided", CheapInMemorySink.CollectedMessageTemplates[0]);
-      Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[0]);
+      //HACK: das hat den zus. Overload abgesichert, den es nur für Information gab, und der weggelöscht werden sollte!
+      //Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[0]);
 
       DevLogger.LogInformation(2, "Text without placeholders, args = null.", null); // Expected: MessageArgs == null
 

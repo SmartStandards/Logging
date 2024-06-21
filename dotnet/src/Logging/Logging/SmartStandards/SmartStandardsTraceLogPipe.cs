@@ -21,7 +21,7 @@ namespace Logging.SmartStandards {
 
     private static bool _Semaphore;
 
-    private OnLogMethod _OnLog;
+    private LogMethod _OnLog;
 
     private SmartStandardsTraceLogPipe() { // Constructor is private, because this must be a single instance
     }
@@ -45,7 +45,7 @@ namespace Logging.SmartStandards {
     ///   Order dependency: This has to be done before initializing any trace sources 
     ///   (= before any usage of a logger, because the loggers implicitely wire up their internal trace source on first usage).
     /// </remarks>
-    public static void Initialize(OnLogMethod onLog) {
+    public static void Initialize(LogMethod onLog) {
 
       if (_Semaphore) throw new Exception("Do not initialize more than once!");
 
@@ -72,21 +72,37 @@ namespace Logging.SmartStandards {
     public static void InitializeAsLoggerInput() {
       Initialize(
         (string channelName, int level, int id, string messageTemplate, object[] messageArgs) => {
-          if (channelName == DevLogger.ChannelName) {
-            if (DevLogger.IsRedirected) {
-              DevLogger.Log(level, id, messageTemplate, messageArgs);
-            }
+
+          Exception ex = null;
+          if(messageArgs != null && messageArgs.Length > 0 && messageArgs[0] is Exception) {
+            ex = (Exception)messageArgs[0];
           }
-          else if (channelName == InfrastructureLogger.ChannelName) {
-            if (InfrastructureLogger.IsRedirected) {
-              InfrastructureLogger.Log(level, id, messageTemplate, messageArgs);
-            }
+
+          if (channelName == DevLogger.ChannelName && DevLogger.AwaitsInputFromTracing) {
+            //je nach bedarf in die normale oder in die exception-log methode umleiten
+            if(ex == null) 
+              DevLogger.InternalLogMethod.Invoke(DevLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
+            else 
+              DevLogger.InternalExceptionLogMethod.Invoke(DevLogger.ChannelName, true, level, id, ex);   
+         
           }
-          else if (channelName == ProtocolLogger.ChannelName) {
-            if (ProtocolLogger.IsRedirected) {
-              ProtocolLogger.Log(level, id, messageTemplate, messageArgs);
-            }
+          else if (channelName == InfrastructureLogger.ChannelName && InfrastructureLogger.AwaitsInputFromTracing) {
+            //je nach bedarf in die normale oder in die exception-log methode umleiten
+            if (ex == null) 
+              InfrastructureLogger.InternalLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
+            else 
+              InfrastructureLogger.InternalExceptionLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, ex); 
+         
           }
+          else if (channelName == ProtocolLogger.ChannelName && ProtocolLogger.AwaitsInputFromTracing) {
+            //je nach bedarf in die normale oder in die exception-log methode umleiten
+            if (ex == null)  
+              ProtocolLogger.InternalLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
+            else 
+              ProtocolLogger.InternalExceptionLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, ex);
+         
+          }
+
         }
       );
     }

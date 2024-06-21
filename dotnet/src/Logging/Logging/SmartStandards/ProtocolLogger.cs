@@ -24,17 +24,51 @@ namespace Logging.SmartStandards {
     ///   Signature: void LogMethod(int level, int id, string messageTemplate, object[] args)
     ///   This will override the default handler (which uses System.Diagnostics.Trace to emit messages).
     /// </summary>
-    public static Action<string, int, int, string, object[]> LogMethod {
-      get {
-        return LoggerBase<ProtocolLogger>.InternalLogMethod;
-      }
-    }
+    public static void ConfigureRedirection(
+      LogMethod logMethod,
+      LogExceptionMethod logExceptionMethod = null,
+      bool forwardDirectInputToTracing = false,
+      bool forwardTracingInputToLogMehod = true
+    ) {
 
-    public static void ConfigureRedirection(Action<string, int, int, string, object[]> logMethod, bool enableTraceListener = true) {
-      LoggerBase<ProtocolLogger>.InternalLogMethod = logMethod;
-      if (enableTraceListener && !SmartStandardsTraceLogPipe.IsInitialized) {
-        SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
+      if (forwardTracingInputToLogMehod) {
+        LoggerBase<ProtocolLogger>.AwaitsInputFromTracing = true;
+        //ensure, that the pipe is up and running
+        if (!SmartStandardsTraceLogPipe.IsInitialized) {
+          SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
+        }
       }
+
+      if (forwardDirectInputToTracing) {
+        LoggerBase<ProtocolLogger>.InternalLogMethod = (
+          (src, viaTrc, lvl, id, msg, args) => {
+            logMethod.Invoke(src, lvl, id, msg, args);
+            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, args);
+          }
+        );
+      }
+      else {
+        LoggerBase<ProtocolLogger>.InternalLogMethod = (
+          (src, viaTrc, lvl, id, msg, args) => logMethod.Invoke(src, lvl, id, msg, args)
+        );
+      }
+
+      if (logExceptionMethod != null) {
+        if (forwardDirectInputToTracing) {
+          LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = (
+            (src, viaTrc, lvl, id, ex) => {
+              logExceptionMethod.Invoke(src, lvl, id, ex);
+              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), null);
+            }
+          );
+        }
+        else {
+          LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = (
+            (src, viaTrc, lvl, id, ex) => logExceptionMethod.Invoke(src, lvl, id, ex)
+          );
+        }
+      }
+
     }
 
   }

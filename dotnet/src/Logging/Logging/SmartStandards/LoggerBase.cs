@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Server;
+using System;
 using System.Reflection;
 
 namespace Logging.SmartStandards {
 
-  public delegate void OnLogMethod(string source, int level, int eventId, string messageTemplate, object[] args);
+  public delegate void LogMethod(string source, int level, int eventId, string messageTemplate, object[] args);
+  public delegate void LogExceptionMethod(string source, int level, int eventId, Exception ex);
+  public delegate void InternalLogMethod(string source, bool receivedViaTrace, int level, int eventId, string messageTemplate, object[] args);
+  public delegate void InternalLogExceptionMethod(string source, bool receivedViaTrace, int level, int eventId, Exception ex);
 
   /// <summary>
   ///   Base class to be inherited by channel-specific loggers.
@@ -35,11 +39,22 @@ namespace Logging.SmartStandards {
       }
     }
 
-    private static Action<string, int, int, string, object[]> _InternalLogMethod;
+    private static InternalLogMethod _InternalLogMethod;
+    private static InternalLogExceptionMethod _InternalExceptionLogMethod;
 
     internal static bool IsRedirected {
       get {
         return (_InternalLogMethod != null);
+      }
+    }
+
+    private static bool _AwaitsInputFromTracing = false;
+    public static bool AwaitsInputFromTracing {
+      get {
+        return _AwaitsInputFromTracing;
+      }
+      protected set {
+        _AwaitsInputFromTracing = value;
       }
     }
 
@@ -48,11 +63,11 @@ namespace Logging.SmartStandards {
     ///   The inherited classes must implement a boilerplate Property "LogMethod" and pass the values from/to here,
     ///   because this is a static class and simple overriding is not possible.
     /// </summary>
-    protected static Action<string, int, int, string, object[]> InternalLogMethod {
+    internal static InternalLogMethod InternalLogMethod {
       get {
-
-        if (_InternalLogMethod is null) _InternalLogMethod = LogToTraceAdapter.LogToTrace;
-
+        if (_InternalLogMethod == null) {
+          return DefaultLogToTraceMethod;
+        } 
         return _InternalLogMethod;
       }
       set {
@@ -60,57 +75,81 @@ namespace Logging.SmartStandards {
       }
     }
 
+    protected static void DefaultLogToTraceMethod(string chnl, bool receivedViaTrace, int lvl, int id, string messageTemplate, object[] args) {
+      if (!receivedViaTrace) {
+        LogToTraceAdapter.LogToTrace(chnl, lvl, id, messageTemplate, args);
+      }
+    }
+
+    internal static InternalLogExceptionMethod InternalExceptionLogMethod {
+      get {
+        if (_InternalExceptionLogMethod == null) {
+          return FallbackExceptionLogMethod;
+        }
+        return _InternalExceptionLogMethod;
+      }
+      set {
+        _InternalExceptionLogMethod = value;
+      }
+    }
+
+    private static void FallbackExceptionLogMethod(string chnl, bool receivedViaTrace, int lvl,int id, Exception ex) {
+      string serializedException = ex.Serialize();
+      InternalLogMethod.Invoke(chnl, receivedViaTrace, lvl, id, serializedException, null);
+    }
+
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static void Log(int level, int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, level, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, level, id, messageTemplate, args);
     }
 
     public static void LogCritical(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 5, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 5, id, messageTemplate, args);
+
     }
 
     public static void LogCritical(int id, Exception ex) {
-      LogCritical(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 5, id, ex);
     }
 
     public static void LogError(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 4, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 4, id, messageTemplate, args);
     }
 
     public static void LogError(int id, Exception ex) {
-      LogError(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 4, id, ex);
     }
 
     public static void LogWarning(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 3, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 3, id, messageTemplate, args);
     }
 
     public static void LogWarning(int id, Exception ex) {
-      LogWarning(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 3, id, ex);
     }
 
     public static void LogInformation(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 2, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 2, id, messageTemplate, args);
     }
 
     public static void LogInformation(int id, Exception ex) {
-      LogInformation(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 2, id, ex);
     }
 
     public static void LogDebug(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 1, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 1, id, messageTemplate, args);
     }
 
     public static void LogDebug(int id, Exception ex) {
-      LogDebug(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 1, id, ex);
     }
 
     public static void LogTrace(int id, string messageTemplate, params object[] args) {
-      InternalLogMethod.Invoke(InternalChannelName, 0, id, messageTemplate, args);
+      InternalLogMethod.Invoke(InternalChannelName, false, 0, id, messageTemplate, args);
     }
 
     public static void LogTrace(int id, Exception ex) {
-      LogTrace(id, ex.Serialize());
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 0, id, ex);
     }
 
     public static void LogReturnCodeAsError(int id, string messageTemplate, object[] args) {

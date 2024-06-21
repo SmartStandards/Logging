@@ -8,9 +8,15 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* **new Feature**: Now supporting redirection from AND into Tracing at the same time and piping of Exceptions without serialization (**MVP**-state is now reached)
+*(none)*
 
-  
+
+
+## v 1.0.0
+released **2024-06-21**, including:
+ - new Feature: Now supporting redirection from AND into Tracing at the same time and piping of Exceptions without serialization (**MVP**-state is now reached)
+
+
 
 ## v 0.3.0
 released **2024-06-17**, including:

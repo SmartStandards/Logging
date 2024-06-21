@@ -1,13 +1,13 @@
 {
-  "currentVersion": "0.3.0",
-  "currentVersionWithSuffix": "0.3.0",
+  "currentVersion": "1.0.0",
+  "currentVersionWithSuffix": "1.0.0",
   "releaseType": "official",
-  "previousVersion": "0.2.0",
-  "changeGrade": "major",
-  "currentMajor": 0,
-  "currentMinor": 3,
+  "previousVersion": "0.3.0",
+  "changeGrade": "minor",
+  "currentMajor": 1,
+  "currentMinor": 0,
   "currentPatch": 0,
-  "versionDateInfo": "2024-06-17",
-  "versionTimeInfo": "11:05:06",
-  "versionNotes": "- breaking Change: Added 'ConfigureRedirection'-Methods as replacement for Setters of the LogMethod-Properties\n"
+  "versionDateInfo": "2024-06-21",
+  "versionTimeInfo": "14:46:50",
+  "versionNotes": "- new Feature: Now supporting redirection from AND into Tracing at the same time and piping of Exceptions without serialization (**MVP**-state is now reached)\n"
 }

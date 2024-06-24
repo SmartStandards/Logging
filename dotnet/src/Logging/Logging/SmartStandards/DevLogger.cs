@@ -47,7 +47,7 @@ namespace Logging.SmartStandards {
         LoggerBase<DevLogger>.InternalLogMethod = (
           (src, viaTrc, lvl, id, msg, args) => {
             logMethod.Invoke(src, lvl, id, msg, args);
-            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, args.Concat(MirrorArg).ToArray());
+            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, ConcatMirrorArgArray(args));
           }
         );
       }
@@ -62,7 +62,7 @@ namespace Logging.SmartStandards {
           LoggerBase<DevLogger>.InternalExceptionLogMethod = (
             (src, viaTrc, lvl, id, ex) => {
               logExceptionMethod.Invoke(src, lvl, id, ex);
-              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), MirrorArg);
+              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), MirrorArgArray);
             }
           );
         }

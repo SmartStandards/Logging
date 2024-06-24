@@ -1,5 +1,6 @@
 ﻿using Microsoft.SqlServer.Server;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Logging.SmartStandards {
@@ -15,9 +16,6 @@ namespace Logging.SmartStandards {
   /// </summary>
   /// <typeparam name="T"> The type of the channel-specific logger. </typeparam>
   public abstract class LoggerBase<T> {
-
-    internal const string MirrorMarker = "**MIRROR**";
-    protected static string[] MirrorArg = new string[] { MirrorMarker };
 
     private static string _InternalChannelName = null;
 
@@ -170,6 +168,17 @@ namespace Logging.SmartStandards {
         LogWarning(-id, messageTemplate, args);
       } else {
         LogInformation(id, messageTemplate, args);
+      }
+    }
+
+    internal const string MirrorMarker = "**MIRROR**";
+    protected static object[] MirrorArgArray = new object[] { MirrorMarker };
+    protected static object[] ConcatMirrorArgArray(object[] args) {
+      if (args == null || args.Length == 0) {
+        return MirrorArgArray;
+      }
+      else {
+        return args.Concat(MirrorArgArray).ToArray();
       }
     }
 

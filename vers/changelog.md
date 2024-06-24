@@ -8,9 +8,7 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
-
-
+* fix against null-args
 
 ## v 1.0.1
 released **2024-06-24**, including:

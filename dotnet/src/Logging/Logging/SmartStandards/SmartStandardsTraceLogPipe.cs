@@ -19,16 +19,19 @@ namespace Logging.SmartStandards {
   /// </remarks>
   public sealed class SmartStandardsTraceLogPipe : TraceListener {
 
-    private static bool _Semaphore;
+    private static SmartStandardsTraceLogPipe _Instance;
 
     private LogMethod _OnLog;
+
+    //used to suppress output (likee it would be terminated)
+    private bool _IsPseudoTerminated = false;
 
     private SmartStandardsTraceLogPipe() { // Constructor is private, because this must be a single instance
     }
 
     public static bool IsInitialized {
       get {
-        return _Semaphore;
+        return (_Instance != null);
       }
     }
 
@@ -47,13 +50,20 @@ namespace Logging.SmartStandards {
     /// </remarks>
     public static void Initialize(LogMethod onLog) {
 
-      if (_Semaphore) throw new Exception("Do not initialize more than once!");
-
-      SmartStandardsTraceLogPipe instance = new SmartStandardsTraceLogPipe {
+      if (IsInitialized) {
+        if (_Instance._IsPseudoTerminated){
+          _Instance._IsPseudoTerminated = false;
+          return;
+        }
+        else {
+          throw new Exception("Do not initialize more than once!");
+        }
+      }
+        _Instance = new SmartStandardsTraceLogPipe {
         _OnLog = onLog
       };
 
-      Trace.Listeners.Add(instance); // Self-register to .net runtime
+      Trace.Listeners.Add(_Instance); // Self-register to .net runtime
 
       // Remark: This is a one-way-ticket. Removing (even disposing) a listener is futile, because all TraceSources hold a reference.
       // You would have to iterate all existing TraceSources first an remove the listener there.
@@ -61,7 +71,12 @@ namespace Logging.SmartStandards {
       // See: https://stackoverflow.com/questions/10581448/add-remove-tracelistener-to-all-tracesources
       // Therefore we must ensure a single instance of this class.
 
-      _Semaphore = true;
+    }
+
+    public static void Terminate() {
+      if (IsInitialized) {
+        _Instance._IsPseudoTerminated = true;
+      }
     }
 
     /// <summary>
@@ -72,10 +87,15 @@ namespace Logging.SmartStandards {
     public static void InitializeAsLoggerInput() {
       Initialize(
         (string channelName, int level, int id, string messageTemplate, object[] messageArgs) => {
-
+          
           Exception ex = null;
-          if(messageArgs != null && messageArgs.Length > 0 && messageArgs[0] is Exception) {
-            ex = (Exception)messageArgs[0];
+          if(messageArgs != null && messageArgs.Length > 0) {
+            if (messageArgs[0] is Exception) {
+              ex = (Exception)messageArgs[0];
+            }
+            if (messageArgs[messageArgs.Length-1].Equals(DevLogger.MirrorMarker)) {
+              return;
+            }
           }
 
           if (channelName == DevLogger.ChannelName && DevLogger.AwaitsInputFromTracing) {
@@ -110,6 +130,8 @@ namespace Logging.SmartStandards {
     public override void TraceEvent(
       TraceEventCache eventCache, string source, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
+
+      if (_IsPseudoTerminated) return;
 
       // Filter
 

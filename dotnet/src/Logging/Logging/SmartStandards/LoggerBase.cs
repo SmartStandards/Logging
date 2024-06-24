@@ -16,6 +16,9 @@ namespace Logging.SmartStandards {
   /// <typeparam name="T"> The type of the channel-specific logger. </typeparam>
   public abstract class LoggerBase<T> {
 
+    internal const string MirrorMarker = "**MIRROR**";
+    protected static string[] MirrorArg = new string[] { MirrorMarker };
+
     private static string _InternalChannelName = null;
 
     private static string InternalChannelName {

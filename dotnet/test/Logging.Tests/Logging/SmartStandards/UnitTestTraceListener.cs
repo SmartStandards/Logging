@@ -6,24 +6,33 @@ namespace Logging.SmartStandards {
 
   public sealed class UnitTestTraceListener : TraceListener {
 
-    private static bool _Semaphore;
+    private static UnitTestTraceListener _Instance;
 
     private UnitTestTraceListener() { // Constructor is private, because this must be a single instance
     }
 
+    //used to suppress output (likee it would be terminated)
+    private bool _IsPseudoTerminated = false;
+
     public static bool IsInitialized {
       get {
-        return _Semaphore;
+        return (_Instance != null);
       }
     }
 
     public static void EnsureIsInitialized() {
-      if (_Semaphore) {
+      if (IsInitialized) {
+        _Instance._IsPseudoTerminated = false;
         return;
       }
-      UnitTestTraceListener instance = new UnitTestTraceListener();
-      Trace.Listeners.Add(instance); // Self-register to .net runtime
-      _Semaphore = true;
+      _Instance = new UnitTestTraceListener();
+      Trace.Listeners.Add(_Instance); // Self-register to .net runtime
+    }
+
+    public static void Terminate() {
+      if (IsInitialized) {
+        _Instance._IsPseudoTerminated = true;
+      }
     }
 
     public static string LastSource { get; private set; }
@@ -35,6 +44,8 @@ namespace Logging.SmartStandards {
     public override void TraceEvent(
       TraceEventCache eventCache, string source, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
+
+      if (_IsPseudoTerminated) return;
 
       if (source != DevLogger.ChannelName && source != InfrastructureLogger.ChannelName && source != ProtocolLogger.ChannelName) return;
       LastSource = source;

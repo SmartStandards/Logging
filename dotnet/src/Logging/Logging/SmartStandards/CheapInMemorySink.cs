@@ -35,6 +35,7 @@ namespace Logging.SmartStandards {
       _IsActive = false;
 
       Clear();
+      Terminate();
     }
 
     public static void Clear() {
@@ -59,9 +60,12 @@ namespace Logging.SmartStandards {
             _TraceIsInitialized = true;
           }
 
-          DevLogger.ConfigureRedirection(null, null, false, false);
-          InfrastructureLogger.ConfigureRedirection(null, null, false, false);
-          ProtocolLogger.ConfigureRedirection(null, null, false, false);
+          //DevLogger.ConfigureRedirection(null, null, false, false);
+          //InfrastructureLogger.ConfigureRedirection(null, null, false, false);
+          //ProtocolLogger.ConfigureRedirection(null, null, false, false);
+          DevLogger.ResetRedirection();
+          InfrastructureLogger.ResetRedirection();
+          ProtocolLogger.ResetRedirection();
 
           _CurrentlyUsingDirectOrTrace = 2;
         }
@@ -77,6 +81,12 @@ namespace Logging.SmartStandards {
         }
 
         _CurrentlyUsingDirectOrTrace = 1;
+      }
+    }
+
+    private static void Terminate() {
+      if (!_TraceIsInitialized) {
+        SmartStandardsTraceLogPipe.Terminate();
       }
     }
 

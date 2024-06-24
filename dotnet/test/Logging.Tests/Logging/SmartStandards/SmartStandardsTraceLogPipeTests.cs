@@ -12,58 +12,73 @@ namespace Logging.SmartStandards {
 
     [TestMethod()]
     public void LogPipeCrossTargetTest() {
-
       UnitTestTraceListener.EnsureIsInitialized();
+      try {
 
-      string capturedMessageFromLogMethod = null;
-      DevLogger.ConfigureRedirection(
-        (string c, int l, int id, string msg, object[] args) => {
-          capturedMessageFromLogMethod = msg;
-        },
-        logExceptionMethod: null,
-        forwardDirectInputToTracing: true, // <<<<<<<<<<< DIRECT input
-        forwardTracingInputToLogMehod: true // <<<<<<<<< TRACING input
-      );
+        int receivedCounter = 0;
+        string capturedMessageFromLogMethod = null;
+        DevLogger.ConfigureRedirection(
+          (string c, int l, int id, string msg, object[] args) => {
+            capturedMessageFromLogMethod = msg;
+            receivedCounter++;
+          },
+          logExceptionMethod: null,
+          forwardDirectInputToTracing: true, // <<<<<<<<<<< DIRECT input
+          forwardTracingInputToLogMehod: true // <<<<<<<<< TRACING input
+        );
 
-      //Test DIRECT input
-      DevLogger.LogWarning(0, "AAA");
+        //Test DIRECT input
+        DevLogger.LogWarning(0, "AAA");
 
-      Assert.AreEqual("AAA", capturedMessageFromLogMethod); //< pass-trough
-      Assert.AreEqual("AAA", UnitTestTraceListener.LastMessageTemplate);
+        Assert.AreEqual("AAA", capturedMessageFromLogMethod); //< pass-trough
+        Assert.AreEqual("AAA", UnitTestTraceListener.LastMessageTemplate);
 
-      //Test indirect TRACING input
-      LogToTraceAdapter.LogToTrace("Dev", 3, 0, "BBB");
+        //loopback-detection: we should only get that one message, which was piped directly, but not 
+        //that one which was received via trace-listener (after we've passed it to trace as additional output)
+        Assert.AreEqual(1, receivedCounter);
 
-      Assert.AreEqual("BBB", capturedMessageFromLogMethod);
+        //Test indirect TRACING input
+        LogToTraceAdapter.LogToTrace("Dev", 3, 0, "BBB");
 
+        Assert.AreEqual("BBB", capturedMessageFromLogMethod);
+        Assert.AreEqual("BBB", UnitTestTraceListener.LastMessageTemplate);
+
+      }
+      finally {
+        UnitTestTraceListener.Terminate();
+      }
     }
 
     [TestMethod()]
     public void LogPipeExceptionTest() {
-
       UnitTestTraceListener.EnsureIsInitialized();
+      try {
 
-      Exception capturedExceptionFromLogMethod = null;
+        Exception capturedExceptionFromLogMethod = null;
 
-      DevLogger.ConfigureRedirection(
-        null,
-        (string c, int l, int id, Exception ex) => {
-          capturedExceptionFromLogMethod = ex;
-        },
-        forwardTracingInputToLogMehod: true
-      );
+        DevLogger.ConfigureRedirection(
+          (string c, int l, int id, string msg, object[] args) => { },
+          (string c, int l, int id, Exception ex) => {
+            capturedExceptionFromLogMethod = ex;
+          },
+          forwardTracingInputToLogMehod: true
+        );
 
-      Exception ex = new Exception("Kaputt");
+        Exception ex = new Exception("Kaputt");
 
-      //Test indirect TRACING input
-      LogToTraceAdapter.LogToTrace("Dev", 3, 0, ex.Serialize(), new Exception("Kaputt"));
+        //Test indirect TRACING input
+        LogToTraceAdapter.LogToTrace("Dev", 3, 0, ex.Serialize(), new Exception("Kaputt"));
 
-      Assert.AreEqual("Kaputt\r\n__System.Exception__", UnitTestTraceListener.LastMessageTemplate);
-      Assert.AreEqual(1, UnitTestTraceListener.LastArgs.Length);
+        Assert.AreEqual("Kaputt\r\n__System.Exception__", UnitTestTraceListener.LastMessageTemplate);
+        Assert.AreEqual(1, UnitTestTraceListener.LastArgs.Length);
 
-      Assert.IsNotNull(capturedExceptionFromLogMethod);
-      Assert.AreEqual("Kaputt", capturedExceptionFromLogMethod.Message);
+        Assert.IsNotNull(capturedExceptionFromLogMethod);
+        Assert.AreEqual("Kaputt", capturedExceptionFromLogMethod.Message);
 
+      }
+      finally {
+        UnitTestTraceListener.Terminate();
+      }
     }
 
     //[TestMethod()]

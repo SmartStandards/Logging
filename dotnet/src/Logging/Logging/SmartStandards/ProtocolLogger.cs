@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Logging.SmartStandards {
 
@@ -31,19 +32,21 @@ namespace Logging.SmartStandards {
       bool forwardTracingInputToLogMehod = true
     ) {
 
-      if (forwardTracingInputToLogMehod) {
-        LoggerBase<ProtocolLogger>.AwaitsInputFromTracing = true;
+      if (logMethod == null) {
+        throw new ArgumentException("The logMethod must no be null! Please provide a dummy-lambda to disable the default behaviour (log to trace) / use 'ResetRedirection' to re-enable the default behaviour.");
+      }
+
+      LoggerBase<ProtocolLogger>.AwaitsInputFromTracing = forwardTracingInputToLogMehod;
+      if (forwardTracingInputToLogMehod && !SmartStandardsTraceLogPipe.IsInitialized) {
         //ensure, that the pipe is up and running
-        if (!SmartStandardsTraceLogPipe.IsInitialized) {
-          SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
-        }
+        SmartStandardsTraceLogPipe.InitializeAsLoggerInput();
       }
 
       if (forwardDirectInputToTracing) {
         LoggerBase<ProtocolLogger>.InternalLogMethod = (
           (src, viaTrc, lvl, id, msg, args) => {
             logMethod.Invoke(src, lvl, id, msg, args);
-            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, args);
+            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, args.Concat(MirrorArg).ToArray());
           }
         );
       }
@@ -58,7 +61,7 @@ namespace Logging.SmartStandards {
           LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = (
             (src, viaTrc, lvl, id, ex) => {
               logExceptionMethod.Invoke(src, lvl, id, ex);
-              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), null);
+              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), MirrorArg);
             }
           );
         }
@@ -68,7 +71,16 @@ namespace Logging.SmartStandards {
           );
         }
       }
+      else {
+        LoggerBase<InfrastructureLogger>.InternalExceptionLogMethod = null;
+      }
 
+    }
+
+    public static void ResetRedirection() {
+      LoggerBase<ProtocolLogger>.AwaitsInputFromTracing = false;
+      LoggerBase<ProtocolLogger>.InternalLogMethod = null;
+      LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = null;
     }
 
   }

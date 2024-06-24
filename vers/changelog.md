@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* Fix: cross output is no longer logged twice
+*(none)*
+
+
+
+## v 1.0.1
+released **2024-06-24**, including:
+ - Fix: cross output is no longer logged twice
 
 
 

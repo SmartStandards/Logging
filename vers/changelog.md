@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* **new Feature**: generic Ids when logging exceptions
+*(none)*
+
+
+
+## v 1.1.0
+released **2024-06-25**, including:
+ - **new Feature**: generic Ids when logging exceptions
 
 
 

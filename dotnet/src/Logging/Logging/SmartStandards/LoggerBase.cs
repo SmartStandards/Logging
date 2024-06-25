@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
@@ -106,50 +105,67 @@ namespace Logging.SmartStandards {
 
     public static void LogCritical(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 5, id, messageTemplate, args);
-
     }
-
     public static void LogCritical(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 5, id, ex);
+    }
+    public static void LogCritical(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 5, id, ex);
     }
 
     public static void LogError(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 4, id, messageTemplate, args);
     }
-
     public static void LogError(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 4, id, ex);
+    }
+    public static void LogError(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 4, id, ex);
     }
 
     public static void LogWarning(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 3, id, messageTemplate, args);
     }
-
     public static void LogWarning(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 3, id, ex);
+    }
+    public static void LogWarning(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 3, id, ex);
     }
 
     public static void LogInformation(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 2, id, messageTemplate, args);
     }
-
     public static void LogInformation(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 2, id, ex);
+    }
+    public static void LogInformation(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 2, id, ex);
     }
 
     public static void LogDebug(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 1, id, messageTemplate, args);
     }
-
     public static void LogDebug(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 1, id, ex);
+    }
+    public static void LogDebug(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 1, id, ex);
     }
 
     public static void LogTrace(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 0, id, messageTemplate, args);
     }
-
     public static void LogTrace(int id, Exception ex) {
+      InternalExceptionLogMethod.Invoke(InternalChannelName, false, 0, id, ex);
+    }
+    public static void LogTrace(Exception ex) {
+      int id = ExceptionSerializer.GetGenericIdFromException(ex);
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 0, id, ex);
     }
 

@@ -4,6 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Reflection.Metadata;
 using System.Reflection;
 using System.Runtime.ConstrainedExecution;
+using System.ComponentModel;
 
 namespace Logging.SmartStandards {
 
@@ -34,6 +35,30 @@ namespace Logging.SmartStandards {
             @   at Logging.SmartStandards.ExceptionSerializerTests.CreateMockException()
             @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 46
        */
+
+    }
+
+    [TestMethod()]
+    public void GenericExceptionIdTest() {
+      int genericId;
+
+      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Foo"));
+      Assert.AreEqual(863154666, genericId);
+
+      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Bar"));
+      Assert.AreEqual(863154666, genericId);
+
+      genericId = ExceptionSerializer.GetGenericIdFromException(new Exception("Bar"));
+      Assert.AreEqual(1969630032, genericId);
+
+      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Foo #2233"));
+      Assert.AreEqual(2233, genericId);
+      
+      genericId = ExceptionSerializer.GetGenericIdFromException(new TargetInvocationException(new ApplicationException("Foo #3344")));
+      Assert.AreEqual(3344, genericId);
+
+      genericId = ExceptionSerializer.GetGenericIdFromException(new Win32Exception(1122));
+      Assert.AreEqual(1122, genericId);
 
     }
 

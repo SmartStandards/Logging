@@ -8,7 +8,15 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-* **new Feature**: convenience for using Enums for wellknown Messages
+*(none)*
+
+
+
+## v 1.2.0
+released **2024-06-26**, including:
+ - **new Feature**: convenience for using Enums for wellknown Messages
+
+
 
 ## v 1.1.0
 released **2024-06-25**, including:

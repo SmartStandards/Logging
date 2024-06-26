@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -106,6 +107,10 @@ namespace Logging.SmartStandards {
     public static void LogCritical(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 5, id, messageTemplate, args);
     }
+    public static void LogCritical(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
+      InternalLogMethod.Invoke(InternalChannelName, false, 5, id, messageTemplate, args);
+    }
     public static void LogCritical(int id, Exception ex) {
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 5, id, ex);
     }
@@ -115,6 +120,10 @@ namespace Logging.SmartStandards {
     }
 
     public static void LogError(int id, string messageTemplate, params object[] args) {
+      InternalLogMethod.Invoke(InternalChannelName, false, 4, id, messageTemplate, args);
+    }
+    public static void LogError(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
       InternalLogMethod.Invoke(InternalChannelName, false, 4, id, messageTemplate, args);
     }
     public static void LogError(int id, Exception ex) {
@@ -128,6 +137,10 @@ namespace Logging.SmartStandards {
     public static void LogWarning(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 3, id, messageTemplate, args);
     }
+    public static void LogWarning(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
+      InternalLogMethod.Invoke(InternalChannelName, false, 3, id, messageTemplate, args);
+    }
     public static void LogWarning(int id, Exception ex) {
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 3, id, ex);
     }
@@ -137,6 +150,10 @@ namespace Logging.SmartStandards {
     }
 
     public static void LogInformation(int id, string messageTemplate, params object[] args) {
+      InternalLogMethod.Invoke(InternalChannelName, false, 2, id, messageTemplate, args);
+    }
+    public static void LogInformation(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
       InternalLogMethod.Invoke(InternalChannelName, false, 2, id, messageTemplate, args);
     }
     public static void LogInformation(int id, Exception ex) {
@@ -150,6 +167,10 @@ namespace Logging.SmartStandards {
     public static void LogDebug(int id, string messageTemplate, params object[] args) {
       InternalLogMethod.Invoke(InternalChannelName, false, 1, id, messageTemplate, args);
     }
+    public static void LogDebug(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
+      InternalLogMethod.Invoke(InternalChannelName, false, 1, id, messageTemplate, args);
+    }
     public static void LogDebug(int id, Exception ex) {
       InternalExceptionLogMethod.Invoke(InternalChannelName, false, 1, id, ex);
     }
@@ -159,6 +180,10 @@ namespace Logging.SmartStandards {
     }
 
     public static void LogTrace(int id, string messageTemplate, params object[] args) {
+      InternalLogMethod.Invoke(InternalChannelName, false, 0, id, messageTemplate, args);
+    }
+    public static void LogTrace(Enum wellknownMessage, params object[] args) {
+      GetMessageDetailsFromEnum(wellknownMessage, out int id, out string messageTemplate);
       InternalLogMethod.Invoke(InternalChannelName, false, 0, id, messageTemplate, args);
     }
     public static void LogTrace(int id, Exception ex) {
@@ -195,6 +220,22 @@ namespace Logging.SmartStandards {
       }
       else {
         return args.Concat(MirrorArgArray).ToArray();
+      }
+    }
+
+    internal static void GetMessageDetailsFromEnum(Enum wellknownMessage, out int id, out string messageTemplate) {
+      id = (int)(object)wellknownMessage;
+      messageTemplate = null;
+      try {
+        TypeConverter typeConverter = TypeDescriptor.GetConverter(wellknownMessage);
+        if (typeConverter != null && typeConverter.CanConvertTo(typeof(System.String))) {
+          messageTemplate = typeConverter.ConvertToString(wellknownMessage);
+        }
+      }
+      catch {
+      }
+      if (String.IsNullOrWhiteSpace(messageTemplate)) {
+        messageTemplate = Enum.GetName(wellknownMessage.GetType(), wellknownMessage);
       }
     }
 

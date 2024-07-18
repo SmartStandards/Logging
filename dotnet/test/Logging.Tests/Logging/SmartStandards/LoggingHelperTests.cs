@@ -52,9 +52,25 @@ namespace Logging.SmartStandards {
       );
       Assert.AreEqual("[Cri]4711:Hello world, the answer is 42.", formattedLogEntry);
 
+    }
+
+    [TestMethod()]
+    public void StatusToFormattedLogEntry_NullValuedArguments_DontThrowExceptions() {
+
+      string formattedLogEntry;
+      
+      formattedLogEntry = LoggingHelper.StatusToFormattedLogEntry(
+        2, 4711, "I'm passing null as statusMessageArgs.", null
+      );
+      Assert.AreEqual("[Inf]4711:I'm passing null as statusMessageArgs.", formattedLogEntry);
+
+      formattedLogEntry = LoggingHelper.StatusToFormattedLogEntry(
+        2, 4711, null, null
+      );
+      Assert.AreEqual("[Inf]4711:", formattedLogEntry);
 
     }
 
-  }
+    }
 
 }

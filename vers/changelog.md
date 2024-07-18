@@ -8,7 +8,7 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
+- **Bug Fix:** null handling fix for LoggingHelper.StatusToFormattedLogEntry(). Passing null for statusMessageTemplate no longer throws a null reference exception.
 
 
 

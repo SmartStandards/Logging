@@ -1,13 +1,13 @@
 {
-  "currentVersion": "1.2.1",
-  "currentVersionWithSuffix": "1.2.1",
+  "currentVersion": "1.2.2",
+  "currentVersionWithSuffix": "1.2.2",
   "releaseType": "official",
-  "previousVersion": "1.2.0",
+  "previousVersion": "1.2.1",
   "changeGrade": "patch",
   "currentMajor": 1,
   "currentMinor": 2,
-  "currentPatch": 1,
-  "versionDateInfo": "2024-07-18",
-  "versionTimeInfo": "13:18:02",
-  "versionNotes": "- **Bug Fix:** null handling fix for LoggingHelper.StatusToFormattedLogEntry(). Passing null for statusMessageTemplate no longer throws a null reference exception.\n"
+  "currentPatch": 2,
+  "versionDateInfo": "2024-09-01",
+  "versionTimeInfo": "10:01:53",
+  "versionNotes": "- new revision without significant changes\n"
 }

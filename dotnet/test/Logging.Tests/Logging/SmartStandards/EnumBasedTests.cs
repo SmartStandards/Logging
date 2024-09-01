@@ -14,6 +14,7 @@ namespace Logging.SmartStandards {
     public void EnumBasedLoggingTest1() {
 
         string capturedMessageFromLogMethod = null;
+
         DevLogger.ConfigureRedirection(
           (string c, int l, int id, string msg, object[] args) => {
             capturedMessageFromLogMethod = msg;

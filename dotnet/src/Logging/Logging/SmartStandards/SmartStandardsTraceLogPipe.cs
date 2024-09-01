@@ -60,8 +60,8 @@ namespace Logging.SmartStandards {
         }
       }
         _Instance = new SmartStandardsTraceLogPipe {
-        _OnLog = onLog
-      };
+          _OnLog = onLog
+        };
 
       Trace.Listeners.Add(_Instance); // Self-register to .net runtime
 
@@ -86,10 +86,11 @@ namespace Logging.SmartStandards {
     /// </summary>
     public static void InitializeAsLoggerInput() {
       Initialize(
-        (string channelName, int level, int id, string messageTemplate, object[] messageArgs) => {
+        (string audienceToken, int level, int id, string messageTemplate, object[] messageArgs) => {
           
           Exception ex = null;
-          if(messageArgs != null && messageArgs.Length > 0) {
+
+          if (messageArgs != null && messageArgs.Length > 0) {
             if (messageArgs[0] is Exception) {
               ex = (Exception)messageArgs[0];
             }
@@ -98,23 +99,21 @@ namespace Logging.SmartStandards {
             }
           }
 
-          if (channelName == DevLogger.ChannelName && DevLogger.AwaitsInputFromTracing) {
+          if (audienceToken == DevLogger.ChannelName && DevLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
             if(ex == null) 
               DevLogger.InternalLogMethod.Invoke(DevLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
             else 
               DevLogger.InternalExceptionLogMethod.Invoke(DevLogger.ChannelName, true, level, id, ex);   
          
-          }
-          else if (channelName == InfrastructureLogger.ChannelName && InfrastructureLogger.AwaitsInputFromTracing) {
+          } else if (audienceToken == InfrastructureLogger.ChannelName && InfrastructureLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
             if (ex == null) 
               InfrastructureLogger.InternalLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
             else 
               InfrastructureLogger.InternalExceptionLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, ex); 
          
-          }
-          else if (channelName == ProtocolLogger.ChannelName && ProtocolLogger.AwaitsInputFromTracing) {
+          } else if (audienceToken == ProtocolLogger.ChannelName && ProtocolLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
             if (ex == null)  
               ProtocolLogger.InternalLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
@@ -122,20 +121,19 @@ namespace Logging.SmartStandards {
               ProtocolLogger.InternalExceptionLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, ex);
          
           }
-
         }
       );
     }
 
     public override void TraceEvent(
-      TraceEventCache eventCache, string source, TraceEventType eventType, int eventId, string formatString, params object[] args
+      TraceEventCache eventCache, string audienceToken, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
 
       if (_IsPseudoTerminated) return;
 
       // Filter
 
-      if (source != DevLogger.ChannelName && source != InfrastructureLogger.ChannelName && source != ProtocolLogger.ChannelName) return;
+      if (audienceToken != DevLogger.ChannelName && audienceToken != InfrastructureLogger.ChannelName && audienceToken != ProtocolLogger.ChannelName) return;
 
       // De-sanitize named placeholders
 
@@ -155,7 +153,7 @@ namespace Logging.SmartStandards {
 
       // Push log entry to callback method
 
-      _OnLog.Invoke(source, level, eventId, messageTemplate, args);
+      _OnLog.Invoke(audienceToken, level, eventId, messageTemplate, args);
     }
 
     public override void Write(string message) { } // Not needed

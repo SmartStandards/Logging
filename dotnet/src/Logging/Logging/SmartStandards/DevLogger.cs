@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.Reflection.Emit;
 
 namespace Logging.SmartStandards {
 
@@ -45,34 +42,31 @@ namespace Logging.SmartStandards {
 
       if (forwardDirectInputToTracing) {
         LoggerBase<DevLogger>.InternalLogMethod = (
-          (src, viaTrc, lvl, id, msg, args) => {
-            logMethod.Invoke(src, lvl, id, msg, args);
-            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, ConcatMirrorArgArray(args));
+          (audience, viaTrc, level, id, messageTemplate, args) => {
+            logMethod.Invoke(audience, level, id, messageTemplate, args);
+            DefaultLogToTraceMethod(audience, viaTrc, level, id, messageTemplate, ConcatMirrorArgArray(args));
           }
         );
-      }
-      else {
+      } else {
         LoggerBase<DevLogger>.InternalLogMethod = (
-          (src, viaTrc, lvl, id, msg, args) => logMethod.Invoke(src, lvl, id, msg, args)
+          (audience, viaTrc, level, id, messageTemplate, args) => logMethod.Invoke(audience, level, id, messageTemplate, args)
         );
       }
 
       if (logExceptionMethod != null) {
         if (forwardDirectInputToTracing) {
           LoggerBase<DevLogger>.InternalExceptionLogMethod = (
-            (src, viaTrc, lvl, id, ex) => {
-              logExceptionMethod.Invoke(src, lvl, id, ex);
-              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), MirrorArgArray);
+            (audience, viaTrc, level, id, ex) => {
+              logExceptionMethod.Invoke(audience, level, id, ex);
+              DefaultLogToTraceMethod(audience, viaTrc, level, id, ex.Serialize(), MirrorArgArray);
             }
           );
-        }
-        else {
+        } else {
           LoggerBase<DevLogger>.InternalExceptionLogMethod = (
-            (src, viaTrc, lvl, id, ex) => logExceptionMethod.Invoke(src, lvl, id, ex)
+            (audience, viaTrc, level, id, ex) => logExceptionMethod.Invoke(audience, level, id, ex)
           );
         }
-      }
-      else {
+      } else {
         LoggerBase<DevLogger>.InternalExceptionLogMethod = null;
       }
 

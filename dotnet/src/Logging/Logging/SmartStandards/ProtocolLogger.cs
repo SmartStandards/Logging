@@ -44,30 +44,30 @@ namespace Logging.SmartStandards {
 
       if (forwardDirectInputToTracing) {
         LoggerBase<ProtocolLogger>.InternalLogMethod = (
-          (src, viaTrc, lvl, id, msg, args) => {
-            logMethod.Invoke(src, lvl, id, msg, args);
-            DefaultLogToTraceMethod(src, viaTrc, lvl, id, msg, ConcatMirrorArgArray(args));
+          (audience, viaTrc, level, id, msg, args) => {
+            logMethod.Invoke(audience, level, id, msg, args);
+            DefaultLogToTraceMethod(audience, viaTrc, level, id, msg, ConcatMirrorArgArray(args));
           }
         );
       }
       else {
         LoggerBase<ProtocolLogger>.InternalLogMethod = (
-          (src, viaTrc, lvl, id, msg, args) => logMethod.Invoke(src, lvl, id, msg, args)
+          (audience, viaTrc, level, id, messageTemplate, args) => logMethod.Invoke(audience, level, id, messageTemplate, args)
         );
       }
 
       if (logExceptionMethod != null) {
         if (forwardDirectInputToTracing) {
           LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = (
-            (src, viaTrc, lvl, id, ex) => {
-              logExceptionMethod.Invoke(src, lvl, id, ex);
-              DefaultLogToTraceMethod(src, viaTrc, lvl, id, ex.Serialize(), MirrorArgArray);
+            (audience, viaTrc, level, id, ex) => {
+              logExceptionMethod.Invoke(audience, level, id, ex);
+              DefaultLogToTraceMethod(audience, viaTrc, level, id, ex.Serialize(), MirrorArgArray);
             }
           );
         }
         else {
           LoggerBase<ProtocolLogger>.InternalExceptionLogMethod = (
-            (src, viaTrc, lvl, id, ex) => logExceptionMethod.Invoke(src, lvl, id, ex)
+            (audience, viaTrc, level, id, ex) => logExceptionMethod.Invoke(audience, level, id, ex)
           );
         }
       }

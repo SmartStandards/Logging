@@ -6,15 +6,15 @@ namespace Logging.SmartStandards {
 
   internal class LogToTraceAdapter {
 
-    private static Dictionary<string, TraceSource> _TraceSourcePerChannelName;
+    private static Dictionary<string, TraceSource> _TraceSourcePerAudienceToken;
 
-    private static TraceSource GetTraceSourcePerChannelName(string channelName) {
+    private static TraceSource GetTraceSourcePerAudienceName(string audience) {
 
-      if (_TraceSourcePerChannelName is null) _TraceSourcePerChannelName = new Dictionary<string, TraceSource>();
+      if (_TraceSourcePerAudienceToken is null) _TraceSourcePerAudienceToken = new Dictionary<string, TraceSource>();
 
       TraceSource traceSource;
 
-      if (!_TraceSourcePerChannelName.TryGetValue(channelName, out traceSource)) { // Lazily wire up the trace source...
+      if (!_TraceSourcePerAudienceToken.TryGetValue(audience, out traceSource)) { // Lazily wire up the trace source...
 
         // ... but ensure the desired listener was initialized before:
 
@@ -31,20 +31,20 @@ namespace Logging.SmartStandards {
 
         // actual wire-up
 
-        traceSource = new TraceSource(channelName);
+        traceSource = new TraceSource(audience);
         traceSource.Switch.Level = SourceLevels.All;
         traceSource.Listeners.Clear(); // Otherwise the default listener will be registered twice
         traceSource.Listeners.AddRange(Trace.Listeners); // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
 
-        _TraceSourcePerChannelName[channelName] = traceSource;
+        _TraceSourcePerAudienceToken[audience] = traceSource;
 
       }
       return traceSource;
     }
 
-    internal static void LogToTrace(string channelName, int level, int id, string messageTemplate, params object[] args) {
+    internal static void LogToTrace(string audience, int level, int id, string messageTemplate, params object[] args) {
 
-      TraceSource traceSource = GetTraceSourcePerChannelName(channelName);
+      TraceSource traceSource = GetTraceSourcePerAudienceName(audience);
 
       if (traceSource is null) return;
 

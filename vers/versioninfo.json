@@ -1,13 +1,13 @@
 {
-  "currentVersion": "1.2.2",
-  "currentVersionWithSuffix": "1.2.2",
+  "currentVersion": "1.2.3",
+  "currentVersionWithSuffix": "1.2.3",
   "releaseType": "official",
-  "previousVersion": "1.2.1",
+  "previousVersion": "1.2.2",
   "changeGrade": "patch",
   "currentMajor": 1,
   "currentMinor": 2,
-  "currentPatch": 2,
-  "versionDateInfo": "2024-09-01",
-  "versionTimeInfo": "10:01:53",
-  "versionNotes": "- new revision without significant changes\n"
+  "currentPatch": 3,
+  "versionDateInfo": "2024-09-27",
+  "versionTimeInfo": "07:58:12",
+  "versionNotes": "- Fix: added synclock to avoid concurrency problems during TraceSource creation\n"
 }

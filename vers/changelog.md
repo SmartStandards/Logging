@@ -8,7 +8,13 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-- Fix: added synclock to avoid concurrency problems during TraceSource creation
+*(none)*
+
+
+
+## v 1.2.3
+released **2024-09-27**, including:
+ - Fix: added synclock to avoid concurrency problems during TraceSource creation
 
 
 

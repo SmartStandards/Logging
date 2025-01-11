@@ -9,17 +9,24 @@
     <Import_RootNamespace>System</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\ExceptionSerializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LogToTraceAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\SmartStandardsTraceLogPipe.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CheapInMemorySink.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\ProtocolLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InfrastructureLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.Convenience.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.Convenience.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.Convenience.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CutomBusFeed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\TraceBusFeed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Routing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\TraceBusListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\CheapInMemorySink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggerBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LoggingHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\LoggingHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\EnumMessageTypeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\MessageTemplateAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\CopyOfPlaceholderExtensions .cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\" />
   </ItemGroup>
 </Project>

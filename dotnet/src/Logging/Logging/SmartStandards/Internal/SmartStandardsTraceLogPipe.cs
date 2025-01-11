@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Logging.Tests")]
+﻿[assembly: InternalsVisibleTo("Logging.Tests")]
 
 namespace Logging.SmartStandards {
 
@@ -17,7 +13,8 @@ namespace Logging.SmartStandards {
   ///   2. If you copy and paste this class (instead of referencing this library) make sure you change namespace and class name. 
   ///      Otherwise you'll run into naming collisionsif a 3rd party DLL references this library.
   /// </remarks>
-  public sealed class SmartStandardsTraceLogPipe : TraceListener {
+  public sealed class SmartStandardsTraceLogPipe
+ : TraceListener {
 
     private static SmartStandardsTraceLogPipe _Instance;
 
@@ -51,17 +48,16 @@ namespace Logging.SmartStandards {
     public static void Initialize(LogMethod onLog) {
 
       if (IsInitialized) {
-        if (_Instance._IsPseudoTerminated){
+        if (_Instance._IsPseudoTerminated) {
           _Instance._IsPseudoTerminated = false;
           return;
-        }
-        else {
+        } else {
           throw new Exception("Do not initialize more than once!");
         }
       }
-        _Instance = new SmartStandardsTraceLogPipe {
-          _OnLog = onLog
-        };
+      _Instance = new SmartStandardsTraceLogPipe {
+        _OnLog = onLog
+      };
 
       Trace.Listeners.Add(_Instance); // Self-register to .net runtime
 
@@ -87,39 +83,39 @@ namespace Logging.SmartStandards {
     public static void InitializeAsLoggerInput() {
       Initialize(
         (string audienceToken, int level, int id, string messageTemplate, object[] messageArgs) => {
-          
+
           Exception ex = null;
 
           if (messageArgs != null && messageArgs.Length > 0) {
             if (messageArgs[0] is Exception) {
               ex = (Exception)messageArgs[0];
             }
-            if (messageArgs[messageArgs.Length-1].Equals(DevLogger.MirrorMarker)) {
+            if (messageArgs[messageArgs.Length - 1].Equals(DevLogger.MirrorMarker)) {
               return;
             }
           }
 
           if (audienceToken == DevLogger.ChannelName && DevLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
-            if(ex == null) 
+            if (ex == null)
               DevLogger.InternalLogMethod.Invoke(DevLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
-            else 
-              DevLogger.InternalExceptionLogMethod.Invoke(DevLogger.ChannelName, true, level, id, ex);   
-         
+            else
+              DevLogger.InternalExceptionLogMethod.Invoke(DevLogger.ChannelName, true, level, id, ex);
+
           } else if (audienceToken == InfrastructureLogger.ChannelName && InfrastructureLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
-            if (ex == null) 
+            if (ex == null)
               InfrastructureLogger.InternalLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
-            else 
-              InfrastructureLogger.InternalExceptionLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, ex); 
-         
+            else
+              InfrastructureLogger.InternalExceptionLogMethod.Invoke(InfrastructureLogger.ChannelName, true, level, id, ex);
+
           } else if (audienceToken == ProtocolLogger.ChannelName && ProtocolLogger.AwaitsInputFromTracing) {
             //je nach bedarf in die normale oder in die exception-log methode umleiten
-            if (ex == null)  
+            if (ex == null)
               ProtocolLogger.InternalLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, messageTemplate, messageArgs);
-            else 
+            else
               ProtocolLogger.InternalExceptionLogMethod.Invoke(ProtocolLogger.ChannelName, true, level, id, ex);
-         
+
           }
         }
       );

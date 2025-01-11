@@ -1,17 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection.Metadata;
-using System.Reflection;
-using System.Runtime.ConstrainedExecution;
+﻿using System;
 using System.ComponentModel;
+using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
   [TestClass()]
-  public class ExceptionSerializerTests : LoggerTestsBase {
-
-    internal override bool UseTrace { get { return false; } }
+  public class ExceptionSerializerTests {
 
     [TestMethod()]
     public void ExceptionSerializerTest1() {
@@ -53,7 +48,7 @@ namespace Logging.SmartStandards {
 
       genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Foo #2233"));
       Assert.AreEqual(2233, genericId);
-      
+
       genericId = ExceptionSerializer.GetGenericIdFromException(new TargetInvocationException(new ApplicationException("Foo #3344")));
       Assert.AreEqual(3344, genericId);
 
@@ -68,19 +63,17 @@ namespace Logging.SmartStandards {
         try {
           ThrowDeepException(3);
           //throw new ArgumentException("Id ist ungültig!", "Id");
-        }
-        catch (Exception innerEx) {
+        } catch (Exception innerEx) {
           throw new ApplicationException("Fehler aus der BL", innerEx);
         }
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         catchedEx = ex;
       }
       return catchedEx;
     }
 
     internal static void ThrowDeepException(int depth) {
-      if(depth == 1){
+      if (depth == 1) {
         throw new ArgumentException("Id ist ungültig!", "Id");
       }
       ThrowDeepException(depth - 1);

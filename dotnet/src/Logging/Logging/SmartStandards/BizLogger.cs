@@ -3,19 +3,19 @@ using System.Logging.SmartStandards;
 
 namespace Logging.SmartStandards {
 
-  public partial class DevLogger {
+  public partial class BizLogger {
 
-    public const string AudienceToken = "Dev";
+    public const string AudienceToken = "Biz";
 
-    public const string AudienceTokenU = "DEV";
+    public const string AudienceTokenU = "BIZ";
 
     public static void Log(string sourceContext, int level, int id, string messageTemplate, params object[] args) {
 
-      if (Routing.DevLoggerToTraceBus) {
+      if (Routing.BizLoggerToTraceBus) {
         TraceBusFeed.EmitMessage(sourceContext, AudienceTokenU, level, id, messageTemplate, args);
       }
 
-      if (Routing.DevLoggerToCustomBus) {
+      if (Routing.BizLoggerToCustomBus) {
         CustomBusFeed.OnEmitMessage.Invoke(sourceContext, AudienceToken, level, id, messageTemplate, args);
       }
     }
@@ -27,11 +27,11 @@ namespace Logging.SmartStandards {
 
     public static void Log(string sourceContext, int level, Exception ex) {
 
-      if (Routing.DevLoggerToTraceBus) {
+      if (Routing.BizLoggerToTraceBus) {
         TraceBusFeed.EmitException(sourceContext, AudienceTokenU, level, ex);
       }
 
-      if (Routing.DevLoggerToCustomBus) {
+      if (Routing.BizLoggerToCustomBus) {
         CustomBusFeed.OnEmitException.Invoke(sourceContext, AudienceToken, level, ex);
       }
     }

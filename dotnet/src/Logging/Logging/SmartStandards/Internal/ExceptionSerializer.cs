@@ -16,7 +16,7 @@ namespace Logging.SmartStandards {
     /// <param name="ex"></param>
     /// <param name="includeStacktrace"></param>
     /// <returns></returns>
-    public static string Serialize(this Exception ex, bool includeStacktrace = true) {
+    public static string Serialize(this Exception ex, bool includeStacktrace = true) { // todo serialize
       StringBuilder sb = new StringBuilder(1000);
       string messageMainLine = ex.Message;
       AppendRecursive(ex, sb, ref messageMainLine, includeStacktrace);

@@ -88,23 +88,7 @@ namespace System.Logging.SmartStandards {
       DevLoggerToCustomBus = true;
       InsLoggerToCustomBus = true;
       BizLoggerToCustomBus = true;
-    }
-
-    public static void UseCustomBus(EmitMessageDelegate onEmitMessage, EmitExceptionDelegate onEmitException) {
-
-      CustomBusFeed.OnEmitMessage = onEmitMessage;
-
-      CustomBusFeed.OnEmitException = onEmitException;
-
-      DevLoggerToTraceBus = false;
-      InsLoggerToTraceBus = false;
-      BizLoggerToTraceBus = false;
-
-      DevLoggerToCustomBus = true;
-      InsLoggerToCustomBus = true;
-      BizLoggerToCustomBus = true;
-
-    }
+    }        
 
     private static void PassTraceEventToCustomBus(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args) {
 

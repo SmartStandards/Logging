@@ -11,7 +11,7 @@ namespace Logging.SmartStandards {
     public void InitializeBeforeEachTest() {
 
       CheapInMemorySink.Clear();
-      MockingTraceListener.OnLogEventReceived = CheapInMemorySink.Log;
+      MockingTraceListener.OnLogEventReceived = CheapInMemorySink.WriteLogEntry;
     }
 
     [TestCleanup]
@@ -23,14 +23,14 @@ namespace Logging.SmartStandards {
     [TestMethod()]
     public void TraceMethods_WithNamedPlaceholders_ShouldEmitEscapedFormatString() {
 
-      Assert.AreEqual(0, CheapInMemorySink.CollectedIds.Count);
+      Assert.AreEqual(0, CheapInMemorySink.CollectedEventIds.Count);
 
       DevLogger.LogInformation(AssemblyInitializer.SourceContext, 1, "Text without placeholders, zero args provided"); // Expected: MessageArgs == null
 
       Assert.AreEqual(AssemblyInitializer.SourceContext, CheapInMemorySink.CollectedSourceContexts[0]);
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[0]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[0]);
-      Assert.AreEqual(1, CheapInMemorySink.CollectedIds[0]);
+      Assert.AreEqual(1, CheapInMemorySink.CollectedEventIds[0]);
       Assert.AreEqual("(DEV) Text without placeholders, zero args provided", CheapInMemorySink.CollectedMessageTemplates[0]);
       //HACK: das hat den zus. Overload abgesichert, den es nur für Information gab, und der weggelöscht werden sollte!
       //Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[0]);
@@ -39,7 +39,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[1]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[1]);
-      Assert.AreEqual(2, CheapInMemorySink.CollectedIds[1]);
+      Assert.AreEqual(2, CheapInMemorySink.CollectedEventIds[1]);
       Assert.AreEqual("(DEV) Text without placeholders, args = null.", CheapInMemorySink.CollectedMessageTemplates[1]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[1]);
 
@@ -47,7 +47,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[2]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[2]);
-      Assert.AreEqual(3, CheapInMemorySink.CollectedIds[2]);
+      Assert.AreEqual(3, CheapInMemorySink.CollectedEventIds[2]);
       Assert.AreEqual("(DEV) Text without placeholders, args = {null}.", CheapInMemorySink.CollectedMessageTemplates[2]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[2][0]);
 
@@ -56,7 +56,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[3]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[3]);
-      Assert.AreEqual(4, CheapInMemorySink.CollectedIds[3]);
+      Assert.AreEqual(4, CheapInMemorySink.CollectedEventIds[3]);
       Assert.AreEqual("(DEV) Text without placeholders, args = nullArray.", CheapInMemorySink.CollectedMessageTemplates[3]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[3]);
 
@@ -65,7 +65,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[4]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[4]);
-      Assert.AreEqual(5, CheapInMemorySink.CollectedIds[4]);
+      Assert.AreEqual(5, CheapInMemorySink.CollectedEventIds[4]);
       Assert.AreEqual("(DEV) Text without placeholders, args = nullString.", CheapInMemorySink.CollectedMessageTemplates[4]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[4][0]);
 
@@ -73,7 +73,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[5]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[5]);
-      Assert.AreEqual(6, CheapInMemorySink.CollectedIds[5]);
+      Assert.AreEqual(6, CheapInMemorySink.CollectedEventIds[5]);
       Assert.AreEqual("(DEV) Text without placeholders, args = null, null.", CheapInMemorySink.CollectedMessageTemplates[5]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[5][0]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[5][1]);
@@ -82,7 +82,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Ins", CheapInMemorySink.CollectedAudiences[6]);
       Assert.AreEqual(3, CheapInMemorySink.CollectedLevels[6]);
-      Assert.AreEqual(7, CheapInMemorySink.CollectedIds[6]);
+      Assert.AreEqual(7, CheapInMemorySink.CollectedEventIds[6]);
       Assert.AreEqual("(INS) {thingy} space is low: {space} MB", CheapInMemorySink.CollectedMessageTemplates[6]);
       Assert.AreEqual("Disk", CheapInMemorySink.CollectedMessageArgs[6][0]);
       Assert.AreEqual(5, CheapInMemorySink.CollectedMessageArgs[6][1]);
@@ -96,7 +96,7 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Pro", CheapInMemorySink.CollectedAudiences[7]);
       Assert.AreEqual(4, CheapInMemorySink.CollectedLevels[7]);
-      Assert.AreEqual(8, CheapInMemorySink.CollectedIds[7]);
+      Assert.AreEqual(8, CheapInMemorySink.CollectedEventIds[7]);
       Assert.AreEqual("(BIZ) User \"{UserLogonName}\" does not have sufficient rights to perform \"{Interaction}\" on environment \"{Environment}\".", CheapInMemorySink.CollectedMessageTemplates[7]);
       Assert.AreEqual("Müller", CheapInMemorySink.CollectedMessageArgs[7][0]);
       Assert.AreEqual("Delete", CheapInMemorySink.CollectedMessageArgs[7][1]);
@@ -106,11 +106,11 @@ namespace Logging.SmartStandards {
 
       //Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[8]);
       Assert.AreEqual(5, CheapInMemorySink.CollectedLevels[8]); // Critical
-      Assert.AreEqual(-12345, CheapInMemorySink.CollectedIds[8]);
+      Assert.AreEqual(-12345, CheapInMemorySink.CollectedEventIds[8]);
       Assert.AreEqual("(DEV) ", CheapInMemorySink.CollectedMessageTemplates[8]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[8]);
 
-      Assert.AreEqual(9, CheapInMemorySink.CollectedIds.Count);
+      Assert.AreEqual(9, CheapInMemorySink.CollectedEventIds.Count);
     }
 
     [TestMethod()]
@@ -120,7 +120,7 @@ namespace Logging.SmartStandards {
 
       Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[0]);
       Assert.AreEqual(2, CheapInMemorySink.CollectedLevels[0]); // Info, because returnCode was positive
-      Assert.AreEqual(123, CheapInMemorySink.CollectedIds[0]);
+      Assert.AreEqual(123, CheapInMemorySink.CollectedEventIds[0]);
       Assert.AreEqual("Simple with {placeholder}.", CheapInMemorySink.CollectedMessageTemplates[0]);
       Assert.AreEqual("resolved placeholder", CheapInMemorySink.CollectedMessageArgs[0][0]);
 
@@ -128,7 +128,7 @@ namespace Logging.SmartStandards {
 
       Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[1]);
       Assert.AreEqual(4, CheapInMemorySink.CollectedLevels[1]); // Error, because returnCode was negative
-      Assert.AreEqual(456, CheapInMemorySink.CollectedIds[1]); // ID must (always) be positive
+      Assert.AreEqual(456, CheapInMemorySink.CollectedEventIds[1]); // ID must (always) be positive
       Assert.AreEqual("Error with args = null.", CheapInMemorySink.CollectedMessageTemplates[1]);
       Assert.IsNull(CheapInMemorySink.CollectedMessageArgs[1]);
 
@@ -136,11 +136,11 @@ namespace Logging.SmartStandards {
 
       Assert.AreEqual("Dev", CheapInMemorySink.CollectedAudiences[2]);
       Assert.AreEqual(3, CheapInMemorySink.CollectedLevels[2]); // Warning, because returnCode was negative
-      Assert.AreEqual(789, CheapInMemorySink.CollectedIds[2]); // ID must (always) be positive
+      Assert.AreEqual(789, CheapInMemorySink.CollectedEventIds[2]); // ID must (always) be positive
       Assert.AreEqual("Warning with empty placeholder array.", CheapInMemorySink.CollectedMessageTemplates[2]);
       Assert.AreEqual(0, CheapInMemorySink.CollectedMessageArgs[2].Length);
 
-      Assert.AreEqual(3, CheapInMemorySink.CollectedIds.Count);
+      Assert.AreEqual(3, CheapInMemorySink.CollectedEventIds.Count);
     }
 
   }

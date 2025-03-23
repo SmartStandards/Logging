@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\TraceBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Routing.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\TraceBusListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TraceBusListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\CheapInMemorySink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />

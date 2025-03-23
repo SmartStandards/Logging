@@ -9,6 +9,8 @@ namespace Logging.SmartStandards {
   /// </summary>
   internal class TraceBusFeed {
 
+    public static List<object> IgnoredListeners { get; set; } = new List<object>();
+
     private static Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
 
     private static TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
@@ -17,7 +19,10 @@ namespace Logging.SmartStandards {
 
       lock (_TraceSourcePerSourceContext) {
 
-        if (!_TraceSourcePerSourceContext.TryGetValue(sourceContext, out traceSource)) { // Lazily wire up the trace source...
+        if (!_TraceSourcePerSourceContext.TryGetValue(sourceContext, out traceSource)) {
+
+          // Lazily wire up the trace source - must be done as late as possible
+          // (after listeners have registered themselves)
 
           traceSource = new TraceSource(sourceContext);
 
@@ -25,7 +30,11 @@ namespace Logging.SmartStandards {
 
           traceSource.Listeners.Clear(); // Otherwise the default listener will be registered twice
 
-          traceSource.Listeners.AddRange(Trace.Listeners); // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
+          // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
+
+          foreach(TraceListener listener in Trace.Listeners) {
+            if (!IgnoredListeners.Contains(listener)) traceSource.Listeners.Add(listener);
+          }
 
           _TraceSourcePerSourceContext[sourceContext] = traceSource;
         }
@@ -34,13 +43,16 @@ namespace Logging.SmartStandards {
       return traceSource;
     }
 
-    internal static void EmitException(string sourceContext, string audience, int level, Exception ex) {
-      int id = ExceptionSerializer.GetGenericIdFromException(ex);
+    internal static void EmitException(string audience, int level, string sourceContext, long sourceLineId, Exception ex) {
+      int eventId = ExceptionSerializer.GetGenericIdFromException(ex);
       string serializedException = ex.Serialize();
-      EmitMessage(sourceContext, audience, level, id, serializedException, new object[] { ex });
+      EmitMessage(audience, level,sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
     }
 
-    internal static void EmitMessage(string sourceContext, string audience, int level, int id, string messageTemplate, params object[] args) {
+    internal static void EmitMessage(
+      string audience, int level, string sourceContext, long sourceLineId,
+      int eventId, string messageTemplate, params object[] args
+    ) {
 
       TraceSource traceSource = GetTraceSourcePerSourceContext(sourceContext);
 
@@ -83,12 +95,13 @@ namespace Logging.SmartStandards {
 
       }
 
-      // Because we support named placeholders (like "Hello {person}") instead of old scool indexed place holders (like "Hello {0}")
-      // we need to double brace the placeholders - otherwise there will be exceptions coming from the .net TraceEvent Method.
+      // Because we support named placeholders (like "Hello {person}") instead of old scool indexed place holders
+      // (like "Hello {0}") we need to double brace the placeholders - otherwise there will be exceptions coming from
+      // the .net TraceEvent Method.
 
-      string formatString = "(" + audience + ") " + messageTemplate?.Replace("{", "{{").Replace("}", "}}");
-
-      traceSource.TraceEvent(eventType, id, formatString, args);
+      string formatString = " " + sourceLineId.ToString() + " [" + audience + "]: " + messageTemplate?.Replace("{", "{{").Replace("}", "}}");
+      
+      traceSource.TraceEvent(eventType, eventId, formatString, args);
     }
 
   }

@@ -41,15 +41,20 @@ namespace System.Logging.SmartStandards {
     /// <summary>
     ///   Enable/disable passing through events from System.Diagnostics.Trace to CustomBusFeed.
     /// </summary>
-    public static bool TraceBusToCustomBus {
+    /// <remarks>
+    ///   This must be done as early as possible: Before any TraceSources are instantiated, because they only wire up
+    ///   to already existing TraceListeners.
+    /// </remarks>
+    public static bool EnablePassThruTraceBusToCustomBus {
       get {
         return _TraceBusToCustomBus;
       }
       set {
         if (value) {
           if (!TraceBusListener.IsInitialized) {
-            TraceBusListener.Initialize(PassTraceEventToCustomBus);
-            TraceBusListener.OnFilterIncomingTraceEvent = FilterIncomingTraceEvent;
+            TraceBusListener smartStandardsTraceBusListener = TraceBusListener.Initialize(PassTraceEventToCustomBus);
+            // We do not want to receive our own feed
+            TraceBusFeed.IgnoredListeners.Add(smartStandardsTraceBusListener);
           } else {
             TraceBusListener.OnLogEventReceived = PassTraceEventToCustomBus;
           }
@@ -58,9 +63,7 @@ namespace System.Logging.SmartStandards {
         }
       }
     }
-
-    public static Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
-
+    
     /// <summary>
     ///   Convenience method to change the routing target from System.Diagnostics.Trace to any custom target.
     /// </summary>
@@ -79,10 +82,10 @@ namespace System.Logging.SmartStandards {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;
 
-      CustomBusFeed.OnEmitException = (string sourceContext, string audience, int level, Exception ex) => {
-        int id = ExceptionSerializer.GetGenericIdFromException(ex);
+      CustomBusFeed.OnEmitException = (string audience, int level, string sourceContext, long sourceLineId, Exception ex) => {
+        int eventId = ExceptionSerializer.GetGenericIdFromException(ex);
         string serializedException = ex.Serialize();
-        CustomBusFeed.OnEmitMessage.Invoke(sourceContext, audience, level, id, serializedException, new object[] { ex });
+        CustomBusFeed.OnEmitMessage.Invoke(audience, level, sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
       };
 
       DevLoggerToTraceBus = false;
@@ -110,42 +113,16 @@ namespace System.Logging.SmartStandards {
 
     }
 
-    private static void PassTraceEventToCustomBus(string sourceContext, string audience, int level, int id, string messageTemplate, object[] args) {
+    private static void PassTraceEventToCustomBus(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args) {
 
       if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
         Exception ex = (Exception)args[0];
-        CustomBusFeed.OnEmitException?.Invoke(sourceContext, audience, level, ex);
+        CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, ex);
       } else {
-        CustomBusFeed.OnEmitMessage?.Invoke(sourceContext, audience, level, id, messageTemplate, args);
+        CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
       }
 
     }
-
-    private static bool FilterIncomingTraceEvent(string sourceName, string formatString, out string audienceToken) {
-
-      audienceToken = null;
-
-      if (formatString != null && formatString.Length >= 6 && formatString[0] == '(' && formatString[4] == ')' && formatString[5] == ' ') {
-        audienceToken = formatString.Substring(1, 3);
-      }
-
-      if (audienceToken == null) {
-        TraceSourcesToAudienceMapping.TryGetValue(sourceName, out audienceToken);
-      }
-
-      if (audienceToken != "Dev" && audienceToken != "Ins" && audienceToken != "Biz") {
-        // audienceTokens emitted by SmartStandards loggers are UPPERCASE => they'll be filtered out, because they must never be
-        // passed thru from TraceBus to CustomBus, because they were directly emitted to CustomBus
-        return false;
-      }
-
-      return (audienceToken != null);
-    }
-
-    private static bool SuppressIncomingTraceEvent(string sourceName, string formatString, out string audienceToken) {
-      audienceToken = null;
-      return false;
-    }
-
+    
   }
 }

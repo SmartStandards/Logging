@@ -19,7 +19,7 @@ namespace Logging.SmartStandards {
 
     public delegate bool FilterIncomingTraceEventDelegate(string sourceName, string formatString, out string audienceToken);
 
-    public delegate void PassThroughDelegate(string sourceContext, string audience, int level, int id, string messageTemplate, object[] args);
+    public delegate void OnLogEventReceivedDelegate(string sourceContext, string audience, int level, int id, string messageTemplate, object[] args);
 
     private static TraceBusListener _Instance;
 
@@ -28,7 +28,7 @@ namespace Logging.SmartStandards {
 
     public static FilterIncomingTraceEventDelegate OnFilterIncomingTraceEvent { get; set; }
 
-    public static PassThroughDelegate OnPassThrough { get; set; }
+    public static OnLogEventReceivedDelegate OnLogEventReceived { get; set; }
 
     public static bool IsInitialized {
       get {
@@ -40,7 +40,7 @@ namespace Logging.SmartStandards {
     ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
     ///   Wires up your actual logging sink by registering a callback delegate.
     /// </summary>
-    /// <param name="onPassThrough">
+    /// <param name="onLogEventReceived">
     ///   Callback delegate which is called for each recieved log entry. 
     ///   Signature: onLog(string channelName, int level, int id, string messageTemplate, object[] args)
     ///   Implement your actual logging sink here.
@@ -49,7 +49,7 @@ namespace Logging.SmartStandards {
     ///   Order dependency: This has to be done before initializing any trace sources 
     ///   (= before any usage of a logger, because the loggers implicitely wire up their internal trace source on first usage).
     /// </remarks>
-    public static void Initialize(PassThroughDelegate onPassThrough) {
+    public static void Initialize(OnLogEventReceivedDelegate onLogEventReceived) {
 
       if (IsInitialized) {
         throw new Exception("Do not initialize more than once!");
@@ -57,7 +57,7 @@ namespace Logging.SmartStandards {
 
       _Instance = new TraceBusListener();
 
-      OnPassThrough = onPassThrough;
+      OnLogEventReceived = onLogEventReceived;
 
       Trace.Listeners.Add(_Instance); // Self-register to .net runtime
 
@@ -73,7 +73,7 @@ namespace Logging.SmartStandards {
       TraceEventCache eventCache, string sourceName, TraceEventType eventType, int id, string formatString, params object[] args
     ) {
 
-      if (OnPassThrough == null) {
+      if (OnLogEventReceived == null) {
         return;
       }
 
@@ -85,11 +85,13 @@ namespace Logging.SmartStandards {
         OnFilterIncomingTraceEvent.Invoke(sourceName, formatString, out audienceToken);
       }
 
-      // Unescape named placeholders
+      // Refine the System.Diagnostics TraceEvent to become a SmartStandards LogEvent...
+
+      // ...Unescape named placeholders...
 
       string messageTemplate = formatString?.Replace("{{", "{").Replace("}}", "}");
 
-      // Map EventType => LogLevel
+      // ...Map EventType => LogLevel...
 
       int level = 0; // Default: "Trace" (aka "Verbose")
 
@@ -101,9 +103,9 @@ namespace Logging.SmartStandards {
         case TraceEventType.Transfer: level = 1; break; // There is no "Debug" EventType => (mis)use something else        
       }
 
-      // Push log entry to callback method
+      // Pass the LogEvent to the callback method
 
-      OnPassThrough.Invoke(sourceName, audienceToken, level, id, messageTemplate, args);
+      OnLogEventReceived.Invoke(sourceName, audienceToken, level, id, messageTemplate, args);
     }
 
     public override void Write(string message) { } // Not needed

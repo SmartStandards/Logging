@@ -6,20 +6,41 @@ namespace System.Logging.SmartStandards {
 
   public class Routing {
 
+    /// <summary>
+    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
+    /// </summary>
     public static bool DevLoggerToTraceBus { get; set; } = true;
 
+    /// <summary>
+    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
+    /// </summary>
     public static bool InsLoggerToTraceBus { get; set; } = true;
 
+    /// <summary>
+    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
+    /// </summary>
     public static bool BizLoggerToTraceBus { get; set; } = true;
 
+    /// <summary>
+    ///   Enable/disable logging to CustomBusFeed
+    /// </summary>
     public static bool DevLoggerToCustomBus { get; set; }
 
+    /// <summary>
+    ///   Enable/disable logging to CustomBusFeed
+    /// </summary>
     public static bool InsLoggerToCustomBus { get; set; }
 
+    /// <summary>
+    ///   Enable/disable logging to CustomBusFeed
+    /// </summary>
     public static bool BizLoggerToCustomBus { get; set; }
 
-    public static bool _TraceBusToCustomBus;
+    private static bool _TraceBusToCustomBus;
 
+    /// <summary>
+    ///   Enable/disable passing through events from System.Diagnostics.Trace to CustomBusFeed.
+    /// </summary>
     public static bool TraceBusToCustomBus {
       get {
         return _TraceBusToCustomBus;
@@ -28,18 +49,32 @@ namespace System.Logging.SmartStandards {
         if (value) {
           if (!TraceBusListener.IsInitialized) {
             TraceBusListener.Initialize(PassTraceEventToCustomBus);
+            TraceBusListener.OnFilterIncomingTraceEvent = FilterIncomingTraceEvent;
+          } else {
+            TraceBusListener.OnLogEventReceived = PassTraceEventToCustomBus;
           }
-          TraceBusListener.OnFilterIncomingTraceEvent = FilterIncomingTraceEvent;
         } else {
-          if (!TraceBusListener.IsInitialized) {
-            TraceBusListener.OnFilterIncomingTraceEvent = SuppressIncomingTraceEvent;
-          }
+          TraceBusListener.OnLogEventReceived = null;
         }
       }
     }
 
     public static Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
 
+    /// <summary>
+    ///   Convenience method to change the routing target from System.Diagnostics.Trace to any custom target.
+    /// </summary>
+    /// <param name="onEmitMessage"> 
+    ///   Custom delegate, that will be called by any logger for any emit.
+    ///   Put your code here to forward any log message to any forther target(s).
+    /// </param>
+    /// <remarks>
+    ///   This will do the following:
+    ///     Register your delegate to CustomBusFeed.
+    ///     Create a delegate for logging exceptions (based on your delegate) and register it to CustomBusFeed.
+    ///     Enable logging to the CustomBusFeed (by setting the appropriate Routing properties).
+    ///     Disable logging to the TraceBusFeed (by setting the appropriate Routing properties).
+    /// </remarks>
     public static void UseCustomBus(EmitMessageDelegate onEmitMessage) {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;

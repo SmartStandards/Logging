@@ -11,12 +11,12 @@ namespace Logging.SmartStandards {
     public void InitializeBeforeEachTest() {
 
       CheapInMemorySink.Clear();
-      MockingTraceListener.OnPassThrough = CheapInMemorySink.Log;
+      MockingTraceListener.OnLogEventReceived = CheapInMemorySink.Log;
     }
 
     [TestCleanup]
     public void CleanupAfterEachTest() {
-      MockingTraceListener.OnPassThrough = null;
+      MockingTraceListener.OnLogEventReceived = null;
       CheapInMemorySink.Clear();
     }
 

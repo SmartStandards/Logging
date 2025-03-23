@@ -4,6 +4,9 @@ using System.Diagnostics;
 
 namespace Logging.SmartStandards {
 
+  /// <summary>
+  ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
+  /// </summary>
   internal class TraceBusFeed {
 
     private static Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();

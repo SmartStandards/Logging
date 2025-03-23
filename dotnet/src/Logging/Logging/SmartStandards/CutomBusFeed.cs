@@ -27,7 +27,15 @@ namespace Logging.SmartStandards {
     /// <remarks>
     ///   It is suggested to use the convenience method Routing.UseCustomBus() instead of doing a manual wire up.
     /// </remarks>
-    public static EmitExceptionDelegate OnEmitException { get; set; }
+    public static EmitExceptionDelegate OnEmitException { get; set; } = DefaultOnEmitException;
+
+    private static void DefaultOnEmitException(
+      string audience, int level, string sourceContext, long sourceLineId, Exception ex
+    ) {
+      int eventId = ExceptionSerializer.GetGenericIdFromException(ex); // todo GetGenericIdFromException
+      string serializedException = ex.Serialize();
+      CustomBusFeed.OnEmitMessage.Invoke(audience, level, sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
+    }
 
   }
 

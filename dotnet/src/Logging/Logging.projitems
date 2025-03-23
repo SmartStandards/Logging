@@ -14,10 +14,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.Convenience.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\CutomBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionSerializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\TraceBusFeed.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TraceSupport\TraceBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Routing.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TraceBusListener.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\CheapInMemorySink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TraceSupport\TraceBusListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\CheapInMemorySink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
@@ -28,5 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TraceSupport\" />
   </ItemGroup>
 </Project>

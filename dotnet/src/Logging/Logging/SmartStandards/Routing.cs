@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Logging.SmartStandards;
+﻿using Logging.SmartStandards;
 using static Logging.SmartStandards.CustomBusFeed;
 
 namespace System.Logging.SmartStandards {
@@ -81,13 +80,7 @@ namespace System.Logging.SmartStandards {
     public static void UseCustomBus(EmitMessageDelegate onEmitMessage) {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;
-
-      CustomBusFeed.OnEmitException = (string audience, int level, string sourceContext, long sourceLineId, Exception ex) => {
-        int eventId = ExceptionSerializer.GetGenericIdFromException(ex);
-        string serializedException = ex.Serialize();
-        CustomBusFeed.OnEmitMessage.Invoke(audience, level, sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
-      };
-
+      
       DevLoggerToTraceBus = false;
       InsLoggerToTraceBus = false;
       BizLoggerToTraceBus = false;

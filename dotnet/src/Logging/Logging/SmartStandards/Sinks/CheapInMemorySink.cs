@@ -28,7 +28,7 @@ namespace Logging.SmartStandards {
       this.CollectedMessageArgs.Clear();
     }
 
-    public void WriteLogEntry(
+    public void WriteLogEvent(
       string audience, int level, string sourceContext, long sourceLineId,
       int eventId, string messageTemplate, object[] args
     ) {

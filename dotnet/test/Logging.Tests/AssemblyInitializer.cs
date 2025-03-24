@@ -40,7 +40,7 @@ namespace Logging.Tests {
         Exception ex = (Exception)args[0];
         // todo exceptions
       } else {
-        TraceBusSink.WriteLogEntry(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+        TraceBusSink.WriteLogEvent(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
       }
 
     }
@@ -48,7 +48,7 @@ namespace Logging.Tests {
     private static void PassLogEventToCustomBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
     ) {
-      CustomBusSink.WriteLogEntry(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      CustomBusSink.WriteLogEvent(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
     }
 
   }

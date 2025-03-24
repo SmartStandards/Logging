@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Logging.SmartStandards;
 
 namespace Logging.SmartStandards {
 
   public partial class BizLogger {
 
     public const string AudienceToken = "Biz";
-    
+
     public static void Log(
       int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, params object[] args
     ) {
 
+      if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
+      if (messageTemplate == null) messageTemplate = "";
+      if (args == null) args = new object[0];
+
       if (Routing.BizLoggerToTraceBus) {
-        TraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+        Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
       }
 
       if (Routing.BizLoggerToCustomBus) {
@@ -28,7 +31,7 @@ namespace Logging.SmartStandards {
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
       if (Routing.BizLoggerToTraceBus) {
-        TraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, ex);
+        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, ex);
       }
 
       if (Routing.BizLoggerToCustomBus) {

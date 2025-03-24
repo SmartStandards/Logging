@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>SmartStandards.Logging</AssemblyName>
-    <RootNamespace>System</RootNamespace>
+    <RootNamespace>Logging</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   

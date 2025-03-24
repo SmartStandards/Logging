@@ -1,9 +1,12 @@
-﻿using Logging.SmartStandards;
-using static Logging.SmartStandards.CustomBusFeed;
+﻿using System;
 
-namespace System.Logging.SmartStandards {
+namespace Logging.SmartStandards {
 
   public class Routing {
+
+    internal static TraceBusFeed InternalTraceBusFeed { get; set; }
+
+    private static TraceBusListener _InternalTraceBusListener;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
@@ -44,25 +47,31 @@ namespace System.Logging.SmartStandards {
     ///   This must be done as early as possible: Before any TraceSources are instantiated, because they only wire up
     ///   to already existing TraceListeners.
     /// </remarks>
-    public static bool EnablePassThruTraceBusToCustomBus {
+    public static bool PassThruTraceBusToCustomBus {
       get {
         return _TraceBusToCustomBus;
       }
       set {
         if (value) {
-          if (!TraceBusListener.IsInitialized) {
-            TraceBusListener smartStandardsTraceBusListener = TraceBusListener.Initialize(PassTraceEventToCustomBus);
-            // We do not want to receive our own feed
-            TraceBusFeed.IgnoredListeners.Add(smartStandardsTraceBusListener);
+          if (_InternalTraceBusListener == null) {
+            _InternalTraceBusListener = new TraceBusListener(PassTraceEventToCustomBus); // Listeners FIRST!
+            Routing.InternalTraceBusFeed = new TraceBusFeed();
+            Routing.InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // We do not want to receive our own feed
           } else {
-            TraceBusListener.OnLogEventReceived = PassTraceEventToCustomBus;
+            _InternalTraceBusListener.OnLogEventReceived = PassTraceEventToCustomBus;
           }
         } else {
-          TraceBusListener.OnLogEventReceived = null;
+          _InternalTraceBusListener.OnLogEventReceived = null;
         }
       }
     }
-    
+
+    public static void EnableEmittingToTraceBus(bool enable) {
+      DevLoggerToTraceBus = enable;
+      InsLoggerToTraceBus = enable;
+      BizLoggerToTraceBus = enable;
+    }
+
     /// <summary>
     ///   Convenience method to change the routing target from System.Diagnostics.Trace to any custom target.
     /// </summary>
@@ -77,20 +86,20 @@ namespace System.Logging.SmartStandards {
     ///     Enable logging to the CustomBusFeed (by setting the appropriate Routing properties).
     ///     Disable logging to the TraceBusFeed (by setting the appropriate Routing properties).
     /// </remarks>
-    public static void UseCustomBus(EmitMessageDelegate onEmitMessage) {
+    public static void UseCustomBus(CustomBusFeed.EmitMessageDelegate onEmitMessage) {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;
-      
-      DevLoggerToTraceBus = false;
-      InsLoggerToTraceBus = false;
-      BizLoggerToTraceBus = false;
+
+      EnableEmittingToTraceBus(false);
 
       DevLoggerToCustomBus = true;
       InsLoggerToCustomBus = true;
       BizLoggerToCustomBus = true;
-    }        
+    }
 
-    private static void PassTraceEventToCustomBus(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args) {
+    private static void PassTraceEventToCustomBus(
+      string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
+    ) {
 
       if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
         Exception ex = (Exception)args[0];
@@ -100,6 +109,6 @@ namespace System.Logging.SmartStandards {
       }
 
     }
-    
+
   }
 }

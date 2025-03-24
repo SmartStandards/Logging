@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -22,25 +21,17 @@ namespace Logging.SmartStandards {
     ///   3rd party trace sources may not provide an audience. 
     ///   Therefore you can map their source name to a target audience.
     /// </summary>
-    public static Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
 
     public delegate bool FilterIncomingTraceEventDelegate(int eventType, string sourceName, string formatString);
 
     public delegate void OnLogEventReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args);
 
-    private static TraceBusListener _Instance;
-
-    protected TraceBusListener() { 
+    protected TraceBusListener() {
       // Constructor is private, because this must be a single instance
     }
 
-    public static OnLogEventReceivedDelegate OnLogEventReceived { get; set; }
-
-    public static bool IsInitialized {
-      get {
-        return (_Instance != null);
-      }
-    }
+    public OnLogEventReceivedDelegate OnLogEventReceived { get; set; }
 
     /// <summary>
     ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
@@ -54,24 +45,17 @@ namespace Logging.SmartStandards {
     /// <remarks>
     ///   Order dependency: This has to be done before initializing any trace sources 
     /// </remarks>
-    public static TraceBusListener Initialize(OnLogEventReceivedDelegate onLogEventReceived) {
-
-      if (IsInitialized) {
-        throw new Exception("Do not initialize more than once!");
-      }
-
-      _Instance = new TraceBusListener();
+    public TraceBusListener(OnLogEventReceivedDelegate onLogEventReceived) {
 
       OnLogEventReceived = onLogEventReceived;
 
-      Trace.Listeners.Add(_Instance); // Self-register to .net runtime
+      Trace.Listeners.Add(this); // Self-register to .net runtime
 
       // Remark: This is a one-way-ticket. Removing (even disposing) a listener is futile, because all TraceSources
       // hold a reference. You would have to iterate all existing TraceSources first an remove the listener there.
       // This is impossible due to the fact that there's no (clean) way of getting all existing TraceSources.
       // See: https://stackoverflow.com/questions/10581448/add-remove-tracelistener-to-all-tracesources
 
-      return _Instance;
     }
 
     public override void TraceEvent(
@@ -81,7 +65,7 @@ namespace Logging.SmartStandards {
       if (OnLogEventReceived == null) {
         return;
       }
-      
+
       // ...Map EventType => LogLevel...
 
       int level = 0; // Default: "Trace" (aka "Verbose")
@@ -103,7 +87,7 @@ namespace Logging.SmartStandards {
       TokenizeFormatString(formatString, out sourceLineId, out audienceToken, out messageTemplate);
 
       // Fallback: If the audience token could not be parsed from the formatString, try a lookup
-      
+
       if (audienceToken == "???") {
         TraceSourcesToAudienceMapping.TryGetValue(sourceName, out audienceToken);
       }

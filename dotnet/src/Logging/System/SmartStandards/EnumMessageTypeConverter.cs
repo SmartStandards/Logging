@@ -9,32 +9,28 @@ namespace System.ComponentModel.SmartStandards {
   public class EnumMessageTypeConverter : EnumConverter {
 
     private Array _FlagValues;
+
     private bool _IsFlagEnum = false;
 
     private Dictionary<CultureInfo, Dictionary<string, object>> _CachesPerLanguage = new Dictionary<CultureInfo, Dictionary<string, object>>();
 
     public EnumMessageTypeConverter(Type enumType) : base(enumType) {
-      if(enumType.GetCustomAttributes(typeof(FlagsAttribute), true).Any()) {
+      if (enumType.GetCustomAttributes(typeof(FlagsAttribute), true).Any()) {
         _IsFlagEnum = true;
         _FlagValues = Enum.GetValues(enumType);
       }
     }
 
-    public override object ConvertFrom(
-      ITypeDescriptorContext context,
-      CultureInfo culture,
-      object value
-    ) {
+    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
 
       if (value is string) {
         object result;
 
         if (_IsFlagEnum) {
           result = GetMsgForFlag(culture, (string)value);
-        }
-        else { 
+        } else {
           result = GetValue(culture, (string)value);
-        }   
+        }
 
         if (result == null) {
           if (value != null) {
@@ -48,20 +44,16 @@ namespace System.ComponentModel.SmartStandards {
       return base.ConvertFrom(context, culture, value);
     }
 
-    public override object ConvertTo(
-      ComponentModel.ITypeDescriptorContext context,
-      CultureInfo culture,
-      object value,
-      Type destinationType
-    ) {
+    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) {
+
       // at system.xaml.dll
-      if (context == null || !(context.GetType().FullName.Equals("System.Windows.Markup.IValueSerializerContext"))){
+
+      if (context == null || !(context.GetType().FullName.Equals("System.Windows.Markup.IValueSerializerContext"))) {
         if ((value != null) && (destinationType.Equals(typeof(System.String)))) {
           object result;
           if ((_IsFlagEnum)) {
             result = GetMsgForFlagValue(culture, value);
-          }
-          else {
+          } else {
             result = GetMsgForValue(culture, value);
           }
           return result;
@@ -102,7 +94,7 @@ namespace System.ComponentModel.SmartStandards {
         Dictionary<string, object> result = null;
         if (culture == null) {
           culture = CultureInfo.CurrentCulture;
-        }   
+        }
         if (!_CachesPerLanguage.TryGetValue(culture, out result)) {
           result = new Dictionary<string, object>();
           foreach (var value in this.GetStandardValues()) {
@@ -125,7 +117,7 @@ namespace System.ComponentModel.SmartStandards {
     }
 
     private string GetMsgForValue(CultureInfo culture, object value) {
-      if(value == null){
+      if (value == null) {
         return string.Empty;
       }
       Type type = value.GetType();
@@ -137,15 +129,13 @@ namespace System.ComponentModel.SmartStandards {
       foreach (MessageTemplateAttribute msgTpl in msgTemplates) {
         if (string.IsNullOrEmpty(msgTpl.Language)) {
           defaultTpl = msgTpl;
-        }
-        else if(msgTpl.Language.Equals(culture.Name, StringComparison.InvariantCultureIgnoreCase)) {
+        } else if (msgTpl.Language.Equals(culture.Name, StringComparison.InvariantCultureIgnoreCase)) {
           return msgTpl.MessageTemplate;
-        }     
+        }
       }
       if (defaultTpl != null) {
         return defaultTpl.MessageTemplate;
-      }
-      else {
+      } else {
         return Enum.GetName(type, value);
       }
     }
@@ -163,8 +153,7 @@ namespace System.ComponentModel.SmartStandards {
             string valueText = this.GetMsgForValue(culture, flagValue);
             if (result == null) {
               result = valueText;
-            }
-            else {
+            } else {
               result = string.Format("{0}+{1}", result, valueText);
             }
           }

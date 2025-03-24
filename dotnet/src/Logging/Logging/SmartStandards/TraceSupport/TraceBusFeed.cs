@@ -7,13 +7,13 @@ namespace Logging.SmartStandards {
   /// <summary>
   ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
   /// </summary>
-  internal class TraceBusFeed {
+  public class TraceBusFeed {
 
-    public static List<object> IgnoredListeners { get; set; } = new List<object>();
+    public List<object> IgnoredListeners { get; set; } = new List<object>();
 
-    private static Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
+    private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
 
-    private static TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
+    private TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
 
       TraceSource traceSource;
 
@@ -32,7 +32,7 @@ namespace Logging.SmartStandards {
 
           // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
 
-          foreach(TraceListener listener in Trace.Listeners) {
+          foreach (TraceListener listener in Trace.Listeners) {
             if (!IgnoredListeners.Contains(listener)) traceSource.Listeners.Add(listener);
           }
 
@@ -43,20 +43,34 @@ namespace Logging.SmartStandards {
       return traceSource;
     }
 
-    internal static void EmitException(string audience, int level, string sourceContext, long sourceLineId, Exception ex) {
-      int eventId = ExceptionSerializer.GetGenericIdFromException(ex);
+    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, Exception ex) {
+      int eventId = ExceptionSerializer.GetGenericIdFromException(ex);//todo nicht hier, beim Aufrufer!
       string serializedException = ex.Serialize();
-      EmitMessage(audience, level,sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
+      EmitMessage(audience, level, sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
     }
 
-    internal static void EmitMessage(
+    /// <param name="level">
+    ///   5 Critical
+    ///   4 Error
+    ///   3 Warning
+    ///   2 Info
+    ///   1 Debug
+    ///   0 Trace
+    /// </param>
+    public void EmitMessage(
       string audience, int level, string sourceContext, long sourceLineId,
       int eventId, string messageTemplate, params object[] args
     ) {
 
+      if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
+
       TraceSource traceSource = GetTraceSourcePerSourceContext(sourceContext);
 
       if (traceSource is null) return;
+
+      if (string.IsNullOrWhiteSpace(audience)) audience = "Unk";
+
+      if (messageTemplate == null) messageTemplate = "";
 
       TraceEventType eventType;
 
@@ -88,7 +102,7 @@ namespace Logging.SmartStandards {
           break;
         }
 
-        default: {
+        default: { // Trace
           eventType = TraceEventType.Verbose; // 16
           break;
         }
@@ -100,7 +114,7 @@ namespace Logging.SmartStandards {
       // the .net TraceEvent Method.
 
       string formatString = " " + sourceLineId.ToString() + " [" + audience + "]: " + messageTemplate?.Replace("{", "{{").Replace("}", "}}");
-      
+
       traceSource.TraceEvent(eventType, eventId, formatString, args);
     }
 

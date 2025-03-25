@@ -25,11 +25,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\LoggingHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\EnumMessageTypeConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\MessageTemplateAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\SmartStandards\CopyOfPlaceholderExtensions .cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\EnumMessageTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\CopyOfPlaceholderExtensions .cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\" />
+    <Folder Include="$(MSBuildThisFileDirectory)System\SmartStandards\" />
   </ItemGroup>
 </Project>

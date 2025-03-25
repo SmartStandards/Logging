@@ -1,4 +1,6 @@
-﻿namespace System.SmartStandards {
+﻿using System;
+
+namespace Logging.SmartStandards {
 
   /// <summary>
   ///   This Attribute was made to be placed over each individual field of an enum which 
@@ -9,7 +11,7 @@
   ///   'ProtocolLogger'
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-  public class MessageTemplateAttribute : Attribute {
+  public class LogMessageTemplateAttribute : Attribute {
 
     /// <summary>
     ///   This Attribute was made to be placed over each individual field of an enum which 
@@ -19,14 +21,14 @@
     ///   invoking Log methods on the SmartStandards 'DevLogger', 'InfrastructureLogger' or
     ///   'ProtocolLogger'
     /// </summary>
-    /// <param name="messageTemplate"></param>
+    /// <param name="logMessageTemplate"></param>
     /// <param name="language"> ISO code like 'en-us' or 'de-de' </param>
-    public MessageTemplateAttribute(string messageTemplate, string language = null) {
-      this.MessageTemplate = messageTemplate;
+    public LogMessageTemplateAttribute(string logMessageTemplate, string language = null) {
+      this.LogMessageTemplate = logMessageTemplate;
       this.Language = language;
     }
 
-    public string MessageTemplate { get; }
+    public string LogMessageTemplate { get; }
 
     public string Language { get; }
 

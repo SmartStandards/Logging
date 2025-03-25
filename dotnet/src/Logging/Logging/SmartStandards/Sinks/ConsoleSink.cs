@@ -7,7 +7,7 @@ namespace Logging.SmartStandards.Sinks {
   public class ConsoleSink {
 
     public static void WriteLogEvent(
-      string audience, int level, string sourceContext, long sourceLineId,
+      string audienceToken, int level, string sourceContext, long sourceLineId,
       int eventId, string messageTemplate, object[] args
     ) {
 
@@ -15,9 +15,7 @@ namespace Logging.SmartStandards.Sinks {
 
       StringBuilder logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
 
-      LogParaphRenderer.BuildParaphLeftPart(logParaphBuilder, level, sourceContext, eventId);
-
-      LogParaphRenderer.BuildParaphRightPart(logParaphBuilder, sourceLineId, audience, messageTemplate);
+      LogParaphRenderer.BuildParaphResolved(logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
 
       switch (level) {
 

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.SmartStandards;
 
-namespace System.ComponentModel.SmartStandards {
+namespace Logging.SmartStandards {
 
   public class EnumMessageTypeConverter : EnumConverter {
 
@@ -27,9 +28,9 @@ namespace System.ComponentModel.SmartStandards {
         object result;
 
         if (_IsFlagEnum) {
-          result = GetMsgForFlag(culture, (string)value);
+          result = GetMessageTemplateFromAttributeByEnumFlag(culture, (string)value);
         } else {
-          result = GetValue(culture, (string)value);
+          result = GetMessageTemplateFromCache(culture, (string)value);
         }
 
         if (result == null) {
@@ -52,9 +53,9 @@ namespace System.ComponentModel.SmartStandards {
         if ((value != null) && (destinationType.Equals(typeof(System.String)))) {
           object result;
           if ((_IsFlagEnum)) {
-            result = GetMsgForFlagValue(culture, value);
+            result = GetMessageTemplateFromAttributeByEnumFlagValue(culture, value);
           } else {
-            result = GetMsgForValue(culture, value);
+            result = GetMessageTemplateFromAttributeByEnumValue(culture, value);
           }
           return result;
         }
@@ -71,7 +72,7 @@ namespace System.ComponentModel.SmartStandards {
       return string.Empty;
     }
 
-    private object GetMsgForFlag(CultureInfo culture, string text) {
+    private object GetMessageTemplateFromAttributeByEnumFlag(CultureInfo culture, string text) {
       Dictionary<string, object> languageSpecificCache = GetLanguageSpecificCache(culture);
       string[] textValues = text.Split(',');
       ulong result = 0;
@@ -98,7 +99,7 @@ namespace System.ComponentModel.SmartStandards {
         if (!_CachesPerLanguage.TryGetValue(culture, out result)) {
           result = new Dictionary<string, object>();
           foreach (var value in this.GetStandardValues()) {
-            var text = this.GetMsgForValue(culture, value);
+            var text = this.GetMessageTemplateFromAttributeByEnumValue(culture, value);
             if (text != null) {
               result.Add(text, value);
             }
@@ -109,40 +110,46 @@ namespace System.ComponentModel.SmartStandards {
       }
     }
 
-    private object GetValue(CultureInfo culture, string text) {
+    private object GetMessageTemplateFromCache(CultureInfo culture, string text) {
       Dictionary<string, object> languageSpecificCache = this.GetLanguageSpecificCache(culture);
       object result = null;
       languageSpecificCache.TryGetValue(text, out result);
       return result;
     }
 
-    private string GetMsgForValue(CultureInfo culture, object value) {
+    private string GetMessageTemplateFromAttributeByEnumValue(CultureInfo culture, object value) {
+
       if (value == null) {
         return string.Empty;
       }
+
       Type type = value.GetType();
+
       if (!type.IsEnum) {
         return value.ToString();
       }
-      MessageTemplateAttribute[] msgTemplates = GetEnumFieldAttributes<MessageTemplateAttribute>((Enum)value);
-      MessageTemplateAttribute defaultTpl = msgTemplates.FirstOrDefault();
-      foreach (MessageTemplateAttribute msgTpl in msgTemplates) {
-        if (string.IsNullOrEmpty(msgTpl.Language)) {
-          defaultTpl = msgTpl;
-        } else if (msgTpl.Language.Equals(culture.Name, StringComparison.InvariantCultureIgnoreCase)) {
-          return msgTpl.MessageTemplate;
+
+      LogMessageTemplateAttribute[] attributes = GetEnumFieldAttributes<LogMessageTemplateAttribute>((Enum)value);
+
+      LogMessageTemplateAttribute defaultAttribute = attributes.FirstOrDefault();
+
+      foreach (LogMessageTemplateAttribute attribute in attributes) {
+        if (string.IsNullOrEmpty(attribute.Language)) {
+          defaultAttribute = attribute;
+        } else if (attribute.Language.Equals(culture.Name, StringComparison.InvariantCultureIgnoreCase)) {
+          return attribute.LogMessageTemplate;
         }
       }
-      if (defaultTpl != null) {
-        return defaultTpl.MessageTemplate;
+      if (defaultAttribute != null) {
+        return defaultAttribute.LogMessageTemplate;
       } else {
         return Enum.GetName(type, value);
       }
     }
 
-    private string GetMsgForFlagValue(CultureInfo culture, object value) {
+    private string GetMessageTemplateFromAttributeByEnumFlagValue(CultureInfo culture, object value) {
       if (Enum.IsDefined(value.GetType(), value)) {
-        return this.GetMsgForValue(culture, value);
+        return this.GetMessageTemplateFromAttributeByEnumValue(culture, value);
       }
       long lValue = Convert.ToInt32(value);
       string result = null;
@@ -150,7 +157,7 @@ namespace System.ComponentModel.SmartStandards {
         long lFlagValue = Convert.ToInt32(flagValue);
         if (this.CheckSingleBit(lFlagValue)) {
           if ((lFlagValue & lValue) == lFlagValue) {
-            string valueText = this.GetMsgForValue(culture, flagValue);
+            string valueText = this.GetMessageTemplateFromAttributeByEnumValue(culture, flagValue);
             if (result == null) {
               result = valueText;
             } else {
@@ -169,7 +176,7 @@ namespace System.ComponentModel.SmartStandards {
 
     public static List<KeyValuePair<Enum, string>> GetValues(Type enumType, CultureInfo culture) {
       List<KeyValuePair<Enum, string>> result = new List<KeyValuePair<Enum, string>>();
-      ComponentModel.TypeConverter converter = ComponentModel.TypeDescriptor.GetConverter(enumType);
+      TypeConverter converter = TypeDescriptor.GetConverter(enumType);
       foreach (System.Enum value in Enum.GetValues(enumType)) {
         KeyValuePair<Enum, string> pair = new KeyValuePair<Enum, string>(
           value, converter.ConvertToString(null, culture, value)

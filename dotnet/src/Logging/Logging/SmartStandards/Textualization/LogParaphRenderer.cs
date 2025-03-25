@@ -11,6 +11,7 @@ namespace Logging.SmartStandards.Textualization {
   ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
   /// </remarks>
   public class LogParaphRenderer {
+
     public static string LevelToAlpha3(int level, StringBuilder targetStringBuilder = null) {
 
       switch (level) {
@@ -40,6 +41,29 @@ namespace Logging.SmartStandards.Textualization {
           return "Trc";
         }
       }
+    }
+
+    /// <summary>
+    ///   Appends a ready-to-read log paraph (having resolved placeholders) to an existing StringBuilder instance.
+    /// </summary>    
+    /// <returns>
+    ///   Example LogParaph:
+    ///   [LevelAsAlpha3] SourceContext #EventId#  SourceLineId [AudienceToken]: MessageTemplate 
+    ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
+    /// </returns>
+    public static StringBuilder BuildParaphResolved(
+      StringBuilder targetStringBuilder,
+      string audienceToken, int level, string sourceContext, long sourceLineId,
+      int eventId, string messageTemplate, object[] args
+    ) {
+
+      LogParaphRenderer.BuildParaphLeftPart(targetStringBuilder, level, sourceContext, eventId);
+
+      LogParaphRenderer.BuildParaphRightPart(targetStringBuilder, sourceLineId, audienceToken, null);
+
+      targetStringBuilder.AppendResolved(messageTemplate, args);
+
+      return targetStringBuilder;
     }
 
     /// <summary>
@@ -85,8 +109,6 @@ namespace Logging.SmartStandards.Textualization {
       targetStringBuilder.Append(messageTemplate);
       return targetStringBuilder;
     }
-
-
 
   }
 }

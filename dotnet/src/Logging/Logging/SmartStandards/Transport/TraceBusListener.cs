@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Logging.SmartStandards.Textualization;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Logging.Tests")]
 
-namespace Logging.SmartStandards {
+namespace Logging.SmartStandards.Transport {
 
   /// <summary>
   ///   Helper class to recieve log entries from System.Diagnostics.Trace. 
@@ -84,7 +85,9 @@ namespace Logging.SmartStandards {
       string audienceToken = null;
       string messageTemplate = null;
 
-      TokenizeFormatString(formatString, out sourceLineId, out audienceToken, out messageTemplate);
+      LogParaphParser.TokenizeMetaDataRightPart(formatString, out sourceLineId, out audienceToken, out messageTemplate);
+
+      messageTemplate = messageTemplate.Replace("{{", "{").Replace("}}", "}");
 
       // Fallback: If the audience token could not be parsed from the formatString, try a lookup
 
@@ -100,47 +103,6 @@ namespace Logging.SmartStandards {
     public override void Write(string message) { } // Not needed
 
     public override void WriteLine(string message) { }// Not needed
-
-    private void TokenizeFormatString(
-      string formatString, out long sourceLineId, out string audienceToken, out string messageTemplate
-    ) {
-
-      sourceLineId = 0;
-      audienceToken = "???";
-      messageTemplate = formatString;
-
-      // " SourceLineId [AudienceToken]: MessageTemplate"
-      //  01234567890
-      // " 0 [Ins]: MessageTemplate"
-
-      if (formatString == null || formatString.Length < 9) return;
-
-      if (formatString[0] != ' ') return;
-
-      int rightOfSourceLineId = formatString.IndexOf(' ', 1);
-      int leftOfAudience = formatString.IndexOf('[');
-      int rightOfAudience = formatString.IndexOf("]:");
-
-      if (
-        rightOfSourceLineId > leftOfAudience ||
-        leftOfAudience > rightOfAudience ||
-        rightOfAudience - leftOfAudience != 4
-      ) return;
-
-      string sourceLineIdAsString = formatString.Substring(1, rightOfSourceLineId);
-
-      if (!long.TryParse(sourceLineIdAsString, out sourceLineId)) return;
-
-      audienceToken = formatString.Substring(leftOfAudience + 1, 3);
-
-      int beginOfMessageTemplate = rightOfAudience + 3;
-
-      if (formatString.Length >= beginOfMessageTemplate) {
-        messageTemplate = formatString.Substring(beginOfMessageTemplate).Replace("{{", "{").Replace("}}", "}");
-      } else {
-        messageTemplate = "";
-      }
-    }
 
   }
 }

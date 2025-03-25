@@ -1,4 +1,6 @@
 ﻿using Logging.SmartStandards;
+using Logging.SmartStandards.Sinks;
+using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

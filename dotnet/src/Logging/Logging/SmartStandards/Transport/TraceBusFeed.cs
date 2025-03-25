@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
-namespace Logging.SmartStandards {
+namespace Logging.SmartStandards.Transport {
 
   /// <summary>
   ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
@@ -113,9 +115,13 @@ namespace Logging.SmartStandards {
       // (like "Hello {0}") we need to double brace the placeholders - otherwise there will be exceptions coming from
       // the .net TraceEvent Method.
 
-      string formatString = " " + sourceLineId.ToString() + " [" + audience + "]: " + messageTemplate?.Replace("{", "{{").Replace("}", "}}");
+      StringBuilder formatStringBuilder = new StringBuilder(messageTemplate.Length + 20);
 
-      traceSource.TraceEvent(eventType, eventId, formatString, args);
+      LogParaphRenderer.BuildParaphRightPart(formatStringBuilder, sourceLineId, audience, messageTemplate);
+
+      formatStringBuilder.Replace("{", "{{").Replace("}", "}}");
+
+      traceSource.TraceEvent(eventType, eventId, formatStringBuilder.ToString(), args);
     }
 
   }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Logging.SmartStandards {
+namespace Logging.SmartStandards.Sinks {
 
   public class CheapInMemorySink {
 

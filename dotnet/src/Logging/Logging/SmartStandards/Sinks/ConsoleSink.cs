@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
+using System.Text;
 
 namespace Logging.SmartStandards.Sinks {
 
@@ -11,61 +13,50 @@ namespace Logging.SmartStandards.Sinks {
 
       var rescuedColor = Console.ForegroundColor;
 
-      // [LevelAsAlpha3] SourceContext #EventId#  SourceLineId [AudienceToken]: MessageTemplate 
-      // [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
+      StringBuilder logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
+
+      LogParaphRenderer.BuildParaphLeftPart(logParaphBuilder, level, sourceContext, eventId);
+
+      LogParaphRenderer.BuildParaphRightPart(logParaphBuilder, sourceLineId, audience, messageTemplate);
 
       switch (level) {
 
-        case 5: { // Critical
+        case 5: { // Critical => StdErr
           Console.ForegroundColor = ConsoleColor.Magenta;
-          Console.Error.Write("[Cri]");
+          Console.Error.WriteLine(logParaphBuilder.ToString());
           break;
         }
 
-        case 4: { // Error
+        case 4: { // Error => StdErr
           Console.ForegroundColor = ConsoleColor.Red;
-          Console.Error.Write("[Err}");
+          Console.Error.WriteLine(logParaphBuilder.ToString());
           break;
         }
 
-        case 3: { // Warning
+        case 3: { // Warning => StdOut
           Console.ForegroundColor = ConsoleColor.DarkYellow;
-          Console.Write("[Wrn]"); // Warnings go through StdOut, because they usually don't abort higher level actions
+          Console.WriteLine(logParaphBuilder.ToString()); // Warnings go through StdOut, because they usually don't abort higher level actions
           break;
         }
 
-        case 2: { // Information
-          Console.Write("[Inf]");
+        case 2: { // Information => StdOut
+          Console.WriteLine(logParaphBuilder.ToString());
           break;
         }
 
-        case 1: { // Debug
+        case 1: { // Debug => StdOut
           Console.ForegroundColor = ConsoleColor.DarkCyan;
-          Console.Write("[Dbg]"); // 0 Trace
+          Console.WriteLine(logParaphBuilder.ToString());
           break;
         }
 
-        default: {
+        default: { // Trace => StdOut
           Console.ForegroundColor = ConsoleColor.DarkGray;
-          Console.Write("[Trc]");
+          Console.WriteLine(logParaphBuilder.ToString());
           break;
         }
 
       }
-
-      // todo zentralisieren und stringbuilder
-
-      Console.Write(" ");
-      Console.Write(sourceContext);
-      Console.Write(" #");
-      Console.Write(eventId.ToString());
-      Console.Write("# ");
-
-      Console.Write(":");
-
-      // string message = messageTemplate.TryResolvePlaceholders(messageArgs);
-
-      Console.WriteLine("message");
 
       Console.ForegroundColor = rescuedColor;
 

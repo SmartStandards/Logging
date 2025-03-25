@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logging.SmartStandards {
+namespace Logging.SmartStandards.Transport {
 
   /// <summary>
   ///   (Static) Customizing hook for routing messages to any further target.

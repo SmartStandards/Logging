@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Logging.SmartStandards.Sinks {
 
@@ -18,6 +19,8 @@ namespace Logging.SmartStandards.Sinks {
 
     public List<object[]> CollectedMessageArgs { get; set; } = new List<object[]>();
 
+    public List<Exception> CollectedExceptions { get; set; } = new List<Exception>();
+
     public void Clear() {
       this.CollectedAudiences.Clear();
       this.CollectedLevels.Clear();
@@ -28,7 +31,7 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedMessageArgs.Clear();
     }
 
-    public void WriteLogEvent(
+    public void WriteMessage(
       string audience, int level, string sourceContext, long sourceLineId,
       int eventId, string messageTemplate, object[] args
     ) {
@@ -39,6 +42,21 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedEventIds.Add(eventId);
       this.CollectedMessageTemplates.Add(messageTemplate);
       this.CollectedMessageArgs.Add(args);
+      this.CollectedExceptions.Add(null);
+    }
+
+    public void WriteException(
+      string audience, int level, string sourceContext, long sourceLineId,
+      int eventId, Exception ex
+    ) {
+      this.CollectedAudiences.Add(audience);
+      this.CollectedLevels.Add(level);
+      this.CollectedSourceContexts.Add(sourceContext);
+      this.CollectedSourceLineIds.Add(sourceLineId);
+      this.CollectedEventIds.Add(eventId);
+      this.CollectedMessageTemplates.Add(null);
+      this.CollectedMessageArgs.Add(null);
+      this.CollectedExceptions.Add(ex);
     }
   }
 }

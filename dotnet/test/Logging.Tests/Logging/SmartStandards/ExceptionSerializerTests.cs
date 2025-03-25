@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.ComponentModel;
+using System.Logging.SmartStandards.Internal;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
@@ -11,9 +12,9 @@ namespace Logging.SmartStandards {
     [TestMethod()]
     public void ExceptionSerializerTest1() {
 
-      Exception catchedEx = CreateMockException();
+      Exception caughtException = CreateMockException();
 
-      string serializedEx = catchedEx.Serialize();
+      string renderedException = ExceptionRenderer.Render(caughtException);
 
       /*
             Fehler aus der BL >> Id ist ungültig! (Parameter 'Id')
@@ -37,28 +38,28 @@ namespace Logging.SmartStandards {
     public void GenericExceptionIdTest() {
       int genericId;
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Foo"));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Foo"));
       Assert.AreEqual(863154666, genericId);
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Bar"));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Bar"));
       Assert.AreEqual(863154666, genericId);
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new Exception("Bar"));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new Exception("Bar"));
       Assert.AreEqual(1969630032, genericId);
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new ApplicationException("Foo #2233"));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Foo #2233"));
       Assert.AreEqual(2233, genericId);
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new TargetInvocationException(new ApplicationException("Foo #3344")));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new TargetInvocationException(new ApplicationException("Foo #3344")));
       Assert.AreEqual(3344, genericId);
 
-      genericId = ExceptionSerializer.GetGenericIdFromException(new Win32Exception(1122));
+      genericId = ExceptionAnalyzer.InferEventIdByException(new Win32Exception(1122));
       Assert.AreEqual(1122, genericId);
 
     }
 
     internal static Exception CreateMockException() {
-      Exception catchedEx = null;
+      Exception caughtException = null;
       try {
         try {
           ThrowDeepException(3);
@@ -67,9 +68,9 @@ namespace Logging.SmartStandards {
           throw new ApplicationException("Fehler aus der BL", innerEx);
         }
       } catch (Exception ex) {
-        catchedEx = ex;
+        caughtException = ex;
       }
-      return catchedEx;
+      return caughtException;
     }
 
     internal static void ThrowDeepException(int depth) {

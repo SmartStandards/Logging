@@ -5,7 +5,39 @@ namespace Logging.SmartStandards {
 
   public class Routing {
 
-    internal static TraceBusFeed InternalTraceBusFeed { get; set; }
+    private static bool _PreStagedTraceBusExceptionRenderingToggle;
+
+    public static bool TraceBusExceptionRenderingToggle {
+      get {
+        if (_InternalTraceBusFeed != null) {
+          return _InternalTraceBusFeed.ExceptionRenderingToggle;
+        } else {
+          return _PreStagedTraceBusExceptionRenderingToggle;
+        }
+      }
+      set {
+        _PreStagedTraceBusExceptionRenderingToggle = value;
+        if (_InternalTraceBusFeed != null) {
+          _InternalTraceBusFeed.ExceptionRenderingToggle = value;
+        }
+      }
+    }
+
+    private static TraceBusFeed _InternalTraceBusFeed;
+
+    internal static TraceBusFeed InternalTraceBusFeed {
+      get {
+        if (_InternalTraceBusFeed == null) {
+          _InternalTraceBusFeed = new TraceBusFeed();
+          // ^ The new TraceBusFeed just connected to all currently existing trace listeners...
+          if (_InternalTraceBusListener != null) {// ... if our own listener has been already established...
+            _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // ...we do not want to receive our own feed.
+          }
+          _InternalTraceBusFeed.ExceptionRenderingToggle = _PreStagedTraceBusExceptionRenderingToggle;
+        }
+        return _InternalTraceBusFeed;
+      }
+    }
 
     private static TraceBusListener _InternalTraceBusListener;
 
@@ -55,14 +87,18 @@ namespace Logging.SmartStandards {
       set {
         if (value) {
           if (_InternalTraceBusListener == null) {
-            _InternalTraceBusListener = new TraceBusListener(PassTraceEventToCustomBus); // Listeners FIRST!
-            Routing.InternalTraceBusFeed = new TraceBusFeed();
-            Routing.InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // We do not want to receive our own feed
+            _InternalTraceBusListener = new TraceBusListener(PassTracedMessageToCustomBus, PassTracedExceptionToCustomBus);
+            if (_InternalTraceBusFeed != null) {
+              // Normally this shouldn't be necessary, because the _InternalTraceBusFeed has already been established
+              // (and connected to all recent listeners). Our listener is coming too late to the party and will never be wired up to
+              // the _InternalTraceBusFeed. Anyway, just to be sure, we put ourselves on the ignore list:
+              _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener);
+            }
           } else {
-            _InternalTraceBusListener.OnLogEventReceived = PassTraceEventToCustomBus;
+            _InternalTraceBusListener.OnMessageReceived = PassTracedMessageToCustomBus;
           }
         } else {
-          _InternalTraceBusListener.OnLogEventReceived = null;
+          _InternalTraceBusListener.OnMessageReceived = null;
         }
       }
     }
@@ -87,9 +123,10 @@ namespace Logging.SmartStandards {
     ///     Enable logging to the CustomBusFeed (by setting the appropriate Routing properties).
     ///     Disable logging to the TraceBusFeed (by setting the appropriate Routing properties).
     /// </remarks>
-    public static void UseCustomBus(CustomBusFeed.EmitMessageDelegate onEmitMessage) {
+    public static void UseCustomBus(CustomBusFeed.EmitMessageDelegate onEmitMessage, CustomBusFeed.EmitExceptionDelegate onEmitException) {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;
+      CustomBusFeed.OnEmitException = onEmitException;
 
       EnableEmittingToTraceBus(false);
 
@@ -98,17 +135,16 @@ namespace Logging.SmartStandards {
       BizLoggerToCustomBus = true;
     }
 
-    private static void PassTraceEventToCustomBus(
+    private static void PassTracedMessageToCustomBus(
       string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
     ) {
+      CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+    }
 
-      if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
-        Exception ex = (Exception)args[0];
-        CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, ex);
-      } else {
-        CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
-      }
-
+    private static void PassTracedExceptionToCustomBus(
+      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+    ) {
+      CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, eventId, ex);
     }
 
   }

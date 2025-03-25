@@ -6,7 +6,7 @@ namespace Logging.SmartStandards.Sinks {
 
   public class ConsoleSink {
 
-    public static void WriteLogEvent(
+    public static void WriteMessage(
       string audienceToken, int level, string sourceContext, long sourceLineId,
       int eventId, string messageTemplate, object[] args
     ) {
@@ -59,5 +59,14 @@ namespace Logging.SmartStandards.Sinks {
       Console.ForegroundColor = rescuedColor;
 
     }
+
+    public void WriteException(
+      string audience, int level, string sourceContext, long sourceLineId,
+      int eventId, Exception ex
+    ) {
+      string exAsString = ExceptionRenderer.Render(ex);
+      ConsoleSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, exAsString, null);
+    }
+
   }
 }

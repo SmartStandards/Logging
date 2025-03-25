@@ -1,4 +1,5 @@
 ﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -26,19 +27,23 @@ namespace Logging.SmartStandards.Transport {
 
     public delegate bool FilterIncomingTraceEventDelegate(int eventType, string sourceName, string formatString);
 
-    public delegate void OnLogEventReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args);
+    public delegate void OnMessageReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args);
+
+    public delegate void OnExceptionReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex);
 
     protected TraceBusListener() {
       // Constructor is private, because this must be a single instance
     }
 
-    public OnLogEventReceivedDelegate OnLogEventReceived { get; set; }
+    public OnMessageReceivedDelegate OnMessageReceived { get; set; }
+
+    public OnExceptionReceivedDelegate OnExceptionReceived { get; set; }
 
     /// <summary>
     ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
     ///   Wires up your actual logging sink by registering a callback delegate.
     /// </summary>
-    /// <param name="onLogEventReceived">
+    /// <param name="onMessageReceived">
     ///   Callback delegate which is called for each recieved log entry. 
     ///   Signature: onLog(string channelName, int level, int id, string messageTemplate, object[] args)
     ///   Implement your actual logging sink here.
@@ -46,9 +51,11 @@ namespace Logging.SmartStandards.Transport {
     /// <remarks>
     ///   Order dependency: This has to be done before initializing any trace sources 
     /// </remarks>
-    public TraceBusListener(OnLogEventReceivedDelegate onLogEventReceived) {
+    public TraceBusListener(OnMessageReceivedDelegate onMessageReceived, OnExceptionReceivedDelegate onExceptionReceived) {
 
-      OnLogEventReceived = onLogEventReceived;
+      OnMessageReceived = onMessageReceived;
+
+      OnExceptionReceived = onExceptionReceived;
 
       Trace.Listeners.Add(this); // Self-register to .net runtime
 
@@ -63,7 +70,7 @@ namespace Logging.SmartStandards.Transport {
       TraceEventCache eventCache, string sourceName, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
 
-      if (OnLogEventReceived == null) {
+      if (OnMessageReceived == null) {
         return;
       }
 
@@ -97,7 +104,12 @@ namespace Logging.SmartStandards.Transport {
 
       // Pass the LogEvent to the callback method
 
-      OnLogEventReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, messageTemplate, args);
+      if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
+        Exception ex = (Exception)args[0];
+        OnExceptionReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, ex);
+      } else {
+        OnMessageReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, messageTemplate, args);
+      }
     }
 
     public override void Write(string message) { } // Not needed

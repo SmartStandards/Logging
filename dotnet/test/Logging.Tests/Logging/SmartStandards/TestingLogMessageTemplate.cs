@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace Logging.SmartStandards {
 
   [TypeConverter(typeof(LogMessageEnumConverter))]
-  public enum WellknownMockMessages {
+  public enum TestingLogMessageTemplate {
 
     /// <summary> There is too much foo within bar beacause of {0}! </summary>
     [LogMessageTemplate("There is too much foo within bar beacause of {0}!")]

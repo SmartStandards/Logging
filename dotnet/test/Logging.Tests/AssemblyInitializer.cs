@@ -22,9 +22,9 @@ namespace Logging.Tests {
     [AssemblyInitialize]
     public static void InitializeAssembly(TestContext testContext) {
 
-      ExternalTraceBusListener = new TraceBusListener(PassTraceEventToTraceBusSink);
+      ExternalTraceBusListener = new TraceBusListener(PassTracedMessageToTraceBusSink, PassTracedExceptionToTraceBusSink);
 
-      Routing.UseCustomBus(PassLogEventToCustomBusSink);
+      Routing.UseCustomBus(PassLogMessageToCustomBusSink, PassLogExceptionToTraceBusSink);
 
       Routing.PassThruTraceBusToCustomBus = true;
 
@@ -34,23 +34,28 @@ namespace Logging.Tests {
 
     }
 
-    private static void PassTraceEventToTraceBusSink(
+    private static void PassTracedMessageToTraceBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
     ) {
-
-      if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
-        Exception ex = (Exception)args[0];
-        // todo exceptions
-      } else {
-        TraceBusSink.WriteLogEvent(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
-      }
-
+      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
     }
 
-    private static void PassLogEventToCustomBusSink(
+    private static void PassTracedExceptionToTraceBusSink(
+      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+    ) {
+      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventId, ex);
+    }
+
+    private static void PassLogMessageToCustomBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
     ) {
-      CustomBusSink.WriteLogEvent(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+    }
+
+    private static void PassLogExceptionToTraceBusSink(
+      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+    ) {
+      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventId, ex);
     }
 
   }

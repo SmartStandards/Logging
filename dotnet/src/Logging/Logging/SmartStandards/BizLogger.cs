@@ -1,6 +1,7 @@
 ﻿using Logging.SmartStandards.TemplateHousekeeping;
 using Logging.SmartStandards.Transport;
 using System;
+using System.Logging.SmartStandards.Internal;
 
 namespace Logging.SmartStandards {
 
@@ -32,12 +33,14 @@ namespace Logging.SmartStandards {
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
+      int eventId = ExceptionAnalyzer.InferEventIdByException(ex);
+
       if (Routing.BizLoggerToTraceBus) {
-        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, ex);
+        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventId, ex);
       }
 
       if (Routing.BizLoggerToCustomBus) {
-        CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, ex);
+        CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, eventId, ex);
       }
     }
   }

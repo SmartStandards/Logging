@@ -11,6 +11,8 @@ namespace Logging.SmartStandards.Transport {
   /// </summary>
   public class TraceBusFeed {
 
+    public bool ExceptionRenderingToggle { get; set; }
+
     public List<object> IgnoredListeners { get; set; } = new List<object>();
 
     private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
@@ -45,10 +47,13 @@ namespace Logging.SmartStandards.Transport {
       return traceSource;
     }
 
-    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, Exception ex) {
-      int eventId = ExceptionSerializer.GetGenericIdFromException(ex);//todo nicht hier, beim Aufrufer!
-      string serializedException = ex.Serialize();
-      EmitMessage(audience, level, sourceContext, sourceLineId, eventId, serializedException, new object[] { ex });
+    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex) {
+
+      string renderedException = (ExceptionRenderingToggle) ? ExceptionRenderer.Render(ex) : "";
+
+      // todo: wirklich BEIDES redundant durch die Gegend pusten?
+
+      EmitMessage(audience, level, sourceContext, sourceLineId, eventId, renderedException, new object[] { ex });
     }
 
     /// <param name="level">

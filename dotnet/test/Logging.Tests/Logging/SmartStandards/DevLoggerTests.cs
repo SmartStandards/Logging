@@ -1,5 +1,6 @@
 ﻿using Logging.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Globalization;
 using System.Threading;
 
@@ -73,7 +74,16 @@ namespace Logging.SmartStandards {
 
       MyAssert.BothSinksContain(i, "Dev", 5, Sc, 2071876994403864019, -12345, "");
 
-      //
+      // Exception
+
+      Exception ex = new Exception("MockException");
+
+      i++;
+      DevLogger.LogCritical(Sc, 2071926793372485828, ex);
+
+      MyAssert.BothSinksContain(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
+
+      // Ensure PassThruTraceBusToCustomBus is working:
 
       i++;
       AssemblyInitializer.ExternalTraceBusFeed.EmitMessage("Dev", 2, Sc, 2071880606768384068, 4711, "Das kam direkt vom TraceBus", 123, "Foo");
@@ -101,20 +111,20 @@ namespace Logging.SmartStandards {
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, WellknownMockMessages.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogMessageTemplate.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873991520386244, (int)WellknownMockMessages.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogMessageTemplate.ZuVielFooImBar,
           "There is too much foo within bar beacause of {0}!"
         );
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
 
         i++;
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, WellknownMockMessages.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogMessageTemplate.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873995903461991, (int)WellknownMockMessages.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogMessageTemplate.ZuVielFooImBar,
           "Da ist zu viel Foo im Bar wegen {0}!"
         );
 

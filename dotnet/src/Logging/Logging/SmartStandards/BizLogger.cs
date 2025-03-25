@@ -1,7 +1,7 @@
-﻿using Logging.SmartStandards.TemplateHousekeeping;
+﻿using Logging.SmartStandards.Internal;
+using Logging.SmartStandards.TemplateHousekeeping;
 using Logging.SmartStandards.Transport;
 using System;
-using System.Logging.SmartStandards.Internal;
 
 namespace Logging.SmartStandards {
 

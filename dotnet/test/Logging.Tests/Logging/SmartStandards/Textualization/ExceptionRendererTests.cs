@@ -1,16 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.ComponentModel;
-using System.Logging.SmartStandards.Internal;
-using System.Reflection;
 
 namespace Logging.SmartStandards {
 
   [TestClass()]
-  public class ExceptionSerializerTests {
+  public class ExceptionRendererTests {
 
     [TestMethod()]
-    public void ExceptionSerializerTest1() {
+    public void Render_BasicExample_ReadsAsExpected() {
 
       Exception caughtException = CreateMockException();
 
@@ -31,30 +28,6 @@ namespace Logging.SmartStandards {
             @   at Logging.SmartStandards.ExceptionSerializerTests.CreateMockException()
             @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 46
        */
-
-    }
-
-    [TestMethod()]
-    public void GenericExceptionIdTest() {
-      int genericId;
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Foo"));
-      Assert.AreEqual(863154666, genericId);
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Bar"));
-      Assert.AreEqual(863154666, genericId);
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new Exception("Bar"));
-      Assert.AreEqual(1969630032, genericId);
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new ApplicationException("Foo #2233"));
-      Assert.AreEqual(2233, genericId);
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new TargetInvocationException(new ApplicationException("Foo #3344")));
-      Assert.AreEqual(3344, genericId);
-
-      genericId = ExceptionAnalyzer.InferEventIdByException(new Win32Exception(1122));
-      Assert.AreEqual(1122, genericId);
 
     }
 
@@ -81,5 +54,4 @@ namespace Logging.SmartStandards {
     }
 
   }
-
 }

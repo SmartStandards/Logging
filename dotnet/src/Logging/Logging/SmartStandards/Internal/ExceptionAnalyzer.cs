@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace System.Logging.SmartStandards.Internal {
+namespace Logging.SmartStandards.Internal {
 
   internal class ExceptionAnalyzer {
 

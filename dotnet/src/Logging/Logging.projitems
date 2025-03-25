@@ -32,6 +32,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\" />
-    <Folder Include="$(MSBuildThisFileDirectory)System\SmartStandards\" />
   </ItemGroup>
 </Project>

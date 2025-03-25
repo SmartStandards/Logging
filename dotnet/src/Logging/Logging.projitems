@@ -15,7 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\CutomBusFeed.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\ExceptionSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\ConsoleSink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\TraceBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Routing.cs" />
@@ -24,8 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\LoggingHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\EnumMessageTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\MessageTemplateRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\CopyOfPlaceholderExtensions .cs" />
   </ItemGroup>

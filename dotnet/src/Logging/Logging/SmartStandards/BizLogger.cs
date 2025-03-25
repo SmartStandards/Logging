@@ -1,4 +1,5 @@
-﻿using Logging.SmartStandards.Transport;
+﻿using Logging.SmartStandards.TemplateHousekeeping;
+using Logging.SmartStandards.Transport;
 using System;
 
 namespace Logging.SmartStandards {
@@ -25,7 +26,7 @@ namespace Logging.SmartStandards {
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Enum logTemplate, params object[] args) {
-      LoggingHelper.GetLogTemplateFromEnum(logTemplate, out int eventId, out string messageTemplate);
+      MessageTemplateRepository.GetMessageTemplateByEnum(logTemplate, out int eventId, out string messageTemplate);
       Log(level, sourceContext, sourceLineId, eventId, messageTemplate, args);
     }
 

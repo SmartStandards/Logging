@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Logging.SmartStandards {
 
-  public static class ExceptionSerializer {
+  public static class ExceptionSerializer { // todo ExceptionSerializer
 
     /// <summary>
     ///   Serializes an Exception in a way, that InnerExceptions and StackTraces are included

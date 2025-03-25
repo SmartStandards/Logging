@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logging.SmartStandards {
+namespace Logging.SmartStandards.TemplateHousekeeping {
 
   /// <summary>
   ///   This Attribute was made to be placed over each individual field of an enum which 

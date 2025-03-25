@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+﻿using Logging.SmartStandards.TemplateHousekeeping;
+using System.ComponentModel;
 
 namespace Logging.SmartStandards {
 
-  [TypeConverter(typeof(EnumMessageTypeConverter))]
+  [TypeConverter(typeof(LogMessageEnumConverter))]
   public enum WellknownMockMessages {
 
     /// <summary> There is too much foo within bar beacause of {0}! </summary>

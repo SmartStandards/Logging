@@ -123,36 +123,5 @@ namespace Logging.SmartStandards {
       }
 
     }
-
-    //[TestMethod()]
-    //public void LogReturnCodeAs_Codes_TranslateCorrectlyToLevels() {
-
-    //  DevLogger.LogReturnCodeAsError(Sc, 2071873958028081940, 123, "Simple with {placeholder}.", new[] { "resolved placeholder" });
-
-    //  Assert.AreEqual("Dev", AssemblyInitializer.CustomBusSink.CollectedAudiences[0]);
-    //  Assert.AreEqual(2, AssemblyInitializer.CustomBusSink.CollectedLevels[0]); // Info, because returnCode was positive
-    //  Assert.AreEqual(123, AssemblyInitializer.CustomBusSink.CollectedEventIds[0]);
-    //  Assert.AreEqual("Simple with {placeholder}.", AssemblyInitializer.CustomBusSink.CollectedMessageTemplates[0]);
-    //  Assert.AreEqual("resolved placeholder", AssemblyInitializer.CustomBusSink.CollectedMessageArgs[0][0]);
-
-    //  DevLogger.LogReturnCodeAsError(Sc, -456, "Error with args = null.", null);
-
-    //  Assert.AreEqual("Dev", AssemblyInitializer.CustomBusSink.CollectedAudiences[1]);
-    //  Assert.AreEqual(4, AssemblyInitializer.CustomBusSink.CollectedLevels[1]); // Error, because returnCode was negative
-    //  Assert.AreEqual(456, AssemblyInitializer.CustomBusSink.CollectedEventIds[1]); // ID must (always) be positive
-    //  Assert.AreEqual("Error with args = null.", AssemblyInitializer.CustomBusSink.CollectedMessageTemplates[1]);
-    //  Assert.IsNull(AssemblyInitializer.CustomBusSink.CollectedMessageArgs[1]);
-
-    //  DevLogger.LogReturnCodeAsWarning(Sc, -789, "Warning with empty placeholder array.", Array.Empty<object>());
-
-    //  Assert.AreEqual("Dev", AssemblyInitializer.CustomBusSink.CollectedAudiences[2]);
-    //  Assert.AreEqual(3, AssemblyInitializer.CustomBusSink.CollectedLevels[2]); // Warning, because returnCode was negative
-    //  Assert.AreEqual(789, AssemblyInitializer.CustomBusSink.CollectedEventIds[2]); // ID must (always) be positive
-    //  Assert.AreEqual("Warning with empty placeholder array.", AssemblyInitializer.CustomBusSink.CollectedMessageTemplates[2]);
-    //  Assert.AreEqual(0, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[2].Length);
-
-    //  Assert.AreEqual(3, AssemblyInitializer.CustomBusSink.CollectedEventIds.Count);
-    //}
-
   }
 }

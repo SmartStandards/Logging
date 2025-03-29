@@ -1,8 +1,8 @@
-﻿using Logging.SmartStandards.Textualization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Transport {
 
@@ -11,7 +11,10 @@ namespace Logging.SmartStandards.Transport {
   /// </summary>
   public class TraceBusFeed {
 
-    public bool ExceptionRenderingToggle { get; set; }
+    /// <summary>
+    ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
+    /// </summary>
+    public bool ExceptionsTextualizedToggle { get; set; }
 
     public List<object> IgnoredListeners { get; set; } = new List<object>();
 
@@ -37,7 +40,7 @@ namespace Logging.SmartStandards.Transport {
           // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
 
           foreach (TraceListener listener in Trace.Listeners) {
-            if (!IgnoredListeners.Contains(listener)) traceSource.Listeners.Add(listener);
+            if (!this.IgnoredListeners.Contains(listener)) traceSource.Listeners.Add(listener);
           }
 
           _TraceSourcePerSourceContext[sourceContext] = traceSource;
@@ -49,11 +52,17 @@ namespace Logging.SmartStandards.Transport {
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex) {
 
-      string renderedException = (ExceptionRenderingToggle) ? ExceptionRenderer.Render(ex) : "";
+      string renderedException = "";
+      object[] args;
 
-      // todo: wirklich BEIDES redundant durch die Gegend pusten?
+      if (this.ExceptionsTextualizedToggle) {
+        renderedException = ExceptionRenderer.Render(ex);
+        args = Array.Empty<object>();
+      } else {
+        args = new object[] { ex };
+      }
 
-      EmitMessage(audience, level, sourceContext, sourceLineId, eventId, renderedException, new object[] { ex });
+      this.EmitMessage(audience, level, sourceContext, sourceLineId, eventId, renderedException, args);
     }
 
     /// <param name="level">
@@ -71,11 +80,11 @@ namespace Logging.SmartStandards.Transport {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
 
-      TraceSource traceSource = GetTraceSourcePerSourceContext(sourceContext);
+      TraceSource traceSource = this.GetTraceSourcePerSourceContext(sourceContext);
 
       if (traceSource is null) return;
 
-      if (string.IsNullOrWhiteSpace(audience)) audience = "Unk";
+      if (string.IsNullOrWhiteSpace(audience)) audience = "Dev";
 
       if (messageTemplate == null) messageTemplate = "";
 

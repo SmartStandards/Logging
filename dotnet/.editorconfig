@@ -1,7 +1,24 @@
 ﻿[*.cs]
 
+#### Core EditorConfig Options ####
+
+# Indentation and spacing
+indent_size = 2
+indent_style = space
+tab_width = 2
+
+# New line preferences
+end_of_line = crlf
+insert_final_newline = false
+
 # IDE0090: Use 'new(...)'
 dotnet_diagnostic.IDE0090.severity = none
 
 # RCS1036: Remove unnecessary blank line
 dotnet_diagnostic.RCS1036.severity = none
+
+# this. and Me. preferences
+dotnet_style_qualification_for_event = true
+dotnet_style_qualification_for_field = false
+dotnet_style_qualification_for_method = true
+dotnet_style_qualification_for_property = true

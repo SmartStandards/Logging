@@ -14,7 +14,9 @@ namespace Logging.SmartStandards {
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
+
       if (messageTemplate == null) messageTemplate = "";
+
       if (args == null) args = new object[0];
 
       if (Routing.InsLoggerToTraceBus) {

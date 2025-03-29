@@ -1,24 +1,33 @@
-﻿using Logging.SmartStandards.Transport;
-using System;
+﻿using System;
+using Logging.SmartStandards.Internal;
+using Logging.SmartStandards.Transport;
 
 namespace Logging.SmartStandards {
 
   public class Routing {
 
-    private static bool _PreStagedTraceBusExceptionRenderingToggle;
+    private static TraceBusListener _InternalTraceBusListener = (
+      new TraceBusListener(PassTracedMessageToCustomBus, PassTracedExceptionToCustomBus)
+    // TraceListeners must be registered as early as possible so they can be found by TraceSources.
+    );
 
-    public static bool TraceBusExceptionRenderingToggle {
+    private static bool _TraceBusExceptionsTextualizedTogglePreStaged;
+
+    /// <summary>
+    ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
+    /// </summary>
+    public static bool TraceBusExceptionsTextualizedToggle {
       get {
         if (_InternalTraceBusFeed != null) {
-          return _InternalTraceBusFeed.ExceptionRenderingToggle;
+          return _InternalTraceBusFeed.ExceptionsTextualizedToggle;
         } else {
-          return _PreStagedTraceBusExceptionRenderingToggle;
+          return _TraceBusExceptionsTextualizedTogglePreStaged;
         }
       }
       set {
-        _PreStagedTraceBusExceptionRenderingToggle = value;
+        _TraceBusExceptionsTextualizedTogglePreStaged = value;
         if (_InternalTraceBusFeed != null) {
-          _InternalTraceBusFeed.ExceptionRenderingToggle = value;
+          _InternalTraceBusFeed.ExceptionsTextualizedToggle = value;
         }
       }
     }
@@ -28,33 +37,64 @@ namespace Logging.SmartStandards {
     internal static TraceBusFeed InternalTraceBusFeed {
       get {
         if (_InternalTraceBusFeed == null) {
+
           _InternalTraceBusFeed = new TraceBusFeed();
           // ^ The new TraceBusFeed just connected to all currently existing trace listeners...
-          if (_InternalTraceBusListener != null) {// ... if our own listener has been already established...
-            _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // ...we do not want to receive our own feed.
-          }
-          _InternalTraceBusFeed.ExceptionRenderingToggle = _PreStagedTraceBusExceptionRenderingToggle;
+
+          _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // ...we do not want to receive our own feed.
+
+          _InternalTraceBusFeed.ExceptionsTextualizedToggle = _TraceBusExceptionsTextualizedTogglePreStaged;
+
+          DebuggingGraceTimer.Start();
         }
         return _InternalTraceBusFeed;
       }
     }
 
-    private static TraceBusListener _InternalTraceBusListener;
+    private static bool _DevLoggerToTraceBus = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
-    public static bool DevLoggerToTraceBus { get; set; } = true;
+    public static bool DevLoggerToTraceBus {
+      get {
+        return _DevLoggerToTraceBus;
+      }
+      set {
+        _DevLoggerToTraceBus = value;
+        DebuggingGraceTimer.IsCancelled = true;
+      }
+    }
+
+    private static bool _InsLoggerToTraceBus = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
-    public static bool InsLoggerToTraceBus { get; set; } = true;
+    public static bool InsLoggerToTraceBus {
+      get {
+        return _InsLoggerToTraceBus;
+      }
+      set {
+        _InsLoggerToTraceBus = value;
+        DebuggingGraceTimer.IsCancelled = true;
+      }
+    }
+
+    private static bool _BizLoggerToTraceBus = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
-    public static bool BizLoggerToTraceBus { get; set; } = true;
+    public static bool BizLoggerToTraceBus {
+      get {
+        return _BizLoggerToTraceBus;
+      }
+      set {
+        _BizLoggerToTraceBus = value;
+        DebuggingGraceTimer.IsCancelled = true;
+      }
+    }
 
     /// <summary>
     ///   Enable/disable logging to CustomBusFeed
@@ -76,30 +116,12 @@ namespace Logging.SmartStandards {
     /// <summary>
     ///   Enable/disable passing through events from System.Diagnostics.Trace to CustomBusFeed.
     /// </summary>
-    /// <remarks>
-    ///   This must be done as early as possible: Before any TraceSources are instantiated, because they only wire up
-    ///   to already existing TraceListeners.
-    /// </remarks>
-    public static bool PassThruTraceBusToCustomBus {
+    public static bool TraceBusToCustomBus {
       get {
-        return _TraceBusToCustomBus;
+        return _InternalTraceBusListener.IsActive;
       }
       set {
-        if (value) {
-          if (_InternalTraceBusListener == null) {
-            _InternalTraceBusListener = new TraceBusListener(PassTracedMessageToCustomBus, PassTracedExceptionToCustomBus);
-            if (_InternalTraceBusFeed != null) {
-              // Normally this shouldn't be necessary, because the _InternalTraceBusFeed has already been established
-              // (and connected to all recent listeners). Our listener is coming too late to the party and will never be wired up to
-              // the _InternalTraceBusFeed. Anyway, just to be sure, we put ourselves on the ignore list:
-              _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener);
-            }
-          } else {
-            _InternalTraceBusListener.OnMessageReceived = PassTracedMessageToCustomBus;
-          }
-        } else {
-          _InternalTraceBusListener.OnMessageReceived = null;
-        }
+        _InternalTraceBusListener.IsActive = value;
       }
     }
 
@@ -127,8 +149,6 @@ namespace Logging.SmartStandards {
 
       CustomBusFeed.OnEmitMessage = onEmitMessage;
       CustomBusFeed.OnEmitException = onEmitException;
-
-      EnableEmittingToTraceBus(false);
 
       DevLoggerToCustomBus = true;
       InsLoggerToCustomBus = true;

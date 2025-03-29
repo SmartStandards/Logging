@@ -1,8 +1,8 @@
-﻿using Logging.SmartStandards.Textualization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Logging.SmartStandards.Textualization;
 
 [assembly: InternalsVisibleTo("Logging.Tests")]
 
@@ -19,29 +19,33 @@ namespace Logging.SmartStandards.Transport {
   /// </remarks>
   public class TraceBusListener : TraceListener {
 
-    /// <summary>
-    ///   3rd party trace sources may not provide an audience. 
-    ///   Therefore you can map their source name to a target audience.
-    /// </summary>
-    public Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
-
     public delegate bool FilterIncomingTraceEventDelegate(int eventType, string sourceName, string formatString);
 
     public delegate void OnMessageReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args);
 
     public delegate void OnExceptionReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex);
 
-    protected TraceBusListener() {
-      // Constructor is private, because this must be a single instance
-    }
+    public bool IsActive { get; set; } = true;
 
     public OnMessageReceivedDelegate OnMessageReceived { get; set; }
 
     public OnExceptionReceivedDelegate OnExceptionReceived { get; set; }
 
     /// <summary>
-    ///   Registers the pipe as trace listener, allowing trace sources to wire up to the pipe.
-    ///   Wires up your actual logging sink by registering a callback delegate.
+    ///   3rd party trace sources may not provide an audience. 
+    ///   Therefore you can map their source name to a target audience.
+    /// </summary>
+    public Dictionary<string, string> TraceSourcesToAudienceMapping { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
+    ///   Constructor.
+    /// </summary>
+    protected TraceBusListener() {
+      // Constructor is private, because this must be a single instance
+    }
+
+    /// <summary>
+    ///   Constructor. Builds up a trace listener and registers it immediately to Trace.Listeners.
     /// </summary>
     /// <param name="onMessageReceived">
     ///   Callback delegate which is called for each recieved log entry. 
@@ -49,13 +53,13 @@ namespace Logging.SmartStandards.Transport {
     ///   Implement your actual logging sink here.
     /// </param>
     /// <remarks>
-    ///   Order dependency: This has to be done before initializing any trace sources 
+    ///   Order dependency: This has to be done before initializing any trace sources.
     /// </remarks>
     public TraceBusListener(OnMessageReceivedDelegate onMessageReceived, OnExceptionReceivedDelegate onExceptionReceived) {
 
-      OnMessageReceived = onMessageReceived;
+      this.OnMessageReceived = onMessageReceived;
 
-      OnExceptionReceived = onExceptionReceived;
+      this.OnExceptionReceived = onExceptionReceived;
 
       Trace.Listeners.Add(this); // Self-register to .net runtime
 
@@ -70,7 +74,7 @@ namespace Logging.SmartStandards.Transport {
       TraceEventCache eventCache, string sourceName, TraceEventType eventType, int eventId, string formatString, params object[] args
     ) {
 
-      if (OnMessageReceived == null) {
+      if (!this.IsActive || this.OnMessageReceived == null) {
         return;
       }
 
@@ -98,17 +102,17 @@ namespace Logging.SmartStandards.Transport {
 
       // Fallback: If the audience token could not be parsed from the formatString, try a lookup
 
-      if (audienceToken == "???") {
-        TraceSourcesToAudienceMapping.TryGetValue(sourceName, out audienceToken);
+      if (audienceToken == "") {
+        if (!this.TraceSourcesToAudienceMapping.TryGetValue(sourceName, out audienceToken)) audienceToken = "Dev";
       }
 
       // Pass the LogEvent to the callback method
 
       if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
         Exception ex = (Exception)args[0];
-        OnExceptionReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, ex);
+        this.OnExceptionReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, ex);
       } else {
-        OnMessageReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, messageTemplate, args);
+        this.OnMessageReceived.Invoke(audienceToken, level, sourceName, sourceLineId, eventId, messageTemplate, args);
       }
     }
 

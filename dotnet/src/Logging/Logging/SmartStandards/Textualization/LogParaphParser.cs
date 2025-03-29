@@ -9,14 +9,14 @@
     ///   " SourceLineId [AudienceToken]: MessageTemplate"
     /// </param>
     /// <param name="sourceLineId"> If metaDataRightPart was malformed: 0. </param>
-    /// <param name="audienceToken"> Without the brackets. If metaDataRightPart was malformed: ???. </param>
+    /// <param name="audienceToken"> Without the brackets. If metaDataRightPart was malformed: "" </param>
     /// <param name="messageTemplate"> If metaDataRightPart was malformed: metaDataRightPart.</param>
     public static void TokenizeMetaDataRightPart(
       string metaDataRightPart, out long sourceLineId, out string audienceToken, out string messageTemplate
     ) {
 
       sourceLineId = 0;
-      audienceToken = "???";
+      audienceToken = "";
       messageTemplate = metaDataRightPart;
 
       if (metaDataRightPart == null || metaDataRightPart.Length < 9) return;

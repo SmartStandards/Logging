@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
+    <ProjectReference Include="..\..\src\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj" />
   </ItemGroup>
 
 </Project>

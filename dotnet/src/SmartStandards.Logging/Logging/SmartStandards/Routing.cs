@@ -11,7 +11,7 @@ namespace Logging.SmartStandards {
     // TraceListeners must be registered as early as possible so they can be found by TraceSources.
     );
 
-    private static bool _TraceBusExceptionsTextualizedTogglePreStaged;
+    private static bool _TraceBusExceptionsTextualizedTogglePreStaged = true;
 
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
@@ -126,9 +126,12 @@ namespace Logging.SmartStandards {
     }
 
     public static void EnableEmittingToTraceBus(bool enable) {
+      // todo: Aufruf mit mehrmals true soll neue TraceSource-Instanz erzwingen
+
       DevLoggerToTraceBus = enable;
       InsLoggerToTraceBus = enable;
       BizLoggerToTraceBus = enable;
+      // todo: wenn alle aus sind => TraceSource disposen, damit Reconnect (für neue Listener) möglich wird.
     }
 
     /// <summary>

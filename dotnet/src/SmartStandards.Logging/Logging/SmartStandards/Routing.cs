@@ -1,6 +1,6 @@
-﻿using System;
-using Logging.SmartStandards.Internal;
+﻿using Logging.SmartStandards.Internal;
 using Logging.SmartStandards.Transport;
+using System;
 
 namespace Logging.SmartStandards {
 
@@ -63,6 +63,7 @@ namespace Logging.SmartStandards {
       set {
         _DevLoggerToTraceBus = value;
         DebuggingGraceTimer.IsCancelled = true;
+        ShutDownTraceBusFeedIfAppropriate();
       }
     }
 
@@ -78,6 +79,7 @@ namespace Logging.SmartStandards {
       set {
         _InsLoggerToTraceBus = value;
         DebuggingGraceTimer.IsCancelled = true;
+        ShutDownTraceBusFeedIfAppropriate();
       }
     }
 
@@ -93,6 +95,7 @@ namespace Logging.SmartStandards {
       set {
         _BizLoggerToTraceBus = value;
         DebuggingGraceTimer.IsCancelled = true;
+        ShutDownTraceBusFeedIfAppropriate();
       }
     }
 
@@ -125,21 +128,34 @@ namespace Logging.SmartStandards {
       }
     }
 
-    public static void EnableEmittingToTraceBus(bool enable) {
-      // todo: Aufruf mit mehrmals true soll neue TraceSource-Instanz erzwingen
+    /// <summary>
+    ///   Convenience method to set all routings to trace bus at once.
+    /// </summary>
+    /// <param name="enable"> Set True to enable emitting to trace bus. </param>
+    /// <remarks>
+    ///   Calling this method (with true) will always recreate the internal trace source and wire up to all currently 
+    ///   registered trace listeners.
+    /// </remarks>
+    public static void ReEnableEmittingToTraceBus(bool enable) {
+
+      _InternalTraceBusFeed = null;
+      // ^ we want to force a new instance because it should connect to TraceListeners that may have been registered meanwhile
 
       DevLoggerToTraceBus = enable;
       InsLoggerToTraceBus = enable;
       BizLoggerToTraceBus = enable;
-      // todo: wenn alle aus sind => TraceSource disposen, damit Reconnect (für neue Listener) möglich wird.
     }
 
     /// <summary>
     ///   Convenience method to change the routing target from System.Diagnostics.Trace to any custom target.
     /// </summary>
     /// <param name="onEmitMessage"> 
-    ///   Custom delegate, that will be called by any logger for any emit.
+    ///   Custom delegate, that will be called by any logger for any emit (except exceptions).
     ///   Put your code here to forward any log message to any forther target(s).
+    /// </param>
+    /// <param name="onEmitException"> 
+    ///   Custom delegate, that will be called by any logger for any emit exception.
+    ///   Put your code here to forward any exception to any forther target(s).
     /// </param>
     /// <remarks>
     ///   This will do the following:
@@ -170,5 +186,13 @@ namespace Logging.SmartStandards {
       CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, eventId, ex);
     }
 
+    private static void ShutDownTraceBusFeedIfAppropriate() {
+
+      if (_InternalTraceBusFeed == null) return;
+
+      if (!_BizLoggerToTraceBus && !_DevLoggerToTraceBus && !_InsLoggerToTraceBus) {
+        _InternalTraceBusFeed = null;
+      }
+    }
   }
 }

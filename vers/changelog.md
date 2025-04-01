@@ -8,8 +8,9 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
+- **new Feature**: Exception is textualized if emitted to TraceBus
 
+- **new Feature**: Internal TraceSource is shut down if no longer used
 
 
 ## v 1.2.3

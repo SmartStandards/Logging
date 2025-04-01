@@ -81,7 +81,8 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(Sc, 2071926793372485828, ex);
 
-      MyAssert.BothSinksContain(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, "MockException\r\n__System.Exception__", null);
+      MyAssert.CustomBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
 
       // Ensure PassThruTraceBusToCustomBus is working:
 

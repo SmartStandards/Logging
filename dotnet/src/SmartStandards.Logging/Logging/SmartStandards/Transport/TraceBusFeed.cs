@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Transport {
 

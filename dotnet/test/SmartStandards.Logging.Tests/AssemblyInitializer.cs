@@ -1,8 +1,8 @@
-﻿using System;
-using Logging.SmartStandards;
+﻿using Logging.SmartStandards;
 using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Logging.Tests {
 
@@ -25,8 +25,6 @@ namespace Logging.Tests {
       ExternalTraceBusListener = new TraceBusListener(PassTracedMessageToTraceBusSink, PassTracedExceptionToTraceBusSink);
 
       Routing.UseCustomBus(PassLogMessageToCustomBusSink, PassLogExceptionToTraceBusSink);
-
-      Routing.EnableEmittingToTraceBus(true);
 
       ExternalTraceBusFeed = new TraceBusFeed();
     }

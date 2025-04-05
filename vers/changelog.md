@@ -3,14 +3,16 @@ This files contains a version history including all changes relevant for semanti
 
 *(it is automatically maintained using the ['KornSW-VersioningUtil'](https://github.com/KornSW/VersioningUtil))*
 
-
-
-
 ## Upcoming Changes
 
-*(none)*
+- **Breaking Change**: Redefined API. The signatures of logging methods have changed. Two additional parameters were
+  added: SourceContext and SourceLineId.
 
+- **Breaking Change**: Routing configuration is now centralized in the "Routing" class.
 
+- **Breaking Change**: The behavior of System.Diagnostics Tracing support has changed. By default, emitting to trace 
+  will automatically be activated for 10 seconds after emitting the first log event 
+  (and deactivated unless you attach a debugger within 10 seconds.)
 
 ## v 1.2.3
 released **2024-09-27**, including:

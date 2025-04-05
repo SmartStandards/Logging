@@ -7,7 +7,7 @@ namespace Logging.SmartStandards.Textualization {
   /// </summary>
   /// <remarks>
   ///   Example LogParaph:
-  ///   [LevelAsAlpha3] SourceContext #EventId#  SourceLineId [AudienceToken]: MessageTemplate 
+  ///   [LevelAsAlpha3] SourceContext #kindId#  SourceLineId [AudienceToken]: MessageTemplate 
   ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
   /// </remarks>
   public class LogParaphRenderer {
@@ -48,16 +48,16 @@ namespace Logging.SmartStandards.Textualization {
     /// </summary>    
     /// <returns>
     ///   Example LogParaph:
-    ///   [LevelAsAlpha3] SourceContext #EventId#  SourceLineId [AudienceToken]: MessageTemplate 
+    ///   [LevelAsAlpha3] SourceContext #kindId#  SourceLineId [AudienceToken]: MessageTemplate 
     ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
     /// </returns>
     public static StringBuilder BuildParaphResolved(
       StringBuilder targetStringBuilder,
       string audienceToken, int level, string sourceContext, long sourceLineId,
-      int eventId, string messageTemplate, object[] args
+      int kindId, string messageTemplate, object[] args
     ) {
 
-      LogParaphRenderer.BuildParaphLeftPart(targetStringBuilder, level, sourceContext, eventId);
+      LogParaphRenderer.BuildParaphLeftPart(targetStringBuilder, level, sourceContext, kindId);
 
       LogParaphRenderer.BuildParaphRightPart(targetStringBuilder, sourceLineId, audienceToken, null);
 
@@ -76,14 +76,14 @@ namespace Logging.SmartStandards.Textualization {
     ///   S.th. like "[Err] MyApp.exe #4711#"
     /// </returns>
     public static StringBuilder BuildParaphLeftPart(
-      StringBuilder targetStringBuilder, int level, string sourceContext, int eventId
+      StringBuilder targetStringBuilder, int level, string sourceContext, int kindId
     ) {
       targetStringBuilder.Append('[');
       LogParaphRenderer.LevelToAlpha3(level, targetStringBuilder);
       targetStringBuilder.Append("] ");
       targetStringBuilder.Append(sourceContext);
       targetStringBuilder.Append(" #");
-      targetStringBuilder.Append(eventId);
+      targetStringBuilder.Append(kindId);
       targetStringBuilder.Append('#');
       return targetStringBuilder;
     }

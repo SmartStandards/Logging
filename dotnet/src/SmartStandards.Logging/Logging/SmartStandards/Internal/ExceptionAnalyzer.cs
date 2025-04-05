@@ -14,13 +14,13 @@ namespace Logging.SmartStandards.Internal {
         return InferEventIdByException(ex.InnerException);
       }
 
-      // An einer Win32Exception hängt i.d.R. bereits eine EventId => diese verwenden
+      // An einer Win32Exception hängt i.d.R. bereits eine kindId => diese verwenden
 
       if (ex is Win32Exception) {
         return ((Win32Exception)ex).NativeErrorCode;
       }
 
-      // Falls der Absender die Konvention "MessageText #{EventId}" einhielt...
+      // Falls der Absender die Konvention "MessageText #{kindId}" einhielt...
 
       int hashTagIndex = ex.Message.LastIndexOf("#");
 
@@ -28,7 +28,7 @@ namespace Logging.SmartStandards.Internal {
         return id;
       } else {
 
-        // ...falls nicht: Wir leiten aus dem Exception-Typ eine EventId ab.
+        // ...falls nicht: Wir leiten aus dem Exception-Typ eine kindId ab.
 
         using (var md5 = MD5.Create()) {
           int hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(ex.GetType().Name)), 0);

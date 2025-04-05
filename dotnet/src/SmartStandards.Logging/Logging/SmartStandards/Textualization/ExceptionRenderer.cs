@@ -24,7 +24,7 @@ namespace Logging.SmartStandards {
         return;
       }
 
-      target.Append($"__{ex.GetType().FullName}__");
+      target.Append($"-- {ex.GetType().FullName} --");
 
       if (isInner) {
         target.Append($" (inner)");
@@ -32,7 +32,7 @@ namespace Logging.SmartStandards {
 
       if (includeStacktrace && !string.IsNullOrWhiteSpace(ex.StackTrace)) {
 
-        StringReader traceReader = new StringReader(ex.StackTrace);
+        StringReader traceReader = new StringReader(ex.StackTrace); // TODO: Performance optimization
 
         string readLine = traceReader.ReadLine()?.Trim();
 
@@ -45,7 +45,7 @@ namespace Logging.SmartStandards {
       }
 
       if ((ex.InnerException != null)) {
-        messageMainLine = messageMainLine + " >> " + ex.InnerException.Message;
+        messageMainLine = messageMainLine + " :: " + ex.InnerException.Message;
         target.AppendLine();
         AppendRecursive(ex.InnerException, target, ref messageMainLine, includeStacktrace, true);
       }

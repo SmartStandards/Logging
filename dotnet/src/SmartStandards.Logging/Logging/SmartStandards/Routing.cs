@@ -175,15 +175,15 @@ namespace Logging.SmartStandards {
     }
 
     private static void PassTracedMessageToCustomBus(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args
     ) {
-      CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
     }
 
     private static void PassTracedExceptionToCustomBus(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex
     ) {
-      CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, eventId, ex);
+      CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, kindId, ex);
     }
 
     private static void ShutDownTraceBusFeedIfAppropriate() {

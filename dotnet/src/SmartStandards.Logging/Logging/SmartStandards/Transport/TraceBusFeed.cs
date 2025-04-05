@@ -50,7 +50,7 @@ namespace Logging.SmartStandards.Transport {
       return traceSource;
     }
 
-    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex) {
+    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
 
       string renderedException = "";
       object[] args;
@@ -62,7 +62,7 @@ namespace Logging.SmartStandards.Transport {
         args = new object[] { ex };
       }
 
-      this.EmitMessage(audience, level, sourceContext, sourceLineId, eventId, renderedException, args);
+      this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, renderedException, args);
     }
 
     /// <param name="level">
@@ -75,7 +75,7 @@ namespace Logging.SmartStandards.Transport {
     /// </param>
     public void EmitMessage(
       string audience, int level, string sourceContext, long sourceLineId,
-      int eventId, string messageTemplate, params object[] args
+      int kindId, string messageTemplate, params object[] args
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -135,7 +135,7 @@ namespace Logging.SmartStandards.Transport {
 
       formatStringBuilder.Replace("{", "{{").Replace("}", "}}");
 
-      traceSource.TraceEvent(eventType, eventId, formatStringBuilder.ToString(), args);
+      traceSource.TraceEvent(eventType, kindId, formatStringBuilder.ToString(), args);
     }
 
   }

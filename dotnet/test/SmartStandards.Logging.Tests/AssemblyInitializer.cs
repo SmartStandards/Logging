@@ -30,27 +30,27 @@ namespace Logging.Tests {
     }
 
     private static void PassTracedMessageToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args
     ) {
-      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
     }
 
     private static void PassTracedExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex
     ) {
-      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventId, ex);
+      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, kindId, ex);
     }
 
     private static void PassLogMessageToCustomBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args
     ) {
-      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
     }
 
     private static void PassLogExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int eventId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex
     ) {
-      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventId, ex);
+      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, kindId, ex);
     }
 
   }

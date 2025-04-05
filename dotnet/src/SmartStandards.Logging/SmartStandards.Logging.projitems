@@ -9,9 +9,12 @@
     <Import_RootNamespace>System</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.Convenience.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.Convenience.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.Convenience.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.WoSourceContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\ExceptionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.PerLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.PerLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.PerLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.WoSourceContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)logging\smartstandards\internal\DebuggingGraceTimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphParser.cs" />
@@ -26,12 +29,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\MessageTemplateRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateRepository.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\CopyOfPlaceholderExtensions .cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.WoSourceContext.cs" />
   </ItemGroup>
 </Project>

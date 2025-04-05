@@ -8,14 +8,14 @@ namespace Logging.SmartStandards.Sinks {
 
     public static void WriteMessage(
       string audienceToken, int level, string sourceContext, long sourceLineId,
-      int eventId, string messageTemplate, object[] args
+      int kindId, string messageTemplate, object[] args
     ) {
 
       var rescuedColor = Console.ForegroundColor;
 
       StringBuilder logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
 
-      LogParaphRenderer.BuildParaphResolved(logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, eventId, messageTemplate, args);
+      LogParaphRenderer.BuildParaphResolved(logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
 
       switch (level) {
 
@@ -62,10 +62,10 @@ namespace Logging.SmartStandards.Sinks {
 
     public void WriteException(
       string audience, int level, string sourceContext, long sourceLineId,
-      int eventId, Exception ex
+      int kindId, Exception ex
     ) {
       string exAsString = ExceptionRenderer.Render(ex);
-      ConsoleSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventId, exAsString, null);
+      ConsoleSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, exAsString, null);
     }
 
   }

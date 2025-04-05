@@ -31,7 +31,7 @@ The complete set of parameters is...
 
     {Audience}Logger.Log{Level}(sourceContext, sourceLineId, kindId, messageTemplate, args);
 
-...which build up a leg event.
+...which build up a log event.
 
 ## Log Event Attributes
 

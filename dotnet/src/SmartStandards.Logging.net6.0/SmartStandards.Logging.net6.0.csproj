@@ -24,7 +24,11 @@
     <FileVersion>999.0.0.0</FileVersion>
     <PackageTags></PackageTags>
   </PropertyGroup>
-  
-  <Import Project="..\SmartStandards.Logging\SmartStandards.Logging.projitems" Label="Shared" />
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
+	</ItemGroup>
+
+	<Import Project="..\SmartStandards.Logging\SmartStandards.Logging.projitems" Label="Shared" />
 
 </Project>

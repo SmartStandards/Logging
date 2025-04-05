@@ -1,13 +1,13 @@
 {
-  "currentVersion": "1.2.3",
-  "currentVersionWithSuffix": "1.2.3",
+  "currentVersion": "2.0.0",
+  "currentVersionWithSuffix": "2.0.0",
   "releaseType": "official",
-  "previousVersion": "1.2.2",
-  "changeGrade": "patch",
-  "currentMajor": 1,
-  "currentMinor": 2,
-  "currentPatch": 3,
-  "versionDateInfo": "2024-09-27",
-  "versionTimeInfo": "07:58:12",
-  "versionNotes": "- Fix: added synclock to avoid concurrency problems during TraceSource creation\n"
+  "previousVersion": "1.2.3",
+  "changeGrade": "major",
+  "currentMajor": 2,
+  "currentMinor": 0,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-04-05",
+  "versionTimeInfo": "13:11:10",
+  "versionNotes": "- **Breaking Change**: Redefined API. The signatures of logging methods have changed. Two additional parameters were\n- **Breaking Change**: Routing configuration is now centralized in the \"Routing\" class.\n- **Breaking Change**: The behavior of System.Diagnostics Tracing support has changed. By default, emitting to trace\n- (and deactivated unless you attach a debugger within 10 seconds.)\n- added: SourceContext and SourceLineId.\n- will automatically be activated for 10 seconds after emitting the first log event\n"
 }

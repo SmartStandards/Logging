@@ -2,67 +2,62 @@
 
 [![Build status](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_apis/build/status/Logging)](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_build/latest?definitionId=17) • [Change Log](./vers/changelog.md)
 
-First of all, SmartStandards Logging is a stack of best practice conventions of how logging can be done (independent of any technology).
-Plus, a lightweight .net library (no dependencies) which allows to emit logging to any target (.net Trace, console, SeriLog, etc.).
-The only built in target is .net Trace - for any other target you can inject a delegate which redirects messages to anywhere you want.
+SmartStandards Logging is a (lightweight, no dependencies) convenience facade to simplify emitting log events.
+Log events can be routed from/to .net Trace and/or to any custom target (e.g. Console, In-memory-sink, SeriLog, ...).
+The implemented parameters (=log event attributes) are well chosen to be convenient for logging data warehouse and
+health monitoring scenarios.
 
 # Get Started
 
 For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 
-## Emitting Log Messages
+## Emitting Log Events
 
-    DevLogger.LogInformation(123, "Text without placeholders");
+    DevLogger.LogInformation("This is my log message.");
     
-    InfrastructureLogger.LogWarning(222, "{thingy} space is low: {space} MB", "Disk", 5);
+    BizLogger.LogWarning(2070198253252296432, 222, "Business process {processName} was delayed for hours!", "InvoiceGeneration", 5);
 
-    ProtocolLogger.LogError(
+    InsLogger.LogError(
+      "MyApp", 2070198253252296432, 
       4711, @"User "{UserLogonName}" does not have sufficient rights to perform "{Interaction}" on environment \"{Environment}\".",
       "Müller", "Delete", "Productive"
     );
 
-## Registering log handlers
+    InsLogger.LogCritical(exception);
 
-    ILogger dotNetDevLogger = loggerfactory.CreateLogger("Dev");
+# Log Event Details
 
-    ILogger dotNetInfrastructureLogger = loggerfactory.CreateLogger("Ins");
+The complete set of parameters is...
 
-    ILogger dotNetProtocolLogger = loggerfactory.CreateLogger("Pro");
+    {Audience}Logger.Log{Level}(sourceContext, sourceLineId, kindId, messageTemplate, args);
 
-    DevLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetDevLogger.Log(level, id, messageTemplate, args);
+...which build up a leg event.
 
-    InfrastructureLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetInfrastructureLogger.Log(level, id, messageTemplate, args);
+## Log Event Attributes
 
-    ProtocolLogger.LogMethod = (channelName, level, id, messageTemplate, args) => dotNetProtocolLogger.Log(level, id, messageTemplate, args);
-
-# Structure
-
-## LogEntry (Definition)
-
-|Property       |Type    |Example Value                  |Semantic                                                         |
+|Property       |Type    |Example Value(s)               |Semantic                                                         |
 |---------------|--------|-------------------------------|-----------------------------------------------------------------|
-|Channel        |Integer |                              0|Aka "category". Reflects the audience (see below).               |
-|Level          |Integer |                              4|See below.                                                       |
-|Id             |Integer |                           4711|Can be used as return (and error) code for functions (see below).|
+|Audience       |String  |            "Dev", "Ins", "Biz"|Defines who should read the log event.                           |
+|Level          |Int32   |                              4|See below.                                                       |
+|SourceContext  |String  |                        "MyApp"|Can be used as return (and error) code for functions (see below).|
+|SourceLineId   |Int64   |            2070198253252296432|Can be used as return (and error) code for functions (see below).|
+|KindId         |Int32   |                           4711|Can be used as return (and error) code for functions (see below).|
 |MessageTemplate|String  |"{thing} not found on {place}."|Contains named placeholders (curly braces).                      |
 |Args           |String[]|                ["File","Disk"]|Contains placeholder values in the same order as in the template.|
 
-### Channels
+### Audience
 
-- In .net core logging this is called "category", in .net trace "source name"
+We support 3 target groups:
 
-- In contrast to other concepts which suggest to use this to specify "the name of the application that generated the message", 
-  we use this to specify an abstract target group for a message.
+|Token|	Friendly Name     | Purpose of the LogEvent                               |Example Content|
+|-----|-------------------|-------------------------------------------------------|----------------------------------|
+|Dev  |Developers         |Tracking down bugs in the code.                        |Method not found exception.       |
+|Ins  |Infrastructure Guys|Getting alarmed on infrastructure problems (monitoring)|Web service request timed out     |
+|Biz  |Business People    |Judge the outcome of a business process.	              |Validation errors of imported data|
 
-|Value|Technical Name|Friendly Name |Target group                                                                    |
-|-----|--------------|--------------|--------------------------------------------------------------------------------|
-|22692|Dev           |Development   |Developers of a software component who want to do bug fixing.                   |
-|19913|Ins           |Infrastructure|Dev ops people who want to monitor the health of their infrastructure.          |
-|15952|Pro           |Protocol      |End users (business people) who want to judge the outcome of a business process.| 
+### Level
 
-### Levels
-
-|Value|Alpha3|Friendly|Suggested Color|Suggested Usage for Dev Channel                    |Suggested Usage for Ins Channel|Suggested Usage for Pro Channel|
+|Value|Alpha3|Friendly|Suggested Color|Suggested Usage for Dev Audience                   |Suggested Usage for Ins Audience|Suggested Usage for Biz Audience|
 |-----|------|--------|---------------|---------------------------------------------------|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
 |5    |Cri   |Critical|Magenta        |Report a (unexpected) bug in the code.             |Report unwanted states. Immediate fix necessary.|An issues was detected, that can never be compensated or that creates subsequent errors. Higher level process(es) should be aborted.|
 |4    |Err   |Error   |Red            |Report a (robust) bug in the code.                 |Report unwanted states. Fix can be postponed.   |
@@ -71,13 +66,36 @@ For dotnet, install the **"SmartStandards Logging"** Nuget Package.
 |1    |Dbg   |Debug   |DarkGray       |Temporarily existing logging for bug investigation.|
 |0    |Trc   |Trace   |DarkCyan       |Report program flow.                               |
 
-## FormattedLogEntry (Definition)
+### SourceContext
 
-Represents a complete log entry as a single, specially formatted string (with already resolved placeholders).
+The source context identifies a logical design time unit which emitted the LogEvent. You decide about the granularity. Examples are: Problem domain, assembly, namespace, etc.
+While there is no general rule for this decision (it strongly depends on the architecture of your solution), the assembly name is a good choice to start off with.
 
-|Variation      |Syntax                              |Example                              |
-|---------------|------------------------------------|-------------------------------------|
-|Message Only   |ResolvedMessage                     |`"File not found on Disk!"`          |
-|With Level     |[LevelAsAlpha3]:ResolvedMessage  |`"[Err]:File not found on Disk!"`    |
-|With Level + Id|[LevelAsAlpha3]Id:ResolvedMessage|"`[Err]4711:File not found on Disk!"`|
+Remember: The purpose of SourceContext is to act as a criteria for filtering & monitoring use cases. So there are (at least) 2 things you want to avoid:
 
+- Too many SourceContext names (=> suggests an as-coarse-as-possible granularity)
+- Volatile SourceContext names (=> does not favour using fully qualified type names)
+
+Also, the SourceContext ist the scope in which KindIds (=reusable message templates) should be unique.
+
+Poison Chars: Besides letters and numbers, only dots are allowed (because of string representation syntax)
+
+### SourceLineId
+
+The SourceLineId uniquely identifies the line of code which emitted a log event.
+We suggest to use a Snowflake44 ID which has to be generated during design time.
+
+### KindId
+
+An event kind is a generalization of a log event's semantic. It is intended to be used as filter criteria for monitoring scenarios.
+Log events coming from different code places can provide the same KindId.
+Optionally, reusable message templates can be defined per KindId (see section below).
+The KindId can be 0 (and specified later in the product evolution).
+
+### MessageTemplate + Args (for regular messages)
+
+- Placeholders are written between { and } braces
+- Placeholders must not be numeric indexes, like {0} and {1}
+- Placeholders must be valid C# identifiers, for example {FooBar}, but not {Foo.Bar} or {Foo-Bar}
+		- "Placeholder names should use PascalCase for consistency with other code"
+- No braces (other than placeholders)

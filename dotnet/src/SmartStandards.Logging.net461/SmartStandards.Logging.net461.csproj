@@ -32,7 +32,7 @@
     <DefineConstants>TRACE;NET46</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\dist\bin-net46\SmartStandards.LogginSmartStandards.g.xml</DocumentationFile>
+    <DocumentationFile>..\..\dist\bin-net46\SmartStandards.Logging.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>

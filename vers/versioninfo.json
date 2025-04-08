@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.0.0",
-  "currentVersionWithSuffix": "2.0.0",
+  "currentVersion": "2.0.1",
+  "currentVersionWithSuffix": "2.0.1",
   "releaseType": "official",
-  "previousVersion": "1.2.3",
-  "changeGrade": "major",
+  "previousVersion": "2.0.0",
+  "changeGrade": "patch",
   "currentMajor": 2,
   "currentMinor": 0,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-04-05",
-  "versionTimeInfo": "13:11:10",
-  "versionNotes": "- **Breaking Change**: Redefined API. The signatures of logging methods have changed. Two additional parameters were\n- **Breaking Change**: Routing configuration is now centralized in the \"Routing\" class.\n- **Breaking Change**: The behavior of System.Diagnostics Tracing support has changed. By default, emitting to trace\n- (and deactivated unless you attach a debugger within 10 seconds.)\n- added: SourceContext and SourceLineId.\n- will automatically be activated for 10 seconds after emitting the first log event\n"
+  "currentPatch": 1,
+  "versionDateInfo": "2025-04-08",
+  "versionTimeInfo": "08:59:48",
+  "versionNotes": "- Added T4 Template embedd Library-Code into ext project w/o dll-Reference\n- Fix: Fallback SourceContext is now AssemblyName of Caller instead of always SmartStandards.Logging\n- Fix: Wrapped Exceptions w/o explicit messageId will always lead to a 'InferredEventId' of 1969630032 instead of inferring it from the inner one... #91\n"
 }

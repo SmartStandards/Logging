@@ -4,7 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>Logging</RootNamespace>
     <Nullable>disable</Nullable>    
-    <IsPackable>false</IsPackable>     
+    <IsPackable>false</IsPackable>   
+    <IsTestProject>true</IsTestProject>  
   </PropertyGroup>
 
   <ItemGroup>

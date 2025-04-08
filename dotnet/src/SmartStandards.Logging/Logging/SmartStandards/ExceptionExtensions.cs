@@ -6,7 +6,7 @@ namespace Logging.SmartStandards {
 
     public static Exception Wrap(this Exception extendee, string message) {
 
-      Exception wrappedException = new Exception(message, extendee);
+      WrappedException wrappedException = new WrappedException(message, extendee);
 
       return wrappedException;
     }

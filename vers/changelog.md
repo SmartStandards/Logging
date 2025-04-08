@@ -5,9 +5,8 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
-
-
+* Fix: Wrapped Exceptions w/o explicit messageId will always lead to a 'InferredEventId' of 1969630032 instead of inferring it from the inner one... #91
+* 
 
 ## v 2.0.0
 released **2025-04-05**, including:

@@ -20,10 +20,18 @@ namespace Logging.SmartStandards {
     /// <returns> A new (outer) exception.</returns>
     public static Exception Wrap(this Exception extendee, int kindId, string message) {
 
-      Exception wrappedException = new Exception(message + " #" + kindId.ToString(), extendee);
+      WrappedException wrappedException = new WrappedException(message + " #" + kindId.ToString(), extendee);
 
       return wrappedException;
     }
 
+    internal class WrappedException : Exception {
+
+      public WrappedException(string message, Exception inner) : base (message, inner) {
+      }
+
+    }
+
   }
+
 }

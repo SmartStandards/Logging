@@ -91,7 +91,7 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(this.Sc, 2071926793372485829, ex2);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485829, 1234, "Zwiebel. #1234 :: MockException\r\n-- System.Exception --\r\n-- System.Exception -- (inner)", null);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485829, 1234, "Zwiebel. #1234 :: MockException\r\n-- Logging.SmartStandards.ExceptionExtensions+WrappedException --\r\n-- System.Exception -- (inner)", null);
       MyAssert.CustomBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485829, 1234, null, ex2);
 
       // Ensure PassThruTraceBusToCustomBus is working:

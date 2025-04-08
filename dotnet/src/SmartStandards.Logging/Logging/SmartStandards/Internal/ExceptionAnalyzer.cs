@@ -10,8 +10,22 @@ namespace Logging.SmartStandards.Internal {
 
     internal static int InferEventIdByException(Exception ex) {
 
+      // 'Zwiebel' durch Aufrufe via Reflection (InnerException ist mehr repräsentativ)
+
       if (ex is TargetInvocationException && ex.InnerException != null) {
         return InferEventIdByException(ex.InnerException);
+      }
+
+      // 'Zwiebel' durch Task.Run (InnerException ist mehr repräsentativ)
+
+      if (ex is AggregateException) {
+        var castedAggregateException = (AggregateException) ex;
+        if (
+          castedAggregateException.InnerExceptions != null &&
+          castedAggregateException.InnerExceptions.Count == 1 //falls nur 1 enthalten (macht MS gern)
+        ) {
+          return InferEventIdByException(castedAggregateException.InnerExceptions[0]);
+        }
       }
 
       // An einer Win32Exception hängt i.d.R. bereits eine kindId => diese verwenden
@@ -26,18 +40,24 @@ namespace Logging.SmartStandards.Internal {
 
       if (hashTagIndex >= 0 && int.TryParse(ex.Message.Substring(hashTagIndex + 1), out int id)) {
         return id;
-      } else {
+      } 
 
-        // ...falls nicht: Wir leiten aus dem Exception-Typ eine kindId ab.
+      // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
-        using (var md5 = MD5.Create()) {
-          int hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(ex.GetType().Name)), 0);
-          if (hash < 0) {
-            return hash * -1;
-          }
-          return hash;
-        }
+      if (ex is ExceptionExtensions.WrappedException) {
+        return InferEventIdByException(ex.InnerException);
       }
+
+      // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine kindId ab.
+
+      using (var md5 = MD5.Create()) {
+        int hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(ex.GetType().Name)), 0);
+        if (hash < 0) {
+          return hash * -1;
+        }
+        return hash;
+      }
+      
     }
 
   }

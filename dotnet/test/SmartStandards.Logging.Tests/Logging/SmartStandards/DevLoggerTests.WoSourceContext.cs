@@ -8,7 +8,7 @@ namespace Logging.SmartStandards {
     [TestMethod()]
     public void LogMethods_WoSourceContext_ShouldDefaultToCurrentAssemblyName() {
 
-      string currentAssemblyName = "SmartStandards.Logging";
+      string currentAssemblyName = "SmartStandards.Logging.Tests";
 
       DevLogger.LogInformation(2072416880134254029, 7, "{thingy} space is low: {space} MB", "Disk", 5);
 

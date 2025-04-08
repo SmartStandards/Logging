@@ -9,6 +9,8 @@ This files contains a version history including all changes relevant for semanti
 
 * Added T4 Template embedd Library-Code into ext project w/o dll-Reference
 
+* Fix: Fallback SourceContext is now AssemblyName of Caller instead of always SmartStandards.Logging
+
   
 
 ## v 2.0.0

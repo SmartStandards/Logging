@@ -6,8 +6,8 @@ namespace Logging.SmartStandards {
 
   public partial class BizLogger {
 
-    //NOTE: [MethodImpl(MethodImplOptions.NoInlining)]
-    //is used to avoid wrong results from Assembly.GetCallingAssembly()
+    // NOTE: [MethodImpl(MethodImplOptions.NoInlining)]
+    // is used to avoid wrong results from Assembly.GetCallingAssembly()
 
     #region MessageTemplate only
 

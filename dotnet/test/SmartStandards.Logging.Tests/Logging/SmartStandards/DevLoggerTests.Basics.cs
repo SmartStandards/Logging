@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Logging.Tests;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Globalization;
 using System.Threading;
-using Logging.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
   [TestClass]
   public partial class DevLoggerTests {
 
-    private string Sc { get { return AssemblyInitializer.SourceContext; } }
+    private static string Sc { get { return AssemblyInitializer.SourceContext; } }
 
     [TestInitialize]
     public void InitializeBeforeEachTest() {
@@ -28,9 +28,9 @@ namespace Logging.SmartStandards {
 
       int i = 0;
 
-      DevLogger.LogInformation(this.Sc, 2071873252511884979, 1, "Text without placeholders, zero args provided");
+      DevLogger.LogInformation(Sc, 2071873252511884979, 1, "Text without placeholders, zero args provided");
 
-      MyAssert.BothSinksContain(i, "Dev", 2, this.Sc, 2071873252511884979, 1, "Text without placeholders, zero args provided");
+      MyAssert.BothSinksContain(i, "Dev", 2, Sc, 2071873252511884979, 1, "Text without placeholders, zero args provided");
       Assert.AreEqual(0, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i].Length);
 
       // null as args => should be normalized to empty strings and empty array
@@ -44,9 +44,9 @@ namespace Logging.SmartStandards {
       //
 
       i++;
-      InsLogger.LogWarning(this.Sc, 2071873946794501890, 7, "{thingy} space is low: {space} MB", "Disk", 5);
+      InsLogger.LogWarning(Sc, 2071873946794501890, 7, "{thingy} space is low: {space} MB", "Disk", 5);
 
-      MyAssert.BothSinksContain(i, "Ins", 3, this.Sc, 2071873946794501890, 7, "{thingy} space is low: {space} MB");
+      MyAssert.BothSinksContain(i, "Ins", 3, Sc, 2071873946794501890, 7, "{thingy} space is low: {space} MB");
       Assert.AreEqual("Disk", AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][0]);
       Assert.AreEqual(5, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][1]);
 
@@ -54,13 +54,13 @@ namespace Logging.SmartStandards {
 
       i++;
       BizLogger.LogError(
-        this.Sc, 2071873950133171447, 8,
+        Sc, 2071873950133171447, 8,
         "User \"{UserLogonName}\" does not have sufficient rights to perform \"{Interaction}\" on environment \"{Environment}\".",
         "Müller", "Delete", "Productive"
       );
 
       MyAssert.BothSinksContain(
-        i, "Biz", 4, this.Sc, 2071873950133171447, 8,
+        i, "Biz", 4, Sc, 2071873950133171447, 8,
         "User \"{UserLogonName}\" does not have sufficient rights to perform \"{Interaction}\" on environment \"{Environment}\"."
       );
       Assert.AreEqual("Müller", AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][0]);
@@ -70,37 +70,37 @@ namespace Logging.SmartStandards {
       //
 
       i++;
-      DevLogger.LogCritical(this.Sc, 2071876994403864019, -12345, null, null);
+      DevLogger.LogCritical(Sc, 2071876994403864019, -12345, null, null);
 
-      MyAssert.BothSinksContain(i, "Dev", 5, this.Sc, 2071876994403864019, -12345, "");
+      MyAssert.BothSinksContain(i, "Dev", 5, Sc, 2071876994403864019, -12345, "");
 
       // Exception
 
       Exception ex = new Exception("MockException");
 
       i++;
-      DevLogger.LogCritical(this.Sc, 2071926793372485828, ex);
+      DevLogger.LogCritical(Sc, 2071926793372485828, ex);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485828, 1969630032, "MockException\r\n-- System.Exception --", null);
-      MyAssert.CustomBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485828, 1969630032, null, ex);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, "MockException\r\n-- System.Exception --", null);
+      MyAssert.CustomBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
 
       // Exception wrapped
 
       Exception ex2 = ex.Wrap(1234, "Zwiebel.");
 
       i++;
-      DevLogger.LogCritical(this.Sc, 2071926793372485829, ex2);
+      DevLogger.LogCritical(Sc, 2071926793372485829, ex2);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485829, 1234, "Zwiebel. #1234 :: MockException\r\n-- Logging.SmartStandards.ExceptionExtensions+WrappedException --\r\n-- System.Exception -- (inner)", null);
-      MyAssert.CustomBusSinkContains(i, "Dev", 5, this.Sc, 2071926793372485829, 1234, null, ex2);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485829, 1234, "Zwiebel. #1234 :: MockException\r\n-- Logging.SmartStandards.ExceptionExtensions+WrappedException --\r\n-- System.Exception -- (inner)", null);
+      MyAssert.CustomBusSinkContains(i, "Dev", 5, Sc, 2071926793372485829, 1234, null, ex2);
 
       // Ensure PassThruTraceBusToCustomBus is working:
 
       i++;
-      AssemblyInitializer.ExternalTraceBusFeed.EmitMessage("Dev", 2, this.Sc, 2071880606768384068, 4711, "Das kam direkt vom TraceBus", 123, "Foo");
+      AssemblyInitializer.ExternalTraceBusFeed.EmitMessage("Dev", 2, Sc, 2071880606768384068, 4711, "Das kam direkt vom TraceBus", 123, "Foo");
 
       MyAssert.BothSinksContain(
-        i, "Dev", 2, this.Sc, 2071880606768384068, 4711,
+        i, "Dev", 2, Sc, 2071880606768384068, 4711,
         "Das kam direkt vom TraceBus"
       );
       Assert.AreEqual(123, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][0]);
@@ -125,7 +125,7 @@ namespace Logging.SmartStandards {
         DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogEventKind.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, this.Sc, 2071873991520386244, (int)TestingLogEventKind.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogEventKind.ZuVielFooImBar,
           "There is too much foo within bar beacause of {0}!"
         );
 
@@ -135,7 +135,7 @@ namespace Logging.SmartStandards {
         DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogEventKind.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, this.Sc, 2071873995903461991, (int)TestingLogEventKind.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogEventKind.ZuVielFooImBar,
           "Da ist zu viel Foo im Bar wegen {0}!"
         );
 

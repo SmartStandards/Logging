@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\CutomBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\ExceptionRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\ConsoleSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\TraceBusFeed.Buffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\TraceBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Routing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\TraceBusListener.cs" />

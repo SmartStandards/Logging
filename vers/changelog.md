@@ -5,8 +5,8 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
-
+ - **new Feature**: TraceBusFeed: Circular Buffer for (very) early emitted events. It will be flushed as soon as a required listener becomes
+   registered.
 
 
 ## v 2.0.1

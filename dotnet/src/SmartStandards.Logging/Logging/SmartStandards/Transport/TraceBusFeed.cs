@@ -9,16 +9,20 @@ namespace Logging.SmartStandards.Transport {
   /// <summary>
   ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
   /// </summary>
-  public class TraceBusFeed {
+  public partial class TraceBusFeed {
+
+    private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
+
+    private Dictionary<string, MyCircularBuffer<QueuedEvent>> _RequiredListenersMessageQueue;
 
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
     /// </summary>
     public bool ExceptionsTextualizedToggle { get; set; }
 
-    public List<object> IgnoredListeners { get; set; } = new List<object>();
+    public HashSet<string> RequiredListeners { get; set; } = new HashSet<string>();
 
-    private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
+    public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
     private TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
 
@@ -35,19 +39,60 @@ namespace Logging.SmartStandards.Transport {
 
           traceSource.Switch.Level = SourceLevels.All;
 
-          traceSource.Listeners.Clear(); // Otherwise the default listener will be registered twice
-
-          // Wire up all CURRENTLY existing trace listeners (they have to be initialized before!)
-
-          foreach (TraceListener listener in Trace.Listeners) {
-            if (!this.IgnoredListeners.Contains(listener)) traceSource.Listeners.Add(listener);
-          }
+          WireUp(traceSource);
 
           _TraceSourcePerSourceContext[sourceContext] = traceSource;
         }
       }
 
+      EnsureRequiredListeners(traceSource);
+
       return traceSource;
+    }
+
+    private void EnsureRequiredListeners(TraceSource traceSource) {
+
+      if (RequiredListeners.Count == 0) return;
+
+      foreach (TraceListener listener in Trace.Listeners) {
+
+        if (this.RequiredListeners.Contains(listener.Name)) {
+
+          this.RequiredListeners.Remove(listener.Name);
+
+          if (!traceSource.Listeners.Contains(listener)) traceSource.Listeners.Add(listener);
+
+          MyCircularBuffer<QueuedEvent> buffer;
+
+          if (_RequiredListenersMessageQueue.TryGetValue(listener.Name, out buffer)) {
+
+            _RequiredListenersMessageQueue.Remove(listener.Name);
+
+            foreach (QueuedEvent e in buffer) {
+              traceSource.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
+            }
+
+          }
+
+        }
+      }
+    }
+
+    private void WireUp(TraceSource traceSource) {
+
+      traceSource.Listeners.Clear(); // Boilerplate: Always remove the ominous "Default" TraceListener
+
+      foreach (TraceListener listener in Trace.Listeners) {
+
+        if (listener.Name == "Default") continue; // The .NET Default listener is a major performance hit => do not support.
+
+        if (this.RequiredListeners.Contains(listener.Name)) this.RequiredListeners.Remove(listener.Name);
+
+        if (this.IgnoredListeners.Contains(listener.Name)) continue;
+
+        traceSource.Listeners.Add(listener);
+
+      }
     }
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
@@ -135,7 +180,49 @@ namespace Logging.SmartStandards.Transport {
 
       formatStringBuilder.Replace("{", "{{").Replace("}", "}}");
 
+      // actual emit
+
       traceSource.TraceEvent(eventType, kindId, formatStringBuilder.ToString(), args);
+
+      // queue
+
+      if (this.RequiredListeners.Count > 0) {
+
+        if (_RequiredListenersMessageQueue == null) _RequiredListenersMessageQueue = new Dictionary<string, MyCircularBuffer<QueuedEvent>>();
+
+        foreach (string listenerName in this.RequiredListeners) {
+
+          MyCircularBuffer<QueuedEvent> b;
+
+          if (!_RequiredListenersMessageQueue.TryGetValue(listenerName, out b)) {
+            b = new MyCircularBuffer<QueuedEvent>(1000);
+            _RequiredListenersMessageQueue.Add(listenerName, b);
+          }
+
+          b.SafeEnqueue(new QueuedEvent(eventType, kindId, formatStringBuilder.ToString(), args));
+
+        }
+      }
+
+    }
+
+    private class QueuedEvent {
+
+      public TraceEventType EventType { get; set; }
+
+      public int KindId { get; set; }
+
+      public string MessageTemplate { get; set; }
+
+      public object[] Args { get; set; }
+
+      public QueuedEvent(TraceEventType EventType, int kindId, string messageTemplate, object[] args) {
+        this.EventType = EventType;
+        this.KindId = kindId;
+        this.MessageTemplate = messageTemplate;
+        this.Args = args;
+      }
+
     }
 
   }

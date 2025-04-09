@@ -19,7 +19,7 @@ namespace Logging.SmartStandards.Internal {
       // 'Zwiebel' durch Task.Run (InnerException ist mehr repräsentativ)
 
       if (ex is AggregateException) {
-        var castedAggregateException = (AggregateException) ex;
+        AggregateException castedAggregateException = (AggregateException)ex;
         if (
           castedAggregateException.InnerExceptions != null &&
           castedAggregateException.InnerExceptions.Count == 1 //falls nur 1 enthalten (macht MS gern)
@@ -36,11 +36,11 @@ namespace Logging.SmartStandards.Internal {
 
       // Falls der Absender die Konvention "MessageText #{kindId}" einhielt...
 
-      int hashTagIndex = ex.Message.LastIndexOf("#");
+      int hashTagIndex = ex.Message.LastIndexOf('#');
 
       if (hashTagIndex >= 0 && int.TryParse(ex.Message.Substring(hashTagIndex + 1), out int id)) {
         return id;
-      } 
+      }
 
       // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
@@ -57,7 +57,7 @@ namespace Logging.SmartStandards.Internal {
         }
         return hash;
       }
-      
+
     }
 
   }

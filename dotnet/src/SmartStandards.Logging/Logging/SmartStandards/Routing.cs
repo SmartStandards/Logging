@@ -6,12 +6,28 @@ namespace Logging.SmartStandards {
 
   public class Routing {
 
-    private static TraceBusListener _InternalTraceBusListener = (
-      new TraceBusListener(PassTracedMessageToCustomBus, PassTracedExceptionToCustomBus)
-    // TraceListeners must be registered as early as possible so they can be found by TraceSources.
-    );
+    private static bool _BizLoggerToTraceBus = true;
+
+    private static bool _DevLoggerToTraceBus = true;
+
+    private static bool _InsLoggerToTraceBus = true;
+
+    private static TraceBusFeed _InternalTraceBusFeed;
+
+    private static TraceBusListener _InternalTraceBusListener;
 
     private static bool _TraceBusExceptionsTextualizedTogglePreStaged = true;
+
+    /// <summary> Static constructor </summary>
+    static Routing() {
+
+      // TraceListeners must be registered as early as possible so they can be found by TraceSources.
+
+      _InternalTraceBusListener = new TraceBusListener(PassTracedMessageToCustomBus, PassTracedExceptionToCustomBus) {
+        Name = "SmartStandards395316649"
+      };
+
+    }
 
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
@@ -32,7 +48,6 @@ namespace Logging.SmartStandards {
       }
     }
 
-    private static TraceBusFeed _InternalTraceBusFeed;
 
     internal static TraceBusFeed InternalTraceBusFeed {
       get {
@@ -41,7 +56,7 @@ namespace Logging.SmartStandards {
           _InternalTraceBusFeed = new TraceBusFeed();
           // ^ The new TraceBusFeed just connected to all currently existing trace listeners...
 
-          _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener); // ...we do not want to receive our own feed.
+          _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener.Name); // ...we do not want to receive our own feed.
 
           _InternalTraceBusFeed.ExceptionsTextualizedToggle = _TraceBusExceptionsTextualizedTogglePreStaged;
 
@@ -51,7 +66,6 @@ namespace Logging.SmartStandards {
       }
     }
 
-    private static bool _DevLoggerToTraceBus = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
@@ -67,8 +81,6 @@ namespace Logging.SmartStandards {
       }
     }
 
-    private static bool _InsLoggerToTraceBus = true;
-
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
@@ -83,7 +95,6 @@ namespace Logging.SmartStandards {
       }
     }
 
-    private static bool _BizLoggerToTraceBus = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
@@ -114,7 +125,6 @@ namespace Logging.SmartStandards {
     /// </summary>
     public static bool BizLoggerToCustomBus { get; set; }
 
-    private static bool _TraceBusToCustomBus;
 
     /// <summary>
     ///   Enable/disable passing through events from System.Diagnostics.Trace to CustomBusFeed.

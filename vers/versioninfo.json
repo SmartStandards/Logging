@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.0.1",
-  "currentVersionWithSuffix": "2.0.1",
+  "currentVersion": "2.1.0",
+  "currentVersionWithSuffix": "2.1.0",
   "releaseType": "official",
-  "previousVersion": "2.0.0",
-  "changeGrade": "patch",
+  "previousVersion": "2.0.1",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 0,
-  "currentPatch": 1,
-  "versionDateInfo": "2025-04-08",
-  "versionTimeInfo": "08:59:48",
-  "versionNotes": "- Added T4 Template embedd Library-Code into ext project w/o dll-Reference\n- Fix: Fallback SourceContext is now AssemblyName of Caller instead of always SmartStandards.Logging\n- Fix: Wrapped Exceptions w/o explicit messageId will always lead to a 'InferredEventId' of 1969630032 instead of inferring it from the inner one... #91\n"
+  "currentMinor": 1,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-04-09",
+  "versionTimeInfo": "16:26:10",
+  "versionNotes": "- new Feature: TraceBusFeed: Circular Buffer for (very) early emitted events. It will be flushed as soon as a required listener becomes\n- registered.\n"
 }

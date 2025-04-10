@@ -15,6 +15,15 @@ namespace Logging.SmartStandards.Transport {
 
     private Dictionary<string, MyCircularBuffer<QueuedEvent>> _RequiredListenersMessageQueue;
 
+    private static TraceBusFeed _Instance;
+
+    public static TraceBusFeed Instance {
+      get {
+        if (_Instance == null) _Instance = new TraceBusFeed();
+        return _Instance;
+      }
+    }
+
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
     /// </summary>
@@ -58,9 +67,11 @@ namespace Logging.SmartStandards.Transport {
 
         if (this.RequiredListeners.Contains(listener.Name)) {
 
-          this.RequiredListeners.Remove(listener.Name);
+          this.RequiredListeners.Remove(listener.Name); // this will also stop other threads from writing into the buffer
 
           if (!traceSource.Listeners.Contains(listener)) traceSource.Listeners.Add(listener);
+
+          // dequeue
 
           MyCircularBuffer<QueuedEvent> buffer;
 
@@ -68,9 +79,7 @@ namespace Logging.SmartStandards.Transport {
 
             _RequiredListenersMessageQueue.Remove(listener.Name);
 
-            foreach (QueuedEvent e in buffer) {
-              traceSource.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
-            }
+            foreach (QueuedEvent e in buffer) traceSource.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
 
           }
 

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.1.0",
-  "currentVersionWithSuffix": "2.1.0",
+  "currentVersion": "2.2.0",
+  "currentVersionWithSuffix": "2.2.0",
   "releaseType": "official",
-  "previousVersion": "2.0.1",
+  "previousVersion": "2.1.0",
   "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 1,
+  "currentMinor": 2,
   "currentPatch": 0,
-  "versionDateInfo": "2025-04-09",
-  "versionTimeInfo": "16:26:10",
-  "versionNotes": "- new Feature: TraceBusFeed: Circular Buffer for (very) early emitted events. It will be flushed as soon as a required listener becomes\n- registered.\n"
+  "versionDateInfo": "2025-04-10",
+  "versionTimeInfo": "06:25:31",
+  "versionNotes": "- new Feature: TraceBusFeed: Can now be used as singleton.\n"
 }

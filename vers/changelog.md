@@ -5,15 +5,12 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
-*(none)*
-
-
+- **new Feature**: TraceBusFeed: Buffer handling optimized.
 
 ## v 2.2.0
+
 released **2025-04-10**, including:
  - **new Feature**: TraceBusFeed: Can now be used as singleton.
-
-
 
 ## v 2.1.0
 

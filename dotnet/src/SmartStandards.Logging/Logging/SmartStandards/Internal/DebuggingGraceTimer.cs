@@ -30,9 +30,7 @@ namespace Logging.SmartStandards.Internal {
     }
 
     internal static void Start() {
-
       Task.Run(DisableEmittingToTraceBusAfter10Seconds);
-
     }
 
   }

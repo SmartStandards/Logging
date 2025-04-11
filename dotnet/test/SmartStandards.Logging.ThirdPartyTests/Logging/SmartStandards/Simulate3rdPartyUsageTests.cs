@@ -1,6 +1,7 @@
 ﻿using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 
 namespace Logging.SmartStandards.ThirdPartyTests {
 

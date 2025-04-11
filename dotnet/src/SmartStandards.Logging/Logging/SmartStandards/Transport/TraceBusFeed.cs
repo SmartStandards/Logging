@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Logging.SmartStandards.Transport {
 
@@ -13,95 +15,140 @@ namespace Logging.SmartStandards.Transport {
 
     private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
 
-    private Dictionary<string, MyCircularBuffer<QueuedEvent>> _RequiredListenersMessageQueue;
+    private MyCircularBuffer<QueuedEvent> _EarlyPhaseBuffer;
+
+    private readonly object _BufferManipulating = new object();
 
     private static TraceBusFeed _Instance;
 
+    private bool _PatienceExercised;
+
     public static TraceBusFeed Instance {
       get {
-        if (_Instance == null) _Instance = new TraceBusFeed();
+
+        if (_Instance == null) {
+          _Instance = new TraceBusFeed();
+          _Instance._EarlyPhaseBuffer = new MyCircularBuffer<QueuedEvent>(1000);
+        }
+
         return _Instance;
       }
     }
+
+    private bool ListenersAvailable {
+      get {
+
+        if (Trace.Listeners.Count == 0) return false;
+
+        if (Trace.Listeners.Count == 1) {
+          string listenerName = Trace.Listeners[0].Name;
+          if (listenerName == "Default") return false;
+          if (IgnoredListeners.Contains(listenerName)) return false;
+        }
+
+        return true;
+      }
+    }
+
 
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
     /// </summary>
     public bool ExceptionsTextualizedToggle { get; set; }
 
-    public HashSet<string> RequiredListeners { get; set; } = new HashSet<string>();
-
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
     private TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
 
-      TraceSource traceSource;
-
       lock (_TraceSourcePerSourceContext) {
+
+        TraceSource traceSource = null;
+
+        // get or (lazily) create TraceSource
 
         if (!_TraceSourcePerSourceContext.TryGetValue(sourceContext, out traceSource)) {
 
-          // Lazily wire up the trace source - must be done as late as possible
-          // (after listeners have registered themselves)
+          // Optimization: Do not instantiate a TraceSource if there are no listeners:
+          if (!this.ListenersAvailable) return null;
 
+          // Instantiate a TraceSource:
           traceSource = new TraceSource(sourceContext);
-
           traceSource.Switch.Level = SourceLevels.All;
 
-          WireUp(traceSource);
-
           _TraceSourcePerSourceContext[sourceContext] = traceSource;
+
+          // when a new trace source was created => always keep all listeners of all TraceSource in sync:
+
+          RewireAllSourcesAndListeners();
         }
-      }
 
-      EnsureRequiredListeners(traceSource);
-
-      return traceSource;
+        return traceSource;
+      } // lock
     }
 
-    private void EnsureRequiredListeners(TraceSource traceSource) {
+    private void FlushAndShutDownBuffer() {
 
-      if (RequiredListeners.Count == 0) return;
+      lock (_TraceSourcePerSourceContext) {
 
-      foreach (TraceListener listener in Trace.Listeners) {
+        if (_EarlyPhaseBuffer == null) return;
 
-        if (this.RequiredListeners.Contains(listener.Name)) {
+        MyCircularBuffer<QueuedEvent> earlyPhaseBuffer = _EarlyPhaseBuffer;
+        _EarlyPhaseBuffer = null; // set field to null to avoid unwanted recursion
 
-          this.RequiredListeners.Remove(listener.Name); // this will also stop other threads from writing into the buffer
-
-          if (!traceSource.Listeners.Contains(listener)) traceSource.Listeners.Add(listener);
-
-          // dequeue
-
-          MyCircularBuffer<QueuedEvent> buffer;
-
-          if (_RequiredListenersMessageQueue.TryGetValue(listener.Name, out buffer)) {
-
-            _RequiredListenersMessageQueue.Remove(listener.Name);
-
-            foreach (QueuedEvent e in buffer) traceSource.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
-
-          }
-
+        foreach (QueuedEvent e in earlyPhaseBuffer) {
+          TraceSource traceSource = this.GetTraceSourcePerSourceContext(e.SourceContext);
+          traceSource?.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
         }
       }
     }
 
-    private void WireUp(TraceSource traceSource) {
+    private void RewireAllSourcesAndListeners() {
 
-      traceSource.Listeners.Clear(); // Boilerplate: Always remove the ominous "Default" TraceListener
+      TraceSource firstTraceSource = null;
+
+      bool awaitedListenerFound = false;
+
+      foreach (KeyValuePair<string, TraceSource> namedTraceSource in _TraceSourcePerSourceContext) {
+
+        if (firstTraceSource == null) {
+
+          firstTraceSource = namedTraceSource.Value;
+
+          firstTraceSource.Listeners.Clear();
+
+          // Cherry-pick available listeners => store into the first TraceSource (representative of all others)
+
+          awaitedListenerFound = CaptureListenersInto(firstTraceSource);
+
+        } else { // subsequent trace sources get the same listeners as the first one
+          namedTraceSource.Value.Listeners.Clear();
+          namedTraceSource.Value.Listeners.AddRange(firstTraceSource.Listeners);
+        }
+
+      } // next namedTraceSource
+
+      if (_EarlyPhaseBuffer != null && awaitedListenerFound) {
+        FlushAndShutDownBuffer();
+      }
+
+    }
+
+    private bool CaptureListenersInto(TraceSource targetTraceSource) {
+
+      bool awaitedListenerFound = false;
 
       foreach (TraceListener listener in Trace.Listeners) {
 
         if (listener.Name == "Default") continue; // The .NET Default listener is a major performance hit => do not support.
 
-        if (this.RequiredListeners.Contains(listener.Name)) this.RequiredListeners.Remove(listener.Name);
-
         if (this.IgnoredListeners.Contains(listener.Name)) continue;
 
-        traceSource.Listeners.Add(listener);
+        targetTraceSource?.Listeners.Add(listener);
 
+        if (listener.Name == "SmartStandards395316649") awaitedListenerFound = true;
       }
+
+      return awaitedListenerFound;
     }
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
@@ -119,6 +166,20 @@ namespace Logging.SmartStandards.Transport {
       this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, renderedException, args);
     }
 
+    private void KillBufferAfterGracePeriod() {
+
+      Thread.Sleep(10000);
+
+      lock (_TraceSourcePerSourceContext) {
+
+        bool awaitedListenerFound = CaptureListenersInto(null);
+
+        if (awaitedListenerFound) FlushAndShutDownBuffer();
+
+        _EarlyPhaseBuffer = null;
+      }
+    }
+
     /// <param name="level">
     ///   5 Critical
     ///   4 Error
@@ -132,11 +193,16 @@ namespace Logging.SmartStandards.Transport {
       int kindId, string messageTemplate, params object[] args
     ) {
 
+      if (!_PatienceExercised) {
+        _PatienceExercised = true;
+        Task.Run(KillBufferAfterGracePeriod);
+      }
+
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
 
       TraceSource traceSource = this.GetTraceSourcePerSourceContext(sourceContext);
 
-      if (traceSource is null) return;
+      if (traceSource is null && _EarlyPhaseBuffer == null) return;
 
       if (string.IsNullOrWhiteSpace(audience)) audience = "Dev";
 
@@ -191,31 +257,17 @@ namespace Logging.SmartStandards.Transport {
 
       // actual emit
 
-      traceSource.TraceEvent(eventType, kindId, formatStringBuilder.ToString(), args);
+      traceSource?.TraceEvent(eventType, kindId, formatStringBuilder.ToString(), args);
 
-      // queue
-
-      if (this.RequiredListeners.Count > 0) {
-
-        if (_RequiredListenersMessageQueue == null) _RequiredListenersMessageQueue = new Dictionary<string, MyCircularBuffer<QueuedEvent>>();
-
-        foreach (string listenerName in this.RequiredListeners) {
-
-          MyCircularBuffer<QueuedEvent> b;
-
-          if (!_RequiredListenersMessageQueue.TryGetValue(listenerName, out b)) {
-            b = new MyCircularBuffer<QueuedEvent>(1000);
-            _RequiredListenersMessageQueue.Add(listenerName, b);
-          }
-
-          b.SafeEnqueue(new QueuedEvent(eventType, kindId, formatStringBuilder.ToString(), args));
-
-        }
+      if (_EarlyPhaseBuffer != null) {
+        _EarlyPhaseBuffer.SafeEnqueue(new QueuedEvent(sourceContext, eventType, kindId, formatStringBuilder.ToString(), args));
       }
 
     }
 
     private class QueuedEvent {
+
+      public string SourceContext;
 
       public TraceEventType EventType { get; set; }
 
@@ -225,7 +277,8 @@ namespace Logging.SmartStandards.Transport {
 
       public object[] Args { get; set; }
 
-      public QueuedEvent(TraceEventType EventType, int kindId, string messageTemplate, object[] args) {
+      public QueuedEvent(string sourceContext, TraceEventType EventType, int kindId, string messageTemplate, object[] args) {
+        this.SourceContext = sourceContext;
         this.EventType = EventType;
         this.KindId = kindId;
         this.MessageTemplate = messageTemplate;

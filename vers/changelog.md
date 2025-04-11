@@ -8,11 +8,11 @@ This files contains a version history including all changes relevant for semanti
 - **new Feature**: TraceBusFeed: Can now be used as singleton.
 
 ## v 2.1.0
+
 released **2025-04-09**, including:
+
  - **new Feature**: TraceBusFeed: Circular Buffer for (very) early emitted events. It will be flushed as soon as a required listener becomes
- - registered.
-
-
+   registered.
 
 ## v 2.0.1
 released **2025-04-08**, including:

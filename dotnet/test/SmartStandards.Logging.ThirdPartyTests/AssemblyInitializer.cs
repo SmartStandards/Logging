@@ -7,8 +7,6 @@ public class AssemblyInitializer {
   [AssemblyInitialize]
   public static void InitializeAssembly(TestContext testContext) {
 
-    TraceBusFeed.Instance.RequiredListeners.Add("SmartStandards395316649");
-
   }
 
 }

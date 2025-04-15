@@ -25,7 +25,7 @@ namespace Logging.SmartStandards.ThirdPartyTests {
 
       // SmartStandardsListener will implicitely registered by the following line of code...
 
-      Routing.UseCustomBus(PassLogMessageToCustomBusSink, PassLogExceptionToTraceBusSink);
+      //Routing.UseCustomBus(PassLogMessageToCustomBusSink, PassLogExceptionToTraceBusSink);
 
       // Emitting another event will flush the buffer (and deactivate it):
 

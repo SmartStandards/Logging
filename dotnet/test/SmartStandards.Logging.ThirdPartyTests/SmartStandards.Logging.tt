@@ -5,7 +5,7 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<# //Template-Version: 07.04.2025
+<# //Template-Version: 15.04.2025
 
 ////////////////////////////////////////////////////////////////
 //                                                            //
@@ -21,15 +21,11 @@
 
     string[] fileDownloadUrls = new string[] {
 
-      "Logging/SmartStandards/DevLogger.cs",
       "Logging/SmartStandards/DevLogger.PerLevel.cs",
       "Logging/SmartStandards/DevLogger.WoSourceContext.cs",
-
-      "Logging/SmartStandards/Routing.cs",
       "Logging/SmartStandards/ExceptionExtensions.cs",
 
       "Logging/SmartStandards/Internal/ExceptionAnalyzer.cs",
-      "Logging/SmartStandards/Internal/DebuggingGraceTimer.cs",
 
       "Logging/SmartStandards/TemplateHousekeeping/LogMessageEnumConverter.cs",
       "Logging/SmartStandards/TemplateHousekeeping/LogMessageTemplateAttribute.cs",
@@ -42,6 +38,7 @@
 
       "Logging/SmartStandards/Transport/CutomBusFeed.cs",
       "Logging/SmartStandards/Transport/TraceBusFeed.cs",
+      "Logging/SmartStandards/Transport/TraceBusFeed.Buffer.cs",
       "Logging/SmartStandards/Transport/TraceBusListener.cs"
 
     };
@@ -119,6 +116,39 @@
       content = "Error Processing '" + currentFileUrl + "': " + ex.Message;
     }
 #><#= content #>
+
+namespace Logging.SmartStandards {
+ 
+  internal partial class DevLogger {
+
+    public const string AudienceToken = "Dev";
+
+    public static void Log(
+      int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, params object[] args
+    ) {
+
+      if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
+
+      if (messageTemplate == null) messageTemplate = "";
+
+      if (args == null) args = new object[0];
+
+      Logging.SmartStandards.Transport.TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+
+    }
+
+    public static void Log(int level, string sourceContext, long sourceLineId, Enum kindEnumElement, params object[] args) {
+      TemplateHousekeeping.LogMessageTemplateRepository.GetMessageTemplateByKind(kindEnumElement, out int kindId, out string messageTemplate);
+      Log(level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+    }
+
+    public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
+      int kindId = Logging.SmartStandards.Internal.ExceptionAnalyzer.InferEventIdByException(ex);
+      Logging.SmartStandards.Transport.TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex); 
+    }
+
+  }
+}
 
 /*********************** SAMPLES **********************************
      

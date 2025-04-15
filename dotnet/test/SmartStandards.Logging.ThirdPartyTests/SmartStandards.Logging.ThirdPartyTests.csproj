@@ -14,7 +14,22 @@
   </ItemGroup>
 
  <ItemGroup>
-    <ProjectReference Include="..\..\src\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
-  </ItemGroup>
+   <None Update="SmartStandards.Logging.tt">
+     <Generator>TextTemplatingFileGenerator</Generator>
+     <LastGenOutput>SmartStandards.Logging.cs</LastGenOutput>
+   </None>
+ </ItemGroup>
+
+ <ItemGroup>
+   <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+ </ItemGroup>
+
+ <ItemGroup>
+   <Compile Update="SmartStandards.Logging.cs">
+     <DesignTime>True</DesignTime>
+     <AutoGen>True</AutoGen>
+     <DependentUpon>SmartStandards.Logging.tt</DependentUpon>
+   </Compile>
+ </ItemGroup>
 
 </Project>

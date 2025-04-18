@@ -5,7 +5,12 @@ This files contains a version history including all changes relevant for semanti
 
 ## Upcoming Changes
 
+EDIT_HERE
+
+## v 2.3.0
+
 - **new Feature**: TraceBusFeed: Buffer handling optimized.
+
 - ThirdPartyTests now using the T4 Template
 
 ## v 2.2.0

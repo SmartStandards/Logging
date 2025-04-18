@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace System.Logging.SmartStandards.Textualization {
+namespace Logging.SmartStandards.Textualization {
 
   // This is the minimum portion of LogParaphRenderer (which is included by SmartStandards.Logging.tt)
 

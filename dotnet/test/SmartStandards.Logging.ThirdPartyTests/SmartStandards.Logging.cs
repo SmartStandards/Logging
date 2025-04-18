@@ -1,10 +1,8 @@
 ﻿using Logging.SmartStandards.Textualization;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -21,7 +19,7 @@ using System;
 // Taken from File: https://raw.githubusercontent.com/SmartStandards/Logging/refs/heads/master/dotnet/src/SmartStandards.Logging/Logging/SmartStandards/Textualization/LogParaphRenderer.Minimum.cs
 
 
-namespace System.Logging.SmartStandards.Textualization {
+namespace Logging.SmartStandards.Textualization {
 
   // This is the minimum portion of LogParaphRenderer (which is included by SmartStandards.Logging.tt)
 
@@ -1148,34 +1146,10 @@ namespace Logging.SmartStandards {
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
-      int kindId = Logging.SmartStandards.Internal.ExceptionAnalyzer.InferEventIdByException(ex);
+      int kindId = Logging.SmartStandards.Internal.ExceptionAnalyzer.InferEventKindByException(ex);
       Logging.SmartStandards.Transport.TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex); 
     }
 
   }
 }
-
-/*********************** SAMPLES **********************************
-     
-  [TypeConverter(typeof(LogMessageEnumConverter))]
-  internal enum LogMessages {
-
-    /// <summary>       "Weve got a Foo!" </summary>
-    [LogMessageTemplate("Weve got a Foo!")]
-    Foo = 110011,
-
-    /// <summary>       "Weve got a Bar!" </summary>
-    [LogMessageTemplate("Weve got a Bar!")]
-    Bar = 220022
-
-  }
-
-  DevLogger.LogError(LogMessages.Bar);
-  DevLogger.LogError(0, 2282, "A Freetext-Message");
-
-  DevLogger.LogError(ex);
-  DevLogger.LogError(ex.Wrap(22, "Another message"));
-  DevLogger.LogError(ex.Wrap("Another message B"));
-      
-*/
 

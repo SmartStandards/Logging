@@ -96,17 +96,8 @@ try {
   aggregatedContent = aggregatedContent.Replace("class", "partial class");
   aggregatedContent = aggregatedContent.Replace("partial partial", "partial");
 
-  // mandatory usings
-
-  usings.Add("using System;");
-  usings.Add("using System.Security.Cryptography;");
-  usings.Add("using System.Reflection;");
-  usings.Add("using System.ComponentModel;");
-  usings.Add("using System.Text;");
-  usings.Add("using System.IO;");
-  usings.Add("using System.CodeDom.Compiler;");
-  usings.Add("using System.Runtime.CompilerServices;");
-
+  // usings
+  
   aggregatedContent.Insert(0, string.Join("\r\n", usings.Distinct().OrderBy((u)=>u)) + "\r\n");
   aggregatedContent.ToString();
 
@@ -142,43 +133,10 @@ namespace Logging.SmartStandards {
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
-      int kindId = Logging.SmartStandards.Internal.ExceptionAnalyzer.InferEventIdByException(ex);
+      int kindId = Logging.SmartStandards.Internal.ExceptionAnalyzer.InferEventKindByException(ex);
       Logging.SmartStandards.Transport.TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex); 
     }
 
   }
 }
 
-/*********************** SAMPLES **********************************
-     
-  [TypeConverter(typeof(LogMessageEnumConverter))]
-  internal enum LogMessages {
-
-    /// <summary>       "Weve got a Foo!" </summary>
-    [LogMessageTemplate("Weve got a Foo!")]
-    Foo = 110011,
-
-    /// <summary>       "Weve got a Bar!" </summary>
-    [LogMessageTemplate("Weve got a Bar!")]
-    Bar = 220022
-
-  }
-
-  DevLogger.LogError(LogMessages.Bar);
-  DevLogger.LogError(0, 2282, "A Freetext-Message");
-
-  DevLogger.LogError(ex);
-  DevLogger.LogError(ex.Wrap(22, "Another message"));
-  DevLogger.LogError(ex.Wrap("Another message B"));
-      
-*/
-
-<#+ 
-///////////////////// HERE ENDS OWN ADDITIONAL CODE ///////////////////////////////////////////////////////////////
-  string EnsureUsing(string content, string ns){  
-    if(!content.Contains("using " + ns + ";")){
-      content = content.Replace("{usings}\n","using " + ns + ";\n{usings}\n");    
-    }
-    return content;
-  }
-#>

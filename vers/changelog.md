@@ -4,7 +4,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- Intermediate push because of T4 download dependency
+- Optimized T4
 
 ## v 2.3.1
 

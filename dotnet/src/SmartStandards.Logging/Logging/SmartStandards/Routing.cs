@@ -1,6 +1,6 @@
-﻿using Logging.SmartStandards.Internal;
+﻿using System;
+using Logging.SmartStandards.Internal;
 using Logging.SmartStandards.Transport;
-using System;
 
 namespace Logging.SmartStandards {
 
@@ -16,8 +16,6 @@ namespace Logging.SmartStandards {
 
     private static TraceBusListener _InternalTraceBusListener;
 
-    private static bool _TraceBusExceptionsTextualizedTogglePreStaged = true;
-
     /// <summary> Static constructor </summary>
     static Routing() {
 
@@ -32,22 +30,7 @@ namespace Logging.SmartStandards {
     /// <summary>
     ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
     /// </summary>
-    public static bool TraceBusExceptionsTextualizedToggle {
-      get {
-        if (_InternalTraceBusFeed != null) {
-          return _InternalTraceBusFeed.ExceptionsTextualizedToggle;
-        } else {
-          return _TraceBusExceptionsTextualizedTogglePreStaged;
-        }
-      }
-      set {
-        _TraceBusExceptionsTextualizedTogglePreStaged = value;
-        if (_InternalTraceBusFeed != null) {
-          _InternalTraceBusFeed.ExceptionsTextualizedToggle = value;
-        }
-      }
-    }
-
+    public static bool TraceBusExceptionsTextualizedToggle { get; set; }
 
     internal static TraceBusFeed InternalTraceBusFeed {
       get {
@@ -57,8 +40,6 @@ namespace Logging.SmartStandards {
           // ^ The new TraceBusFeed just connected to all currently existing trace listeners...
 
           _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener.Name); // ...we do not want to receive our own feed.
-
-          _InternalTraceBusFeed.ExceptionsTextualizedToggle = _TraceBusExceptionsTextualizedTogglePreStaged;
 
           DebuggingGraceTimer.Start();
         }

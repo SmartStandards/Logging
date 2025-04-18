@@ -10,7 +10,7 @@ namespace Logging.SmartStandards.Textualization {
   ///   [LevelAsAlpha3] SourceContext #kindId#  SourceLineId [AudienceToken]: MessageTemplate 
   ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
   /// </remarks>
-  public class LogParaphRenderer {
+  public partial class LogParaphRenderer {
 
     public static string LevelToAlpha3(int level, StringBuilder targetStringBuilder = null) {
 
@@ -85,28 +85,6 @@ namespace Logging.SmartStandards.Textualization {
       targetStringBuilder.Append(" #");
       targetStringBuilder.Append(kindId);
       targetStringBuilder.Append('#');
-      return targetStringBuilder;
-    }
-
-    /// <summary>
-    ///   Renders the right part of a log paraph.
-    /// </summary>
-    /// <remarks>
-    ///   The right part contains meta data that cannot be transported as arguments, because most logging APIs do not offer enough
-    ///   parameters.
-    /// </remarks>
-    /// <returns>
-    ///   S.th. like " 2070198253252296432 [Ins]: File not found on Disk! "
-    /// </returns>
-    public static StringBuilder BuildParaphRightPart(
-      StringBuilder targetStringBuilder, long sourceLineId, string audienceToken, string messageTemplate
-    ) {
-      targetStringBuilder.Append(' ');
-      targetStringBuilder.Append(sourceLineId);
-      targetStringBuilder.Append(" [");
-      targetStringBuilder.Append(audienceToken);
-      targetStringBuilder.Append("]: ");
-      targetStringBuilder.Append(messageTemplate);
       return targetStringBuilder;
     }
 

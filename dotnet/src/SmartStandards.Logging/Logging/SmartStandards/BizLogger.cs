@@ -35,10 +35,15 @@ namespace Logging.SmartStandards {
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
-      int kindId = ExceptionAnalyzer.InferEventIdByException(ex);
+      int kindId = ExceptionAnalyzer.InferEventKindByException(ex);
 
       if (Routing.BizLoggerToTraceBus) {
-        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex);
+        if (Routing.TraceBusExceptionsTextualizedToggle) {
+          string renderedException = ExceptionRenderer.Render(ex);
+          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, renderedException);
+        } else {
+          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex);
+        }
       }
 
       if (Routing.BizLoggerToCustomBus) {

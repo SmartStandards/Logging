@@ -1,10 +1,10 @@
-﻿using Logging.SmartStandards.Textualization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Transport {
 
@@ -43,18 +43,12 @@ namespace Logging.SmartStandards.Transport {
         if (Trace.Listeners.Count == 1) {
           string listenerName = Trace.Listeners[0].Name;
           if (listenerName == "Default") return false;
-          if (IgnoredListeners.Contains(listenerName)) return false;
+          if (this.IgnoredListeners.Contains(listenerName)) return false;
         }
 
         return true;
       }
     }
-
-
-    /// <summary>
-    ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
-    /// </summary>
-    public bool ExceptionsTextualizedToggle { get; set; }
 
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
@@ -79,7 +73,7 @@ namespace Logging.SmartStandards.Transport {
 
           // when a new trace source was created => always keep all listeners of all TraceSource in sync:
 
-          RewireAllSourcesAndListeners();
+          this.RewireAllSourcesAndListeners();
         }
 
         return traceSource;
@@ -118,7 +112,7 @@ namespace Logging.SmartStandards.Transport {
 
           // Cherry-pick available listeners => store into the first TraceSource (representative of all others)
 
-          awaitedListenerFound = CaptureListenersInto(firstTraceSource);
+          awaitedListenerFound = this.CaptureListenersInto(firstTraceSource);
 
         } else { // subsequent trace sources get the same listeners as the first one
           namedTraceSource.Value.Listeners.Clear();
@@ -128,7 +122,7 @@ namespace Logging.SmartStandards.Transport {
       } // next namedTraceSource
 
       if (_EarlyPhaseBuffer != null && awaitedListenerFound) {
-        FlushAndShutDownBuffer();
+        this.FlushAndShutDownBuffer();
       }
 
     }
@@ -152,18 +146,7 @@ namespace Logging.SmartStandards.Transport {
     }
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
-
-      string renderedException = "";
-      object[] args;
-
-      if (this.ExceptionsTextualizedToggle) {
-        renderedException = ExceptionRenderer.Render(ex);
-        args = Array.Empty<object>();
-      } else {
-        args = new object[] { ex };
-      }
-
-      this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, renderedException, args);
+      this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, ex.Message, new object[] { ex });
     }
 
     private void KillBufferAfterGracePeriod() {
@@ -172,9 +155,9 @@ namespace Logging.SmartStandards.Transport {
 
       lock (_TraceSourcePerSourceContext) {
 
-        bool awaitedListenerFound = CaptureListenersInto(null);
+        bool awaitedListenerFound = this.CaptureListenersInto(null);
 
-        if (awaitedListenerFound) FlushAndShutDownBuffer();
+        if (awaitedListenerFound) this.FlushAndShutDownBuffer();
 
         _EarlyPhaseBuffer = null;
       }
@@ -195,7 +178,7 @@ namespace Logging.SmartStandards.Transport {
 
       if (!_PatienceExercised) {
         _PatienceExercised = true;
-        Task.Run(KillBufferAfterGracePeriod);
+        Task.Run(this.KillBufferAfterGracePeriod);
       }
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -278,7 +261,7 @@ namespace Logging.SmartStandards.Transport {
       public object[] Args { get; set; }
 
       public QueuedEvent(string sourceContext, TraceEventType EventType, int kindId, string messageTemplate, object[] args) {
-        this.SourceContext = sourceContext;
+        SourceContext = sourceContext;
         this.EventType = EventType;
         this.KindId = kindId;
         this.MessageTemplate = messageTemplate;

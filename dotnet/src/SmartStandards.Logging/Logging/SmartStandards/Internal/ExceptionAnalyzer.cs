@@ -8,12 +8,12 @@ namespace Logging.SmartStandards.Internal {
 
   internal class ExceptionAnalyzer {
 
-    internal static int InferEventIdByException(Exception ex) {
+    internal static int InferEventKindByException(Exception ex) {
 
       // 'Zwiebel' durch Aufrufe via Reflection (InnerException ist mehr repräsentativ)
 
       if (ex is TargetInvocationException && ex.InnerException != null) {
-        return InferEventIdByException(ex.InnerException);
+        return InferEventKindByException(ex.InnerException);
       }
 
       // 'Zwiebel' durch Task.Run (InnerException ist mehr repräsentativ)
@@ -24,7 +24,7 @@ namespace Logging.SmartStandards.Internal {
           castedAggregateException.InnerExceptions != null &&
           castedAggregateException.InnerExceptions.Count == 1 //falls nur 1 enthalten (macht MS gern)
         ) {
-          return InferEventIdByException(castedAggregateException.InnerExceptions[0]);
+          return InferEventKindByException(castedAggregateException.InnerExceptions[0]);
         }
       }
 
@@ -45,7 +45,7 @@ namespace Logging.SmartStandards.Internal {
       // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
       if (ex is ExceptionExtensions.WrappedException) {
-        return InferEventIdByException(ex.InnerException);
+        return InferEventKindByException(ex.InnerException);
       }
 
       // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine kindId ab.

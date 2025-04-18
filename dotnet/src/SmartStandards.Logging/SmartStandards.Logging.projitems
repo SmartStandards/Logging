@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)logging\smartstandards\internal\DebuggingGraceTimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphRenderer.Minimum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Transport\CutomBusFeed.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\ExceptionRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\ConsoleSink.cs" />

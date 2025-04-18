@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.3.1",
-  "currentVersionWithSuffix": "2.3.1",
+  "currentVersion": "2.3.2",
+  "currentVersionWithSuffix": "2.3.2",
   "releaseType": "official",
-  "previousVersion": "2.3.0",
+  "previousVersion": "2.3.1",
   "changeGrade": "patch",
   "currentMajor": 2,
   "currentMinor": 3,
-  "currentPatch": 1,
+  "currentPatch": 2,
   "versionDateInfo": "2025-04-18",
-  "versionTimeInfo": "15:02:11",
-  "versionNotes": "- EDIT_HERE\n"
+  "versionTimeInfo": "17:09:27",
+  "versionNotes": "- Optimized T4\n"
 }

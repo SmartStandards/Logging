@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.2.0",
-  "currentVersionWithSuffix": "2.2.0",
+  "currentVersion": "2.3.1",
+  "currentVersionWithSuffix": "2.3.1",
   "releaseType": "official",
-  "previousVersion": "2.1.0",
-  "changeGrade": "minor",
+  "previousVersion": "2.3.0",
+  "changeGrade": "patch",
   "currentMajor": 2,
-  "currentMinor": 2,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-04-10",
-  "versionTimeInfo": "06:25:31",
-  "versionNotes": "- new Feature: TraceBusFeed: Can now be used as singleton.\n"
+  "currentMinor": 3,
+  "currentPatch": 1,
+  "versionDateInfo": "2025-04-18",
+  "versionTimeInfo": "15:02:11",
+  "versionNotes": "- EDIT_HERE\n"
 }

@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- T4 updated
+*(none)*
+
+
+
+## v 2.4.1
+released **2025-04-19**, including:
+ - T4 updated
 
 
 

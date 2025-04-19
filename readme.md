@@ -1,6 +1,6 @@
 # SmartStandards Logging
 
-[![Build status](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_apis/build/status/Logging)](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_build/latest?definitionId=17){:target="_blank"} • [Change Log](./vers/changelog.md)
+[![Build status](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_apis/build/status/Logging)](https://dev.azure.com/SmartOpenSource/Smart%20Standards%20(Allgemein)/_build/latest?definitionId=17) • [Change Log](./vers/changelog.md)
 
 SmartStandards Logging is a (lightweight, no dependencies) convenience facade to simplify emitting log events.
 Log events can be routed from/to .net Trace and/or to any custom target (e.g. Console, In-memory-sink, SeriLog, ...).

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.3.2",
-  "currentVersionWithSuffix": "2.3.2",
+  "currentVersion": "2.4.0",
+  "currentVersionWithSuffix": "2.4.0",
   "releaseType": "official",
-  "previousVersion": "2.3.1",
-  "changeGrade": "patch",
+  "previousVersion": "2.3.2",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 3,
-  "currentPatch": 2,
-  "versionDateInfo": "2025-04-18",
-  "versionTimeInfo": "17:09:27",
-  "versionNotes": "- Optimized T4\n"
+  "currentMinor": 4,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-04-19",
+  "versionTimeInfo": "08:01:25",
+  "versionNotes": "- new Feature: Convenience for using ConsoleSink\n- Added demo application (console)\n- Internal: Introduced per-file verioning for files that are used by T4\n"
 }

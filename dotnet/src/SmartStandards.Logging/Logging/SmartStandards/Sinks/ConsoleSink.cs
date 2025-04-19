@@ -1,6 +1,6 @@
-﻿using Logging.SmartStandards.Textualization;
-using System;
+﻿using System;
 using System.Text;
+using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Sinks {
 
@@ -15,7 +15,9 @@ namespace Logging.SmartStandards.Sinks {
 
       StringBuilder logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
 
-      LogParaphRenderer.BuildParaphResolved(logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+      LogParaphRenderer.BuildParaphResolved(
+        logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args
+      );
 
       switch (level) {
 
@@ -60,7 +62,7 @@ namespace Logging.SmartStandards.Sinks {
 
     }
 
-    public void WriteException(
+    public static void WriteException(
       string audience, int level, string sourceContext, long sourceLineId,
       int kindId, Exception ex
     ) {

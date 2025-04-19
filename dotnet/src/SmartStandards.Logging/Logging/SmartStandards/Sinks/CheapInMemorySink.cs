@@ -13,7 +13,7 @@ namespace Logging.SmartStandards.Sinks {
 
     public List<long> CollectedSourceLineIds { get; set; } = new List<long>();
 
-    public List<int> CollectedEventIds { get; set; } = new List<int>();
+    public List<int> CollectedKindIds { get; set; } = new List<int>();
 
     public List<string> CollectedMessageTemplates { get; set; } = new List<string>();
 
@@ -26,7 +26,7 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedLevels.Clear();
       this.CollectedSourceContexts.Clear();
       this.CollectedSourceLineIds.Clear();
-      this.CollectedEventIds.Clear();
+      this.CollectedKindIds.Clear();
       this.CollectedMessageTemplates.Clear();
       this.CollectedMessageArgs.Clear();
     }
@@ -39,7 +39,7 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedLevels.Add(level);
       this.CollectedSourceContexts.Add(sourceContext);
       this.CollectedSourceLineIds.Add(sourceLineId);
-      this.CollectedEventIds.Add(kindId);
+      this.CollectedKindIds.Add(kindId);
       this.CollectedMessageTemplates.Add(messageTemplate);
       this.CollectedMessageArgs.Add(args);
       this.CollectedExceptions.Add(null);
@@ -53,7 +53,7 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedLevels.Add(level);
       this.CollectedSourceContexts.Add(sourceContext);
       this.CollectedSourceLineIds.Add(sourceLineId);
-      this.CollectedEventIds.Add(kindId);
+      this.CollectedKindIds.Add(kindId);
       this.CollectedMessageTemplates.Add(null);
       this.CollectedMessageArgs.Add(null);
       this.CollectedExceptions.Add(ex);

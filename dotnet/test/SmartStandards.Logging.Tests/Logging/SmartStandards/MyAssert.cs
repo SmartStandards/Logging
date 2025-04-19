@@ -1,6 +1,6 @@
-﻿using Logging.Tests;
+﻿using System;
+using Logging.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Logging.SmartStandards {
 
@@ -14,7 +14,7 @@ namespace Logging.SmartStandards {
       Assert.AreEqual(level, AssemblyInitializer.CustomBusSink.CollectedLevels[index]);
       Assert.AreEqual(sourceContext, AssemblyInitializer.CustomBusSink.CollectedSourceContexts[index]);
       Assert.AreEqual(sourceLineId, AssemblyInitializer.CustomBusSink.CollectedSourceLineIds[index]);
-      Assert.AreEqual(kindId, AssemblyInitializer.CustomBusSink.CollectedEventIds[index]);
+      Assert.AreEqual(kindId, AssemblyInitializer.CustomBusSink.CollectedKindIds[index]);
       Assert.AreEqual(messageTemplate, AssemblyInitializer.CustomBusSink.CollectedMessageTemplates[index]);
 
       if (ex != null) {
@@ -31,11 +31,11 @@ namespace Logging.SmartStandards {
       Assert.AreEqual(level, AssemblyInitializer.TraceBusSink.CollectedLevels[index]);
       Assert.AreEqual(sourceContext, AssemblyInitializer.TraceBusSink.CollectedSourceContexts[index]);
       Assert.AreEqual(sourceLineId, AssemblyInitializer.TraceBusSink.CollectedSourceLineIds[index]);
-      Assert.AreEqual(kindId, AssemblyInitializer.TraceBusSink.CollectedEventIds[index]);
+      Assert.AreEqual(kindId, AssemblyInitializer.TraceBusSink.CollectedKindIds[index]);
       Assert.AreEqual(messageTemplate, AssemblyInitializer.TraceBusSink.CollectedMessageTemplates[index]);
 
       if (ex != null) {
-        Assert.AreEqual(ex, AssemblyInitializer.CustomBusSink.CollectedExceptions[index]);
+        Assert.AreEqual(ex, AssemblyInitializer.TraceBusSink.CollectedExceptions[index]);
       }
     }
 

@@ -4,9 +4,11 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+- **new Feature**: Convenience for using ConsoleSink
 
+- Added demo application (console)
 
+- Internal: Introduced per-file verioning for files that are used by T4
 
 ## v 2.3.2
 released **2025-04-18**, including:

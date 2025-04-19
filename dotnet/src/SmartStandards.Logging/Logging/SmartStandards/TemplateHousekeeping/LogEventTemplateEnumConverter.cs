@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Logging.SmartStandards.TemplateHousekeeping {
 
-  public class LogMessageEnumConverter : EnumConverter {
+  public class LogEventTemplateEnumConverter : EnumConverter { // v 1.0.0
 
     private Array _FlagValues;
 
@@ -15,7 +15,7 @@ namespace Logging.SmartStandards.TemplateHousekeeping {
 
     private Dictionary<CultureInfo, Dictionary<string, object>> _CachesPerLanguage = new Dictionary<CultureInfo, Dictionary<string, object>>();
 
-    public LogMessageEnumConverter(Type enumType) : base(enumType) {
+    public LogEventTemplateEnumConverter(Type enumType) : base(enumType) {
       if (enumType.GetCustomAttributes(typeof(FlagsAttribute), true).Any()) {
         _IsFlagEnum = true;
         _FlagValues = Enum.GetValues(enumType);
@@ -28,9 +28,9 @@ namespace Logging.SmartStandards.TemplateHousekeeping {
         object result;
 
         if (_IsFlagEnum) {
-          result = GetMessageTemplateFromAttributeByEnumFlag(culture, (string)value);
+          result = this.GetMessageTemplateFromAttributeByEnumFlag(culture, (string)value);
         } else {
-          result = GetMessageTemplateFromCache(culture, (string)value);
+          result = this.GetMessageTemplateFromCache(culture, (string)value);
         }
 
         if (result == null) {
@@ -53,9 +53,9 @@ namespace Logging.SmartStandards.TemplateHousekeeping {
         if ((value != null) && (destinationType.Equals(typeof(System.String)))) {
           object result;
           if ((_IsFlagEnum)) {
-            result = GetMessageTemplateFromAttributeByEnumFlagValue(culture, value);
+            result = this.GetMessageTemplateFromAttributeByEnumFlagValue(culture, value);
           } else {
-            result = GetMessageTemplateFromAttributeByEnumValue(culture, value);
+            result = this.GetMessageTemplateFromAttributeByEnumValue(culture, value);
           }
           return result;
         }
@@ -73,7 +73,7 @@ namespace Logging.SmartStandards.TemplateHousekeeping {
     }
 
     private object GetMessageTemplateFromAttributeByEnumFlag(CultureInfo culture, string text) {
-      Dictionary<string, object> languageSpecificCache = GetLanguageSpecificCache(culture);
+      Dictionary<string, object> languageSpecificCache = this.GetLanguageSpecificCache(culture);
       string[] textValues = text.Split(',');
       ulong result = 0;
 
@@ -129,7 +129,7 @@ namespace Logging.SmartStandards.TemplateHousekeeping {
         return value.ToString();
       }
 
-      LogMessageTemplateAttribute[] attributes = GetEnumFieldAttributes<LogMessageTemplateAttribute>((Enum)value);
+      LogMessageTemplateAttribute[] attributes = this.GetEnumFieldAttributes<LogMessageTemplateAttribute>((Enum)value);
 
       LogMessageTemplateAttribute defaultAttribute = attributes.FirstOrDefault();
 

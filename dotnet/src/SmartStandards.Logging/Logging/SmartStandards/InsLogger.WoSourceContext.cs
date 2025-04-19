@@ -49,42 +49,42 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region KindEnumElement only
+    #region templateEnumElement only
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(Enum kindEnumElement, params object[] args) {
+    public static void LogTrace(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogTrace(currentSourceContext, 0, kindEnumElement, args);
+      LogTrace(currentSourceContext, 0, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(Enum kindEnumElement, params object[] args) {
+    public static void LogDebug(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogDebug(currentSourceContext, 0, kindEnumElement, args);
+      LogDebug(currentSourceContext, 0, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(Enum kindEnumElement, params object[] args) {
+    public static void LogInformation(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogInformation(currentSourceContext, 0, kindEnumElement, args);
+      LogInformation(currentSourceContext, 0, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(Enum kindEnumElement, params object[] args) {
+    public static void LogWarning(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogWarning(currentSourceContext, 0, kindEnumElement, args);
+      LogWarning(currentSourceContext, 0, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(Enum kindEnumElement, params object[] args) {
+    public static void LogError(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogError(currentSourceContext, 0, kindEnumElement, args);
+      LogError(currentSourceContext, 0, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(Enum kindEnumElement, params object[] args) {
+    public static void LogCritical(Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogCritical(currentSourceContext, 0, kindEnumElement, args);
+      LogCritical(currentSourceContext, 0, templateEnumElement, args);
     }
 
     #endregion
@@ -169,42 +169,42 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region Ids and KindEnumElement
+    #region Ids and templateEnumElement
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogTrace(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(0, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogDebug(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(1, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogInformation(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(2, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogWarning(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(3, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogError(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(4, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, Enum kindEnumElement, params object[] args) {
+    public static void LogCritical(long sourceLineId, Enum templateEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, kindEnumElement, args);
+      Log(5, currentSourceContext, sourceLineId, templateEnumElement, args);
     }
 
     #endregion

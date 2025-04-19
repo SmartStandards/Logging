@@ -1,5 +1,6 @@
 ﻿using System;
 using Logging.SmartStandards.Internal;
+using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
 
 namespace Logging.SmartStandards {
@@ -135,6 +136,10 @@ namespace Logging.SmartStandards {
       DevLoggerToTraceBus = enable;
       InsLoggerToTraceBus = enable;
       BizLoggerToTraceBus = enable;
+    }
+
+    public static void UseConsoleSink() {
+      Routing.UseCustomBus(ConsoleSink.WriteMessage, ConsoleSink.WriteException);
     }
 
     /// <summary>

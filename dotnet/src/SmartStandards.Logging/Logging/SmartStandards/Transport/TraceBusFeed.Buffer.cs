@@ -8,7 +8,7 @@ namespace Logging.SmartStandards.Transport {
     /// <remarks>
     ///   Taken from https://stackoverflow.com/a/5924776
     /// </remarks>
-    private class MyCircularBuffer<T> : IEnumerable<T> {
+    private class MyCircularBuffer<T> : IEnumerable<T> { // v 1.0.0
 
       readonly int _Size;
 
@@ -35,7 +35,7 @@ namespace Logging.SmartStandards.Transport {
       public object SyncRoot { get { return _Locker; } }
 
       public void SafeEnqueue(T obj) {
-        lock (_Locker) { UnsafeEnqueue(obj); }
+        lock (_Locker) { this.UnsafeEnqueue(obj); }
       }
 
       public void UnsafeEnqueue(T obj) {

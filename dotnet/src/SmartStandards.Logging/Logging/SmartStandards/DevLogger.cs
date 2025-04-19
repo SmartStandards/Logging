@@ -28,8 +28,8 @@ namespace Logging.SmartStandards {
       }
     }
 
-    public static void Log(int level, string sourceContext, long sourceLineId, Enum kindEnumElement, params object[] args) {
-      LogMessageTemplateRepository.GetMessageTemplateByKind(kindEnumElement, out int kindId, out string messageTemplate);
+    public static void Log(int level, string sourceContext, long sourceLineId, Enum templateEnumElement, params object[] args) {
+      LogEventTemplateRepository.GetLogEventTemplateByEnum(templateEnumElement, out int kindId, out string messageTemplate);
       Log(level, sourceContext, sourceLineId, kindId, messageTemplate, args);
     }
 

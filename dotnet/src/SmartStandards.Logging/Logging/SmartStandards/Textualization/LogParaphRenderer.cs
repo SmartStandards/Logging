@@ -10,7 +10,7 @@ namespace Logging.SmartStandards.Textualization {
   ///   [LevelAsAlpha3] SourceContext #kindId#  SourceLineId [AudienceToken]: MessageTemplate 
   ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
   /// </remarks>
-  public partial class LogParaphRenderer {
+  public partial class LogParaphRenderer { // v 1.0.0
 
     public static string LevelToAlpha3(int level, StringBuilder targetStringBuilder = null) {
 

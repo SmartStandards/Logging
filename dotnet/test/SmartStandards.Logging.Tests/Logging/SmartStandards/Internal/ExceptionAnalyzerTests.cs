@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards.Internal {
 
@@ -9,7 +9,7 @@ namespace Logging.SmartStandards.Internal {
   public class ExceptionAnalyzerTests {
 
     [TestMethod()]
-    public void InferEventIdByException_DifferentTypes_ReturnMatchingIds() {
+    public void InferKindIdByException_DifferentTypes_ReturnMatchingIds() {
 
       int inferredId;
 

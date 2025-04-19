@@ -3,10 +3,10 @@
 namespace Logging.SmartStandards.TemplateHousekeeping {
 
   /// <summary>
-  ///   Defines a log message template for an enum value (representing the log event kind id).
+  ///   Defines a log message template per enum value (for LogEventTemplate enums).
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-  public class LogMessageTemplateAttribute : Attribute {
+  public class LogMessageTemplateAttribute : Attribute { // v 1.0.0
 
     /// <summary>
     ///  Constructor.

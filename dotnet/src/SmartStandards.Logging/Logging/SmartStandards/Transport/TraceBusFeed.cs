@@ -11,7 +11,7 @@ namespace Logging.SmartStandards.Transport {
   /// <summary>
   ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
   /// </summary>
-  public partial class TraceBusFeed {
+  public partial class TraceBusFeed { // v 1.0.0
 
     private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
 

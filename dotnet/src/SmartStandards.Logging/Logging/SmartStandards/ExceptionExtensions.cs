@@ -2,7 +2,7 @@
 
 namespace Logging.SmartStandards {
 
-  public static class ExceptionExtensions {
+  public static class ExceptionExtensions { // v 1.0.0
 
     /// <summary>
     ///   Puts your envelope exception around an exception coming from elsewhere.

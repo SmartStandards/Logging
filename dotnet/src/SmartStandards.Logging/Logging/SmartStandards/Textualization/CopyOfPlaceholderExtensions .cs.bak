@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Logging.SmartStandards.Textualization {
 
-  internal static class CopyOfPlaceholderExtensions { // v 1.0.0
+  internal static class CopyOfPlaceholderExtensions {
 
     // Inner class content manually copied from:
     // https://github.com/SmartStandards/Essentials/blob/master/dotnet/src/SmartStandards.Essentials/System/SmartStandards/PlaceholderExtensions.cs
@@ -247,10 +247,7 @@ namespace Logging.SmartStandards.Textualization {
 
       int maxIndex = args != null ? args.GetUpperBound(0) : -1;
 
-      if (template is null || template.Length < 3 || maxIndex < 0) {
-        extendee.Append(template);
-        return extendee;
-      }
+      if (template is null || template.Length < 3 || maxIndex < 0) return extendee;
 
       int i = -1;
 

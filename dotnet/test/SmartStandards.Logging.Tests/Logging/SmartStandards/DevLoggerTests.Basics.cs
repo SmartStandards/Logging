@@ -1,8 +1,8 @@
-﻿using Logging.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading;
+using Logging.Tests;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
@@ -81,7 +81,7 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(Sc, 2071926793372485828, ex);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, "MockException\r\n-- System.Exception --", null);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
       MyAssert.CustomBusSinkContains(i, "Dev", 5, Sc, 2071926793372485828, 1969630032, null, ex);
 
       // Exception wrapped
@@ -91,7 +91,7 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(Sc, 2071926793372485829, ex2);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485829, 1234, "Zwiebel. #1234 :: MockException\r\n-- Logging.SmartStandards.ExceptionExtensions+WrappedException --\r\n-- System.Exception -- (inner)", null);
+      MyAssert.TraceBusSinkContains(i, "Dev", 5, Sc, 2071926793372485829, 1234, null, ex2);
       MyAssert.CustomBusSinkContains(i, "Dev", 5, Sc, 2071926793372485829, 1234, null, ex2);
 
       // Ensure PassThruTraceBusToCustomBus is working:
@@ -108,8 +108,8 @@ namespace Logging.SmartStandards {
 
       //
 
-      Assert.AreEqual(i, AssemblyInitializer.TraceBusSink.CollectedEventIds.Count - 1);
-      Assert.AreEqual(i, AssemblyInitializer.CustomBusSink.CollectedEventIds.Count - 1);
+      Assert.AreEqual(i, AssemblyInitializer.TraceBusSink.CollectedKindIds.Count - 1);
+      Assert.AreEqual(i, AssemblyInitializer.CustomBusSink.CollectedKindIds.Count - 1);
     }
 
     [TestMethod()]
@@ -122,20 +122,20 @@ namespace Logging.SmartStandards {
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogEventKind.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogEventTemplate.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogEventKind.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogEventTemplate.ZuVielFooImBar,
           "There is too much foo within bar beacause of {0}!"
         );
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
 
         i++;
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogEventKind.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogEventTemplate.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogEventKind.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogEventTemplate.ZuVielFooImBar,
           "Da ist zu viel Foo im Bar wegen {0}!"
         );
 

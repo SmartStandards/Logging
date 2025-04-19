@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Logging.SmartStandards.Internal {
 
-  internal class ExceptionAnalyzer {
+  internal class ExceptionAnalyzer { // v 1.0.0
 
     internal static int InferEventKindByException(Exception ex) {
 

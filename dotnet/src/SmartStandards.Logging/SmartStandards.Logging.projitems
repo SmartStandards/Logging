@@ -31,8 +31,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\DevLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateRepository.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageEnumConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogEventTemplateRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogEventTemplateEnumConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\TemplateHousekeeping\LogMessageTemplateAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\CopyOfPlaceholderExtensions .cs" />
   </ItemGroup>

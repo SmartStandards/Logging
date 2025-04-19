@@ -4,7 +4,7 @@ namespace Logging.SmartStandards.Textualization {
 
   // This is the minimum portion of LogParaphRenderer (which is included by SmartStandards.Logging.tt)
 
-  public partial class LogParaphRenderer {
+  public partial class LogParaphRenderer { // v 1.0.0
 
     /// <summary>
     ///   Renders the right part of a log paraph.

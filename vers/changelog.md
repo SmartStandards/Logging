@@ -4,9 +4,9 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+- Optimization: ExceptionRenderer is now 100% on StringBuilder and 0% on String Operations.
 
-
+- Fix: ExceptionRenderer now rendering call stack frames top down (instead of bottom up)
 
 ## v 2.4.1
 released **2025-04-19**, including:

@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
@@ -9,48 +9,55 @@ namespace Logging.SmartStandards {
     [TestMethod()]
     public void Render_BasicExample_ReadsAsExpected() {
 
-      Exception caughtException = CreateMockException();
+      Exception outerException = null;
 
-      string renderedException = ExceptionRenderer.Render(caughtException);
+      try {
+        ThrowOuterException();
+      } catch (Exception ex) {
+        outerException = ex;
+      }
+
+      string renderedException = ExceptionRenderer.Render(outerException);
 
       /*
-            Fehler aus der BL >> Id ist ungültig! (Parameter 'Id')
-            __System.ApplicationException__
-            @   at Logging.SmartStandards.ExceptionSerializerTests.CreateMockException()
-            @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 50
-            __System.ArgumentException__ (inner)
-            @   at Logging.SmartStandards.ExceptionSerializerTests.ThrowDeepException(Int32 depth)
-            @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 61
-            @   at Logging.SmartStandards.ExceptionSerializerTests.ThrowDeepException(Int32 depth)
-            @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 63
-            @   at Logging.SmartStandards.ExceptionSerializerTests.ThrowDeepException(Int32 depth)
-            @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 63
-            @   at Logging.SmartStandards.ExceptionSerializerTests.CreateMockException()
-            @   C:\TKP\(git)\SmartStandards.Logging\dotnet\test\Logging.Tests\Logging\SmartStandards\ExceptionSerializerTests.cs:line 46
-       */
+Outer message :: Middle message (Parameter 'Foo') :: Inner Message
+-- System.ApplicationException --
+@ Logging.SmartStandards.ExceptionRendererTests.Render_BasicExample_ReadsAsExpected()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 15
+@ Logging.SmartStandards.ExceptionRendererTests.ThrowOuterException()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 44
+-- System.ArgumentException --
+@ Logging.SmartStandards.ExceptionRendererTests.ThrowOuterException()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 42
+@ Logging.SmartStandards.ExceptionRendererTests.ThrowMiddleException()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 52
+-- System.Exception --
+@ Logging.SmartStandards.ExceptionRendererTests.ThrowMiddleException()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 50
+@ Logging.SmartStandards.ExceptionRendererTests.ThrowInnerException()
+@   C:\Git\Logging\dotnet\test\SmartStandards.Logging.Tests\Logging\SmartStandards\Textualization\ExceptionRendererTests.cs:line 57
+      */
 
     }
 
-    internal static Exception CreateMockException() {
-      Exception caughtException = null;
+    internal static void ThrowOuterException() {
       try {
-        try {
-          ThrowDeepException(3);
-          //throw new ArgumentException("Id ist ungültig!", "Id");
-        } catch (Exception innerEx) {
-          throw new ApplicationException("Fehler aus der BL", innerEx);
-        }
-      } catch (Exception ex) {
-        caughtException = ex;
+        ThrowMiddleException();
+      } catch (Exception middleException) {
+        throw new ApplicationException("Outer message", middleException);
       }
-      return caughtException;
     }
 
-    internal static void ThrowDeepException(int depth) {
-      if (depth == 1) {
-        throw new ArgumentException("Id ist ungültig!", "Id");
+    internal static void ThrowMiddleException() {
+      try {
+        ThrowInnerException();
+      } catch (Exception innerException) {
+        throw new ArgumentException("Middle message", "Foo", innerException);
       }
-      ThrowDeepException(depth - 1);
+    }
+
+    internal static void ThrowInnerException() {
+      throw new Exception("Inner Message");
     }
 
   }

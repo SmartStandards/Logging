@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 namespace Logging.SmartStandards {
@@ -12,42 +11,74 @@ namespace Logging.SmartStandards {
     /// </summary>
     public static string Render(Exception ex, bool includeStacktrace = true) {
       StringBuilder sb = new StringBuilder(1000);
-      string messageMainLine = ex.Message;
-      AppendRecursive(ex, sb, ref messageMainLine, includeStacktrace);
-      sb.Insert(0, messageMainLine + Environment.NewLine);
+      int messageCursor = 0;
+      AppendRecursive(ex, sb, ref messageCursor, includeStacktrace);
       return sb.ToString();
     }
 
-    private static void AppendRecursive(Exception ex, StringBuilder target, ref string messageMainLine, bool includeStacktrace, bool isInner = false) {
+    private static void AppendRecursive(
+      Exception ex, StringBuilder target, ref int messageCursor, bool includeStackTrace, bool isInner = false
+    ) {
 
       if (ex == null) {
         return;
       }
 
-      target.Append($"-- {ex.GetType().FullName} --");
-
       if (isInner) {
-        target.Append($" (inner)");
+        target.Insert(messageCursor, " :: ");
+        messageCursor += 4;
       }
 
-      if (includeStacktrace && !string.IsNullOrWhiteSpace(ex.StackTrace)) {
+      target.Insert(messageCursor, ex.Message);
+      messageCursor += ex.Message.Length;
 
-        StringReader traceReader = new StringReader(ex.StackTrace); // TODO: Performance optimization
+      if (!isInner) target.Insert(messageCursor, Environment.NewLine);
 
-        string readLine = traceReader.ReadLine()?.Trim();
+      target.AppendLine($"-- {ex.GetType().FullName} --");
 
-        while (readLine != null) {
-          target.AppendLine();
+      string originalStackTrace = ex.StackTrace;
+
+      if (includeStackTrace && !string.IsNullOrWhiteSpace(originalStackTrace)) {
+
+        int cursor = originalStackTrace.Length;
+        int lineStartIndex = 0;
+        int lineEndIndex = originalStackTrace.Length;
+
+        while (cursor > 0) {
+          cursor = originalStackTrace.LastIndexOf(Environment.NewLine, cursor);
+          if (cursor < 0) {
+            lineStartIndex = 0;
+          } else {
+            lineStartIndex = cursor + Environment.NewLine.Length;
+          }
+
+          // split member / file
+
+          // " in C:\..."
+          int fileSegmentStartIndex = originalStackTrace.IndexOf(" in ", lineStartIndex) + 4;
+
+          int fileSegmentEndIndex = lineEndIndex;
+
+          // "   at MyNamespace..."
+          int memberSegmentStartIndex = lineStartIndex + 6;
+
+          int memberSegmentEndIndex = fileSegmentStartIndex - 4;
+
           target.Append("@ ");
-          target.Append(readLine.Replace(" in ", Environment.NewLine + "@   "));
-          readLine = traceReader.ReadLine()?.Trim();
+          target.Append(originalStackTrace, memberSegmentStartIndex, memberSegmentEndIndex - memberSegmentStartIndex);
+          target.AppendLine();
+
+          target.Append("@   ");
+          target.Append(originalStackTrace, fileSegmentStartIndex, fileSegmentEndIndex - fileSegmentStartIndex);
+          target.AppendLine();
+
+          lineEndIndex = cursor;
         }
+
       }
 
       if ((ex.InnerException != null)) {
-        messageMainLine = messageMainLine + " :: " + ex.InnerException.Message;
-        target.AppendLine();
-        AppendRecursive(ex.InnerException, target, ref messageMainLine, includeStacktrace, true);
+        AppendRecursive(ex.InnerException, target, ref messageCursor, includeStackTrace, true);
       }
 
     }

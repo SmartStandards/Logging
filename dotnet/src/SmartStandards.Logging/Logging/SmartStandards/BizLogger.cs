@@ -19,6 +19,7 @@ namespace Logging.SmartStandards {
 
       if (args == null) args = new object[0];
 
+#if !UsedByT4
       if (Routing.BizLoggerToTraceBus) {
         Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
       }
@@ -26,9 +27,14 @@ namespace Logging.SmartStandards {
       if (Routing.BizLoggerToCustomBus) {
         CustomBusFeed.OnEmitMessage.Invoke(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
       }
+#else
+      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+#endif
     }
 
-    public static void Log(int level, string sourceContext, long sourceLineId, Enum templateEnumElement, params object[] args) {
+    public static void Log(
+      int level, string sourceContext, long sourceLineId, Enum templateEnumElement, params object[] args
+    ) {
       LogEventTemplateRepository.GetLogEventTemplateByEnum(templateEnumElement, out int kindId, out string messageTemplate);
       Log(level, sourceContext, sourceLineId, kindId, messageTemplate, args);
     }
@@ -37,6 +43,7 @@ namespace Logging.SmartStandards {
 
       int kindId = ExceptionAnalyzer.InferEventKindByException(ex);
 
+#if !UsedByT4
       if (Routing.BizLoggerToTraceBus) {
         if (Routing.TraceBusExceptionsTextualizedToggle) {
           string renderedException = ExceptionRenderer.Render(ex);
@@ -49,6 +56,9 @@ namespace Logging.SmartStandards {
       if (Routing.BizLoggerToCustomBus) {
         CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, kindId, ex);
       }
+#else
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex); 
+#endif
     }
   }
 }

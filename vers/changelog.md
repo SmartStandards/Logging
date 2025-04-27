@@ -4,9 +4,10 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+- Made ExceptionRenderer more robust against permutations of stack trace (e.g. missing " in File..." part)
 
-
+- TraceBusFeed now ignoring DefaultTraceListener type 
+  (instead of name "Default", because MS Test adds it's listener also as "Default")
 
 ## v 2.4.3
 released **2025-04-27**, including:

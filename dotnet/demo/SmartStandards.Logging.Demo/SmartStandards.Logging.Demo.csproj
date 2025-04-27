@@ -8,14 +8,6 @@
     <RootNamespace>Logging</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
   </ItemGroup>

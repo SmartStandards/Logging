@@ -10,10 +10,15 @@ namespace Logging.SmartStandards {
     ///   and returns a message string, which is highly optimized for logging requirements.
     /// </summary>
     public static string Render(Exception ex, bool includeStacktrace = true) {
-      StringBuilder sb = new StringBuilder(1000);
-      int messageCursor = 0;
-      AppendRecursive(ex, sb, ref messageCursor, includeStacktrace);
-      return sb.ToString();
+      try {
+        StringBuilder sb = new StringBuilder(1000);
+        int messageCursor = 0;
+        AppendRecursive(ex, sb, ref messageCursor, includeStacktrace);
+        return sb.ToString();
+
+      } catch (Exception ex2) {
+        return ex2.ToString();
+      }
     }
 
     private static void AppendRecursive(
@@ -55,22 +60,26 @@ namespace Logging.SmartStandards {
           // split member / file
 
           // " in C:\..."
-          int fileSegmentStartIndex = originalStackTrace.IndexOf(" in ", lineStartIndex) + 4;
+          int fileSegmentStartIndex = originalStackTrace.IndexOf(" in ", lineStartIndex);
+
+          if (fileSegmentStartIndex >= 0) fileSegmentStartIndex += 4;
 
           int fileSegmentEndIndex = lineEndIndex;
 
           // "   at MyNamespace..."
           int memberSegmentStartIndex = lineStartIndex + 6;
 
-          int memberSegmentEndIndex = fileSegmentStartIndex - 4;
+          int memberSegmentEndIndex = (fileSegmentStartIndex >= 0) ? fileSegmentStartIndex - 4 : lineEndIndex;
 
           target.Append("@ ");
           target.Append(originalStackTrace, memberSegmentStartIndex, memberSegmentEndIndex - memberSegmentStartIndex);
           target.AppendLine();
 
-          target.Append("@   ");
-          target.Append(originalStackTrace, fileSegmentStartIndex, fileSegmentEndIndex - fileSegmentStartIndex);
-          target.AppendLine();
+          if (fileSegmentStartIndex >= 0) {
+            target.Append("@   ");
+            target.Append(originalStackTrace, fileSegmentStartIndex, fileSegmentEndIndex - fileSegmentStartIndex);
+            target.AppendLine();
+          }
 
           lineEndIndex = cursor;
         }

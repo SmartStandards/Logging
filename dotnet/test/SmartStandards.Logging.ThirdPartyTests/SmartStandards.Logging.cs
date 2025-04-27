@@ -93,8 +93,8 @@ namespace Logging.SmartStandards.Transport {
         if (Trace.Listeners.Count == 0) return false;
 
         if (Trace.Listeners.Count == 1) {
+          if (Trace.Listeners[0] is DefaultTraceListener) return false;
           string listenerName = Trace.Listeners[0].Name;
-          if (listenerName == "Default") return false;
           if (this.IgnoredListeners.Contains(listenerName)) return false;
         }
 
@@ -185,7 +185,7 @@ namespace Logging.SmartStandards.Transport {
 
       foreach (TraceListener listener in Trace.Listeners) {
 
-        if (listener.Name == "Default") continue; // The .NET Default listener is a major performance hit => do not support.
+        if (listener is DefaultTraceListener) continue; // The .NET Default listener is a major performance hit => do not support.
 
         if (this.IgnoredListeners.Contains(listener.Name)) continue;
 

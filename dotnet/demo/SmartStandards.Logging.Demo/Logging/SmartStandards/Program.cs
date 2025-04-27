@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Logging.SmartStandards {
 
   internal class Program {
 
     static void Main(string[] args) {
+
+      Trace.WriteLine("How can this WriteLine() reach VS Output without anything in Trace.Listeners?");
+      Trace.TraceInformation("How can this TraceInformation() reach VS Output without anything in Trace.Listeners?");
 
       // Initialization
 
@@ -69,6 +73,9 @@ namespace Logging.SmartStandards {
       // Done.
 
       Console.WriteLine();
+      Console.WriteLine($"There were {Routing.InternalTraceBusFeed.ListenersActive.Count} TraceListeners active.");
+      Console.WriteLine($"Name is {Routing.InternalTraceBusFeed.ListenersActive[0].Name}");
+      Console.WriteLine($"Type is {Routing.InternalTraceBusFeed.ListenersActive[0].GetType().Name}");
       Console.WriteLine("-- Done. --");
       Console.WriteLine();
 

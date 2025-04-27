@@ -15,7 +15,8 @@ namespace Logging.SmartStandards.ThirdPartyTests {
     [TestMethod]
     public void EmittingTraceEvents_TooEarly_ShouldBeBufferedAndFlushed() {
 
-      Trace.WriteLine("Hä?");
+      Trace.WriteLine("How can this WriteLine() reach VS Output without anything in Trace.Listeners?");
+      Trace.TraceInformation("How can this TraceInformation() reach VS Output without anything in Trace.Listeners?");
 
       // SmartStandardsListener is not yet availabe, we emit anyways...
 

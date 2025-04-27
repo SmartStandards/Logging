@@ -50,6 +50,16 @@ namespace Logging.SmartStandards.Transport {
       }
     }
 
+    public TraceListenerCollection ListenersActive {
+      get {
+        if (_TraceSourcePerSourceContext.Count == 0) return null;
+        Dictionary<string, TraceSource>.Enumerator enumerator = _TraceSourcePerSourceContext.GetEnumerator();
+        enumerator.MoveNext();
+        KeyValuePair<string, TraceSource> namedValue = enumerator.Current;
+        return namedValue.Value.Listeners;
+      }
+    }
+
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
     private TraceSource GetTraceSourcePerSourceContext(string sourceContext) {

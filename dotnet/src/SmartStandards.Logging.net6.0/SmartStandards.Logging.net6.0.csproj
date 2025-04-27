@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
+		<InternalsVisibleTo Include="SmartStandards.Logging.Demo" />
 	</ItemGroup>
 
 	<Import Project="..\SmartStandards.Logging\SmartStandards.Logging.projitems" Label="Shared" />

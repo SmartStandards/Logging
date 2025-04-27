@@ -4,42 +4,32 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
-
-
+- T4 now with all Dev Ins Biz loggers
 
 ## v 2.4.2
 released **2025-04-26**, including:
- - Fix: ExceptionRenderer now rendering call stack frames top down (instead of bottom up)
- - Optimization: ExceptionRenderer is now 100% on StringBuilder and 0% on String Operations.
-
-
+- Fix: ExceptionRenderer now rendering call stack frames top down (instead of bottom up)
+- Optimization: ExceptionRenderer is now 100% on StringBuilder and 0% on String Operations.
 
 ## v 2.4.1
 released **2025-04-19**, including:
- - T4 updated
-
-
+- T4 updated
 
 ## v 2.4.0
 released **2025-04-19**, including:
- - **new Feature**: Convenience for using ConsoleSink
- - Added demo application (console)
- - Internal: Introduced per-file verioning for files that are used by T4
-
-
+- **new Feature**: Convenience for using ConsoleSink
+- Added demo application (console)
+- Internal: Introduced per-file verioning for files that are used by T4
 
 ## v 2.3.2
 released **2025-04-18**, including:
- - Optimized T4
-
-
+- Optimized T4
 
 ## v 2.3.1
 
 released **2025-04-18**, including:
 
- - fixed versioning
+- fixed versioning
 
 ## v 2.3.0
 

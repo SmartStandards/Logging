@@ -1,7 +1,7 @@
-﻿using Logging.SmartStandards.Transport;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Diagnostics;
+using Logging.SmartStandards.Transport;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards.ThirdPartyTests {
 
@@ -15,12 +15,16 @@ namespace Logging.SmartStandards.ThirdPartyTests {
     [TestMethod]
     public void EmittingTraceEvents_TooEarly_ShouldBeBufferedAndFlushed() {
 
+      Trace.WriteLine("Hä?");
+
       // SmartStandardsListener is not yet availabe, we emit anyways...
 
       int i;
 
       for (i = 0; i < 5; i++) {
-        TraceBusFeed.Instance.EmitMessage("Dev", 2, "3rdPartySourceContext", 2072642824847130735, 42, "3rdParty said: ", $"Hello {i}.");
+        DevLogger.LogInformation("3rdPartySourceContext", 2072642824847130735, 42, "3rdParty Dev said: ", $"Hello {i}.");
+        InsLogger.LogInformation("3rdPartySourceContext", 2073414608004986393, 43, "3rdParty Ins said: ", $"Hello {i}.");
+        BizLogger.LogInformation("3rdPartySourceContext", 2073414611222994455, 44, "3rdParty Biz said: ", $"Hello {i}.");
       }
 
       // SmartStandardsListener will implicitely registered by the following line of code...

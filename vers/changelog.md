@@ -4,7 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- T4 now with all Dev Ins Biz loggers
+*(none)*
+
+
+
+## v 2.4.3
+released **2025-04-27**, including:
+ - T4 now with all Dev Ins Biz loggers
+
+
 
 ## v 2.4.2
 released **2025-04-26**, including:

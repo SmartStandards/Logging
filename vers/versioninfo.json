@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.4.3",
-  "currentVersionWithSuffix": "2.4.3",
+  "currentVersion": "2.4.4",
+  "currentVersionWithSuffix": "2.4.4",
   "releaseType": "official",
-  "previousVersion": "2.4.2",
+  "previousVersion": "2.4.3",
   "changeGrade": "patch",
   "currentMajor": 2,
   "currentMinor": 4,
-  "currentPatch": 3,
+  "currentPatch": 4,
   "versionDateInfo": "2025-04-27",
-  "versionTimeInfo": "06:52:14",
-  "versionNotes": "- T4 now with all Dev Ins Biz loggers\n"
+  "versionTimeInfo": "07:29:56",
+  "versionNotes": "- (instead of name \"Default\", because MS Test adds it's listener also as \"Default\")\n- Made ExceptionRenderer more robust against permutations of stack trace (e.g. missing \" in File...\" part)\n- TraceBusFeed now ignoring DefaultTraceListener type\n"
 }

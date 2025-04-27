@@ -8,6 +8,12 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 2.4.5
+released **2025-04-27**, including:
+ - new revision without significant changes
+
+
+
 ## v 2.4.4
 released **2025-04-27**, including:
  - (instead of name "Default", because MS Test adds it's listener also as "Default")

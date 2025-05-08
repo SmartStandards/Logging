@@ -5,6 +5,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 ## Upcoming Changes
 
 * prepared for enablement of .NET8.0-Target
+* prepared TS/JS Package for WebApplications
 
 
 

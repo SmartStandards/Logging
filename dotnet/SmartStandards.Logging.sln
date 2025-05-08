@@ -39,6 +39,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{02EA681E-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Demo", "demo\SmartStandards.Logging.Demo\SmartStandards.Logging.Demo.csproj", "{EA169B80-B810-4642-9D12-B7289BCAE3F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{BBAF22BC-A306-4AA0-8FB2-CF97963D7867}"
+	ProjectSection(SolutionItems) = preProject
+		..\js\src\devLogger.ts = ..\js\src\devLogger.ts
+		..\js\src\index.ts = ..\js\src\index.ts
+		..\js\package.json = ..\js\package.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +93,7 @@ Global
 		{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
 		{03E392A8-3C6E-4A53-A05F-E2B81969F75A} = {C5272353-539E-4138-93FD-9DF437F6DA47}
 		{EA169B80-B810-4642-9D12-B7289BCAE3F2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BBAF22BC-A306-4AA0-8FB2-CF97963D7867} = {4130D21C-FE8F-4925-93E7-217B4AF1B7D9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2F37C1D-32F0-4BF2-AAEB-46B9D8C07D23}

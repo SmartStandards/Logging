@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>SmartStandards.Logging</AssemblyName>
+    <AssemblyName>SmartStandards.Logging.AspSupport</AssemblyName>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Logging</RootNamespace>
     <OutputPath>..\..\dist\bin-net8.0\</OutputPath>
@@ -10,10 +10,10 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
-	</ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
+  </ItemGroup>
 
-	<Import Project="..\SmartStandards.Logging\SmartStandards.Logging.projitems" Label="Shared" />
+ <Import Project="..\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.projitems" Label="Shared" />
 
 </Project>

@@ -6,6 +6,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 * prepared for enablement of .NET8.0-Target
 * prepared TS/JS Package for WebApplications
+* Added Projects for Logging.AspSupport & Logging.Centralized
 
 
 

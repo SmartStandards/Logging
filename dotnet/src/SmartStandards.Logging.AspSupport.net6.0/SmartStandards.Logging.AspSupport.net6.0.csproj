@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SmartStandards.Logging.AspSupport</AssemblyName>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Logging</RootNamespace>
+    <OutputPath>..\..\dist\bin-net6.0\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
+  </ItemGroup>
+
+ <Import Project="..\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.projitems" Label="Shared" />
+
+</Project>

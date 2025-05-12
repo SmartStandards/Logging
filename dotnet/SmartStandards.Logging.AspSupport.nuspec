@@ -16,8 +16,12 @@
     <projectUrl>https://github.com/SmartStandards/Logging</projectUrl>
     <dependencies>
       <group targetFramework="net6.0">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />       
       </group>
 			<!--<group targetFramework="net8.0">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />       
 			</group>-->
     </dependencies>
   </metadata>

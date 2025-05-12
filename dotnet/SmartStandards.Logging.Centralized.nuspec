@@ -15,13 +15,21 @@
     <icon>PackageIcon.png</icon>
     <projectUrl>https://github.com/SmartStandards/Logging</projectUrl>
     <dependencies>
-      <group targetFramework=".NETFramework4.6">   
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
       </group>
 			<group targetFramework=".NETFramework4.8">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
 			</group>
       <group targetFramework="net6.0">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
       </group>
 			<!--<group targetFramework="net8.0">
+        <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
+        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
 			</group>-->
     </dependencies>
   </metadata>

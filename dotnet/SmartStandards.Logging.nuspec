@@ -15,7 +15,7 @@
     <icon>PackageIcon.png</icon>
     <projectUrl>https://github.com/SmartStandards/Logging</projectUrl>
     <dependencies>
-      <group targetFramework=".NETFramework4.6">   
+      <group targetFramework=".NETFramework4.6">
       </group>
 			<group targetFramework=".NETFramework4.8">
 			</group>

@@ -14,9 +14,9 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <PackageId>SmartStandards.Logging</PackageId>
-    <Description>SmartStandards.Logging</Description>
-    <Product>SmartStandards.Logging</Product>
+    <PackageId>SmartStandards.Logging.Centralized</PackageId>
+    <Description>SmartStandards.Logging.Centralized</Description>
+    <Product>SmartStandards.Logging.Centralized</Product>
     <Company>(public domain)</Company>
     <Copyright>SmartStandards</Copyright>
     <Version>999.0.0</Version>
@@ -29,6 +29,15 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
 		<InternalsVisibleTo Include="SmartStandards.Logging.Demo" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="FUSE-fx.RepositoryContract" Version="0.5.3" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems" Label="Shared" />

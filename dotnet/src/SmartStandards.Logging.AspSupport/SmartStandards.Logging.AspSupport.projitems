@@ -9,6 +9,6 @@
     <Import_RootNamespace>Logging.SmartStandards.AspSupport</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Dummy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SmartStandardsLoggerProvider.cs" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,14 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 2.4.6
+released **2025-05-12**, including:
+ - Added Projects for Logging.AspSupport & Logging.Centralized (**Beta-Versions!!!**)
+ - prepared for enablement of .NET8.0-Target
+ - prepared TS/JS Package for WebApplications
+
+
+
 ## v 2.4.5
 released **2025-04-27**, including:
  - new revision without significant changes
@@ -79,7 +87,7 @@ released **2025-04-08**, including:
  - Added T4 Template embedd Library-Code into ext project w/o dll-Reference
   
  - Fix: Fallback SourceContext is now AssemblyName of Caller instead of always SmartStandards.Logging
- 
+
  - Fix: Wrapped Exceptions w/o explicit messageId will always lead to a 'InferredEventId' of 1969630032 instead of inferring it from the inner one... #91
 
 ## v 2.0.0
@@ -87,15 +95,15 @@ released **2025-04-08**, including:
 released **2025-04-05**, including:
 
  - **Breaking Change**: Redefined API. The signatures of logging methods have changed. Two additional parameters were
- 
+
  - **Breaking Change**: Routing configuration is now centralized in the "Routing" class.
 
  - **Breaking Change**: The behavior of System.Diagnostics Tracing support has changed. By default, emitting to trace
- 
+
  - (and deactivated unless you attach a debugger within 10 seconds.)
- 
+
  - added: SourceContext and SourceLineId.
- 
+
  - will automatically be activated for 10 seconds after emitting the first log event
 
 ## v 1.2.3

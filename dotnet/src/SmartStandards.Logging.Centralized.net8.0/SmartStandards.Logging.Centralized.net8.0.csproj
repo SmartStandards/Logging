@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SmartStandards.Logging.Centralized</AssemblyName>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Logging</RootNamespace>
+    <OutputPath>..\..\dist\bin-net8.0\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DocumentationFile>..\..\dist\bin-net8.0\SmartStandards.Logging.Centralized.xml</DocumentationFile>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="FUSE-fx.RepositoryContract" Version="0.5.3" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems" Label="Shared" />
+
+</Project>

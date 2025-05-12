@@ -6,6 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4130D21C-FE8F-4925-93E7-217B4AF1B7D9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		SmartStandards.Logging.AspSupport.nuspec = SmartStandards.Logging.AspSupport.nuspec
+		SmartStandards.Logging.Centralized.nuspec = SmartStandards.Logging.Centralized.nuspec
 		SmartStandards.Logging.nuspec = SmartStandards.Logging.nuspec
 	EndProjectSection
 EndProject
@@ -31,13 +33,39 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{34EE4D8B-0B4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.net48", "src\SmartStandards.Logging.net48\SmartStandards.Logging.net48.csproj", "{D5DA3D65-61A7-4AF6-A4CB-7F6A82CAE87D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.net8.0", "src\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj", "{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.ThirdPartyTests", "test\SmartStandards.Logging.ThirdPartyTests\SmartStandards.Logging.ThirdPartyTests.csproj", "{03E392A8-3C6E-4A53-A05F-E2B81969F75A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Demo", "demo\SmartStandards.Logging.Demo\SmartStandards.Logging.Demo.csproj", "{EA169B80-B810-4642-9D12-B7289BCAE3F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{BBAF22BC-A306-4AA0-8FB2-CF97963D7867}"
+	ProjectSection(SolutionItems) = preProject
+		..\js\src\devLogger.ts = ..\js\src\devLogger.ts
+		..\js\src\iCentralizedLoggingSink.ts = ..\js\src\iCentralizedLoggingSink.ts
+		..\js\src\index.ts = ..\js\src\index.ts
+		..\js\src\logEventFilteringRule.ts = ..\js\src\logEventFilteringRule.ts
+		..\js\package.json = ..\js\package.json
+		..\js\src\remoteLoggingConfiguration.ts = ..\js\src\remoteLoggingConfiguration.ts
+	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SmartStandards.Logging.AspSupport", "src\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.shproj", "{43A43E3D-BAA3-44ED-8934-59351A1635F1}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SmartStandards.Logging.Centralized", "src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.shproj", "{7C28A318-307A-4D8E-9117-8FF8B10FF49A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.AspSupport.net6.0", "src\SmartStandards.Logging.AspSupport.net6.0\SmartStandards.Logging.AspSupport.net6.0.csproj", "{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.AspSupport.net8.0", "src\SmartStandards.Logging.AspSupport.net8.0\SmartStandards.Logging.AspSupport.net8.0.csproj", "{F283EEA0-C25A-589E-8F26-3F020F3B8165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Centralized.net6.0", "src\SmartStandards.Logging.Centralized.net6.0\SmartStandards.Logging.Centralized.net6.0.csproj", "{092E6F55-B335-4C61-DD5F-CE53E50B6DFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Centralized.net8.0", "src\SmartStandards.Logging.Centralized.net8.0\SmartStandards.Logging.Centralized.net8.0.csproj", "{D8FB80AE-5651-392B-A26F-86E0E667C93E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Centralized.net48", "src\SmartStandards.Logging.Centralized.net48\SmartStandards.Logging.Centralized.net48.csproj", "{7A25360F-0464-47A5-AFA8-53A453BA847A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Centralized.net461", "src\SmartStandards.Logging.Centralized.net461\SmartStandards.Logging.Centralized.net461.csproj", "{B0C15D43-EB7E-4246-A337-95B4694FD624}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.net8.0", "src\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj", "{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,9 +89,6 @@ Global
 		{D5DA3D65-61A7-4AF6-A4CB-7F6A82CAE87D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5DA3D65-61A7-4AF6-A4CB-7F6A82CAE87D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5DA3D65-61A7-4AF6-A4CB-7F6A82CAE87D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03E392A8-3C6E-4A53-A05F-E2B81969F75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03E392A8-3C6E-4A53-A05F-E2B81969F75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03E392A8-3C6E-4A53-A05F-E2B81969F75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,6 +97,31 @@ Global
 		{EA169B80-B810-4642-9D12-B7289BCAE3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA169B80-B810-4642-9D12-B7289BCAE3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA169B80-B810-4642-9D12-B7289BCAE3F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F283EEA0-C25A-589E-8F26-3F020F3B8165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F283EEA0-C25A-589E-8F26-3F020F3B8165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F283EEA0-C25A-589E-8F26-3F020F3B8165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{092E6F55-B335-4C61-DD5F-CE53E50B6DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{092E6F55-B335-4C61-DD5F-CE53E50B6DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{092E6F55-B335-4C61-DD5F-CE53E50B6DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{092E6F55-B335-4C61-DD5F-CE53E50B6DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8FB80AE-5651-392B-A26F-86E0E667C93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8FB80AE-5651-392B-A26F-86E0E667C93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8FB80AE-5651-392B-A26F-86E0E667C93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A25360F-0464-47A5-AFA8-53A453BA847A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A25360F-0464-47A5-AFA8-53A453BA847A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A25360F-0464-47A5-AFA8-53A453BA847A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A25360F-0464-47A5-AFA8-53A453BA847A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C15D43-EB7E-4246-A337-95B4694FD624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C15D43-EB7E-4246-A337-95B4694FD624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C15D43-EB7E-4246-A337-95B4694FD624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C15D43-EB7E-4246-A337-95B4694FD624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,18 +133,35 @@ Global
 		{911E9786-3347-476A-89D8-6AB7EA3D6320} = {EFB5135D-039A-4D92-8FDD-9EA5D070F991}
 		{D0CD47CF-A4BE-408D-A621-0CD099CFB76F} = {C5272353-539E-4138-93FD-9DF437F6DA47}
 		{D5DA3D65-61A7-4AF6-A4CB-7F6A82CAE87D} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
-		{FDDE8F47-4090-488E-92DE-9A2C2AEACBC6} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
 		{03E392A8-3C6E-4A53-A05F-E2B81969F75A} = {C5272353-539E-4138-93FD-9DF437F6DA47}
 		{EA169B80-B810-4642-9D12-B7289BCAE3F2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BBAF22BC-A306-4AA0-8FB2-CF97963D7867} = {4130D21C-FE8F-4925-93E7-217B4AF1B7D9}
+		{43A43E3D-BAA3-44ED-8934-59351A1635F1} = {EFB5135D-039A-4D92-8FDD-9EA5D070F991}
+		{7C28A318-307A-4D8E-9117-8FF8B10FF49A} = {EFB5135D-039A-4D92-8FDD-9EA5D070F991}
+		{EAF2F800-073A-90E2-4DB8-38DF4D0D1F09} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{F283EEA0-C25A-589E-8F26-3F020F3B8165} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{092E6F55-B335-4C61-DD5F-CE53E50B6DFF} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{D8FB80AE-5651-392B-A26F-86E0E667C93E} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{7A25360F-0464-47A5-AFA8-53A453BA847A} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{B0C15D43-EB7E-4246-A337-95B4694FD624} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2F37C1D-32F0-4BF2-AAEB-46B9D8C07D23}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems*{092e6f55-b335-4c61-dd5f-ce53e50b6dff}*SharedItemsImports = 5
+		src\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.projitems*{43a43e3d-baa3-44ed-8934-59351a1635f1}*SharedItemsImports = 13
+		src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems*{7a25360f-0464-47a5-afa8-53a453ba847a}*SharedItemsImports = 4
 		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{7b5baea8-7e79-4a30-b6c1-4da4831af970}*SharedItemsImports = 5
+		src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems*{7c28a318-307a-4d8e-9117-8ff8b10ff49a}*SharedItemsImports = 13
 		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{b0ba06fe-6437-4b9e-8c76-3adfc8d191d2}*SharedItemsImports = 4
+		src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems*{b0c15d43-eb7e-4246-a337-95b4694fd624}*SharedItemsImports = 4
 		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{cf0a161a-99ba-4f01-af5e-16c6fcbc85ae}*SharedItemsImports = 13
+		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{d06b0d06-a15d-855f-7e5f-63ab6dd7f212}*SharedItemsImports = 5
 		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{d5da3d65-61a7-4af6-a4cb-7f6a82cae87d}*SharedItemsImports = 4
-		src\SmartStandards.Logging\SmartStandards.Logging.projitems*{fdde8f47-4090-488e-92de-9a2c2aeacbc6}*SharedItemsImports = 5
+		src\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems*{d8fb80ae-5651-392b-a26f-86e0e667c93e}*SharedItemsImports = 5
+		src\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.projitems*{eaf2f800-073a-90e2-4db8-38df4d0d1f09}*SharedItemsImports = 5
+		src\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.projitems*{f283eea0-c25a-589e-8f26-3f020f3b8165}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

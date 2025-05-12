@@ -42,8 +42,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{BBAF22BC-A306-4AA0-8FB2-CF97963D7867}"
 	ProjectSection(SolutionItems) = preProject
 		..\js\src\devLogger.ts = ..\js\src\devLogger.ts
+		..\js\src\iCentralizedLoggingSink.ts = ..\js\src\iCentralizedLoggingSink.ts
 		..\js\src\index.ts = ..\js\src\index.ts
+		..\js\src\logEventFilteringRule.ts = ..\js\src\logEventFilteringRule.ts
 		..\js\package.json = ..\js\package.json
+		..\js\src\remoteLoggingConfiguration.ts = ..\js\src\remoteLoggingConfiguration.ts
 	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SmartStandards.Logging.AspSupport", "src\SmartStandards.Logging.AspSupport\SmartStandards.Logging.AspSupport.shproj", "{43A43E3D-BAA3-44ED-8934-59351A1635F1}"

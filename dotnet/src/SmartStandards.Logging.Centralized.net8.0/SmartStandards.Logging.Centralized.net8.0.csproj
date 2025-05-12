@@ -6,6 +6,7 @@
     <RootNamespace>Logging</RootNamespace>
     <OutputPath>..\..\dist\bin-net8.0\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DocumentationFile>..\..\dist\bin-net8.0\SmartStandards.Logging.Centralized.xml</DocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>

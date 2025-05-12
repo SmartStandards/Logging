@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LegacyLogLevelConfigurationDto.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filtering\LogEventFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LegacyLogEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\Config\LoggingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LogEventFilteringRule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Remoting\RemoteLoggingProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LogEvent.cs" />
@@ -24,7 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Remoting\" />
-    <Folder Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\" />
+    <Folder Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\Config\" />
     <Folder Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Sinks\" />
   </ItemGroup>
 </Project>

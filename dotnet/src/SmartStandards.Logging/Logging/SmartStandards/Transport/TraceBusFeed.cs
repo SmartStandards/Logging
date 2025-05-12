@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Transport {
 
@@ -13,164 +11,105 @@ namespace Logging.SmartStandards.Transport {
   /// </summary>
   public partial class TraceBusFeed { // v 1.0.0
 
-    private Dictionary<string, TraceSource> _TraceSourcePerSourceContext = new Dictionary<string, TraceSource>();
-
-    private MyCircularBuffer<QueuedEvent> _EarlyPhaseBuffer;
-
-    private readonly object _BufferManipulating = new object();
+    private MyCircularBuffer<QueuedEvent> _DebuggingLookBackBuffer;
 
     private static TraceBusFeed _Instance;
-
-    private bool _PatienceExercised;
 
     public static TraceBusFeed Instance {
       get {
 
         if (_Instance == null) {
           _Instance = new TraceBusFeed();
-          _Instance._EarlyPhaseBuffer = new MyCircularBuffer<QueuedEvent>(1000);
         }
 
         return _Instance;
       }
     }
 
-    private bool ListenersAvailable {
-      get {
-
-        if (Trace.Listeners.Count == 0) return false;
-
-        if (Trace.Listeners.Count == 1) {
-          if (Trace.Listeners[0] is DefaultTraceListener) return false;
-          string listenerName = Trace.Listeners[0].Name;
-          if (this.IgnoredListeners.Contains(listenerName)) return false;
-        }
-
-        return true;
-      }
-    }
-
-    public TraceListenerCollection ListenersActive {
-      get {
-        if (_TraceSourcePerSourceContext.Count == 0) return null;
-        Dictionary<string, TraceSource>.Enumerator enumerator = _TraceSourcePerSourceContext.GetEnumerator();
-        enumerator.MoveNext();
-        KeyValuePair<string, TraceSource> namedValue = enumerator.Current;
-        return namedValue.Value.Listeners;
-      }
-    }
-
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
-    private TraceSource GetTraceSourcePerSourceContext(string sourceContext) {
+    private void FlushAndShutDownBuffer(TraceListener targetListener) {
 
-      lock (_TraceSourcePerSourceContext) {
+      if (_DebuggingLookBackBuffer == null) return;
 
-        TraceSource traceSource = null;
+      lock (this) {
 
-        // get or (lazily) create TraceSource
+        _DebuggingLookBackBuffer.StopAutoFlush();
 
-        if (!_TraceSourcePerSourceContext.TryGetValue(sourceContext, out traceSource)) {
-
-          // Optimization: Do not instantiate a TraceSource if there are no listeners:
-          if (!this.ListenersAvailable) return null;
-
-          // Instantiate a TraceSource:
-          traceSource = new TraceSource(sourceContext);
-          traceSource.Switch.Level = SourceLevels.All;
-
-          _TraceSourcePerSourceContext[sourceContext] = traceSource;
-
-          // when a new trace source was created => always keep all listeners of all TraceSource in sync:
-
-          this.RewireAllSourcesAndListeners();
+        foreach (QueuedEvent e in _DebuggingLookBackBuffer) {
+          TraceEventCache eventCache = new TraceEventCache();
+          InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.KindId, e.MessageTemplate, e.Args);
         }
 
-        return traceSource;
-      } // lock
+        _DebuggingLookBackBuffer = null;
+      }
     }
 
-    private void FlushAndShutDownBuffer() {
-
-      lock (_TraceSourcePerSourceContext) {
-
-        if (_EarlyPhaseBuffer == null) return;
-
-        MyCircularBuffer<QueuedEvent> earlyPhaseBuffer = _EarlyPhaseBuffer;
-        _EarlyPhaseBuffer = null; // set field to null to avoid unwanted recursion
-
-        foreach (QueuedEvent e in earlyPhaseBuffer) {
-          TraceSource traceSource = this.GetTraceSourcePerSourceContext(e.SourceContext);
-          traceSource?.TraceEvent(e.EventType, e.KindId, e.MessageTemplate, e.Args);
+    /// <summary>
+    ///   Helper to invoke the TraceEvent() method of a TraceListener the right way.
+    ///   Identify the right overload and respect thread safety.
+    /// </summary>
+    private void InvokeListenerTraceEvent(
+      TraceListener targetListener, TraceEventCache eventCache, TraceEventType eventType, string sourceContext, int id, string format, params object[] args
+    ) {
+      if (targetListener.IsThreadSafe) {
+        if (args == null) {
+          targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format);
+        } else {
+          targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format, args);
+        }
+      } else {
+        lock (targetListener) {
+          if (args == null) {
+            targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format);
+          } else {
+            targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format, args);
+          }
         }
       }
     }
 
-    private void RewireAllSourcesAndListeners() {
+    private void ToAllRelevantListeners(TraceEventType eventType, string sourceContext, int id, string format, params object[] args) {
 
-      TraceSource firstTraceSource = null;
+      TraceEventCache eventCache = new TraceEventCache(); // same instance for many listeners
 
-      bool awaitedListenerFound = false;
-
-      foreach (KeyValuePair<string, TraceSource> namedTraceSource in _TraceSourcePerSourceContext) {
-
-        if (firstTraceSource == null) {
-
-          firstTraceSource = namedTraceSource.Value;
-
-          firstTraceSource.Listeners.Clear();
-
-          // Cherry-pick available listeners => store into the first TraceSource (representative of all others)
-
-          awaitedListenerFound = this.CaptureListenersInto(firstTraceSource);
-
-        } else { // subsequent trace sources get the same listeners as the first one
-          namedTraceSource.Value.Listeners.Clear();
-          namedTraceSource.Value.Listeners.AddRange(firstTraceSource.Listeners);
+      ForEachRelevantListener(
+        (TraceListener listener) => {
+          InvokeListenerTraceEvent(listener, eventCache, eventType, sourceContext, id, format, args);
         }
-
-      } // next namedTraceSource
-
-      if (_EarlyPhaseBuffer != null && awaitedListenerFound) {
-        this.FlushAndShutDownBuffer();
-      }
-
-    }
-
-    private bool CaptureListenersInto(TraceSource targetTraceSource) {
-
-      bool awaitedListenerFound = false;
-
-      foreach (TraceListener listener in Trace.Listeners) {
-
-        if (listener is DefaultTraceListener) continue; // The .NET Default listener is a major performance hit => do not support.
-
-        if (this.IgnoredListeners.Contains(listener.Name)) continue;
-
-        targetTraceSource?.Listeners.Add(listener);
-
-        if (listener.Name == "SmartStandards395316649") awaitedListenerFound = true;
-      }
-
-      return awaitedListenerFound;
+      );
     }
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
       this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, ex.Message, new object[] { ex });
     }
 
-    private void KillBufferAfterGracePeriod() {
+    private DefaultTraceListener ForEachRelevantListener(Action<TraceListener> onProcessListener) {
 
-      Thread.Sleep(10000);
+      DefaultTraceListener foundDefaultTraceListener = null;
 
-      lock (_TraceSourcePerSourceContext) {
+      foreach (TraceListener listener in Trace.Listeners) {
 
-        bool awaitedListenerFound = this.CaptureListenersInto(null);
+        if (this.IgnoredListeners.Contains(listener.Name)) continue;
 
-        if (awaitedListenerFound) this.FlushAndShutDownBuffer();
+        DefaultTraceListener defaultTraceListener = listener as DefaultTraceListener; // try cast
 
-        _EarlyPhaseBuffer = null;
+        if (defaultTraceListener != null) {
+
+          bool isLogging = Debugger.IsLogging();
+
+          foundDefaultTraceListener = defaultTraceListener;
+
+          if (_DebuggingLookBackBuffer != null && isLogging) FlushAndShutDownBuffer(defaultTraceListener);
+
+          // Is the default logger EmittingWorthy?
+          if (!isLogging && String.IsNullOrWhiteSpace(defaultTraceListener.LogFileName)) continue;
+        }
+
+        onProcessListener.Invoke(listener);
+
       }
+      return foundDefaultTraceListener;
     }
 
     /// <param name="level">
@@ -186,16 +125,24 @@ namespace Logging.SmartStandards.Transport {
       int kindId, string messageTemplate, params object[] args
     ) {
 
-      if (!_PatienceExercised) {
-        _PatienceExercised = true;
-        Task.Run(this.KillBufferAfterGracePeriod);
+      // Performance: Do not prepare a message that is never sent (or buffered)
+
+      bool emittingWorthyListenersExist = false;
+
+      DefaultTraceListener foundDefaultTraceListener = null;
+
+      foundDefaultTraceListener = ForEachRelevantListener((TraceListener listener) => { emittingWorthyListenersExist = true; });
+
+      if (!Debugger.IsLogging() && foundDefaultTraceListener != null && _DebuggingLookBackBuffer == null) {
+
+        _DebuggingLookBackBuffer = new MyCircularBuffer<QueuedEvent>(1000);
+
+        _DebuggingLookBackBuffer.StartAutoFlush(() => { if (Debugger.IsLogging()) FlushAndShutDownBuffer(foundDefaultTraceListener); }, 3000);
       }
 
+      if (!emittingWorthyListenersExist && _DebuggingLookBackBuffer == null) return;
+
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
-
-      TraceSource traceSource = this.GetTraceSourcePerSourceContext(sourceContext);
-
-      if (traceSource is null && _EarlyPhaseBuffer == null) return;
 
       if (string.IsNullOrWhiteSpace(audience)) audience = "Dev";
 
@@ -250,15 +197,17 @@ namespace Logging.SmartStandards.Transport {
 
       // actual emit
 
-      traceSource?.TraceEvent(eventType, kindId, formatStringBuilder.ToString(), args);
+      ToAllRelevantListeners(eventType, sourceContext, kindId, formatStringBuilder.ToString(), args);
 
-      if (_EarlyPhaseBuffer != null) {
-        _EarlyPhaseBuffer.SafeEnqueue(new QueuedEvent(sourceContext, eventType, kindId, formatStringBuilder.ToString(), args));
+      if (_DebuggingLookBackBuffer != null) {
+        lock (this) {
+          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, kindId, formatStringBuilder.ToString(), args));
+        }
       }
 
     }
 
-    private class QueuedEvent {
+    internal class QueuedEvent {
 
       public string SourceContext;
 

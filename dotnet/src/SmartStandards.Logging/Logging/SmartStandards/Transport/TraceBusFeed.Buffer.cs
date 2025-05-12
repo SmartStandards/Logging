@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Logging.SmartStandards.Transport {
 
@@ -8,7 +10,7 @@ namespace Logging.SmartStandards.Transport {
     /// <remarks>
     ///   Taken from https://stackoverflow.com/a/5924776
     /// </remarks>
-    private class MyCircularBuffer<T> : IEnumerable<T> { // v 1.0.0
+    internal class MyCircularBuffer<T> : IEnumerable<T> { // v 1.0.0
 
       readonly int _Size;
 
@@ -60,6 +62,39 @@ namespace Logging.SmartStandards.Transport {
 
       System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
         return this.GetEnumerator();
+      }
+
+      CancellationTokenSource _CancellationTokenSource = null;
+
+      Action _OnFlush;
+
+      public void StartAutoFlush(Action onFlush, int interval) {
+
+        if (_CancellationTokenSource != null) return;
+
+        _OnFlush = onFlush;
+
+        _CancellationTokenSource = new CancellationTokenSource();
+
+        CancellationToken ct = _CancellationTokenSource.Token;
+
+        Task.Run(() => this.AutoFlushInfiniteLoop(interval, ct));
+      }
+
+      private void AutoFlushInfiniteLoop(int interval, CancellationToken ct) {
+        while (!ct.IsCancellationRequested) {
+          Thread.Sleep(interval);
+          lock (_Locker) {
+            _OnFlush.Invoke();
+          }
+        }
+      }
+
+      public void StopAutoFlush() {
+        if (_CancellationTokenSource == null) return;
+        _CancellationTokenSource.Cancel();
+        _CancellationTokenSource.Dispose();
+        _CancellationTokenSource = null;
       }
 
     }

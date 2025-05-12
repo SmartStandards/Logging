@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Logging.SmartStandards {
 
@@ -73,11 +74,16 @@ namespace Logging.SmartStandards {
       // Done.
 
       Console.WriteLine();
-      Console.WriteLine($"There were {Routing.InternalTraceBusFeed.ListenersActive.Count} TraceListeners active.");
-      Console.WriteLine($"Name is {Routing.InternalTraceBusFeed.ListenersActive[0].Name}");
-      Console.WriteLine($"Type is {Routing.InternalTraceBusFeed.ListenersActive[0].GetType().Name}");
+      //Console.WriteLine($"There were {Routing.InternalTraceBusFeed.ListenersActive.Count} TraceListeners active.");
+      //Console.WriteLine($"Name is {Routing.InternalTraceBusFeed.ListenersActive[0].Name}");
+      //Console.WriteLine($"Type is {Routing.InternalTraceBusFeed.ListenersActive[0].GetType().Name}");
       Console.WriteLine("-- Done. --");
       Console.WriteLine();
+
+      for (int i = 0; i < 500; i++) {
+        DevLogger.LogTrace($"■{DateTime.Now}■");
+        Thread.Sleep(500);
+      }
 
     }
   }

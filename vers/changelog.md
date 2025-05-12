@@ -4,7 +4,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+- **new Feature**: Look-back-buffer in case a debugger is attached later as logging started.
 
 
 

@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\BizLogger.PerLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\InsLogger.WoSourceContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Internal\ExceptionAnalyzer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)logging\smartstandards\internal\DebuggingGraceTimer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Textualization\LogParaphRenderer.Minimum.cs" />

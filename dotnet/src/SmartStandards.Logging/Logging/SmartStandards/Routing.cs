@@ -1,17 +1,10 @@
-﻿using System;
-using Logging.SmartStandards.Internal;
-using Logging.SmartStandards.Sinks;
+﻿using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
+using System;
 
 namespace Logging.SmartStandards {
 
   public class Routing {
-
-    private static bool _BizLoggerToTraceBus = true;
-
-    private static bool _DevLoggerToTraceBus = true;
-
-    private static bool _InsLoggerToTraceBus = true;
 
     private static TraceBusFeed _InternalTraceBusFeed;
 
@@ -41,56 +34,25 @@ namespace Logging.SmartStandards {
           // ^ The new TraceBusFeed just connected to all currently existing trace listeners...
 
           _InternalTraceBusFeed.IgnoredListeners.Add(_InternalTraceBusListener.Name); // ...we do not want to receive our own feed.
-
-          DebuggingGraceTimer.Start();
         }
         return _InternalTraceBusFeed;
       }
     }
 
+    /// <summary>
+    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
+    /// </summary>
+    public static bool DevLoggerToTraceBus { get; set; } = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
-    public static bool DevLoggerToTraceBus {
-      get {
-        return _DevLoggerToTraceBus;
-      }
-      set {
-        _DevLoggerToTraceBus = value;
-        DebuggingGraceTimer.IsCancelled = true;
-        ShutDownTraceBusFeedIfAppropriate();
-      }
-    }
+    public static bool InsLoggerToTraceBus { get; set; } = true;
 
     /// <summary>
     ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
     /// </summary>
-    public static bool InsLoggerToTraceBus {
-      get {
-        return _InsLoggerToTraceBus;
-      }
-      set {
-        _InsLoggerToTraceBus = value;
-        DebuggingGraceTimer.IsCancelled = true;
-        ShutDownTraceBusFeedIfAppropriate();
-      }
-    }
-
-
-    /// <summary>
-    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
-    /// </summary>
-    public static bool BizLoggerToTraceBus {
-      get {
-        return _BizLoggerToTraceBus;
-      }
-      set {
-        _BizLoggerToTraceBus = value;
-        DebuggingGraceTimer.IsCancelled = true;
-        ShutDownTraceBusFeedIfAppropriate();
-      }
-    }
+    public static bool BizLoggerToTraceBus { get; set; } = true;
 
     /// <summary>
     ///   Enable/disable logging to CustomBusFeed
@@ -118,24 +80,6 @@ namespace Logging.SmartStandards {
       set {
         _InternalTraceBusListener.IsActive = value;
       }
-    }
-
-    /// <summary>
-    ///   Convenience method to set all routings to trace bus at once.
-    /// </summary>
-    /// <param name="enable"> Set True to enable emitting to trace bus. </param>
-    /// <remarks>
-    ///   Calling this method (with true) will always recreate the internal trace source and wire up to all currently 
-    ///   registered trace listeners.
-    /// </remarks>
-    public static void ReEnableEmittingToTraceBus(bool enable) {
-
-      _InternalTraceBusFeed = null;
-      // ^ we want to force a new instance because it should connect to TraceListeners that may have been registered meanwhile
-
-      DevLoggerToTraceBus = enable;
-      InsLoggerToTraceBus = enable;
-      BizLoggerToTraceBus = enable;
     }
 
     public static void UseConsoleSink() {
@@ -182,13 +126,5 @@ namespace Logging.SmartStandards {
       CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, kindId, ex);
     }
 
-    private static void ShutDownTraceBusFeedIfAppropriate() {
-
-      if (_InternalTraceBusFeed == null) return;
-
-      if (!_BizLoggerToTraceBus && !_DevLoggerToTraceBus && !_InsLoggerToTraceBus) {
-        _InternalTraceBusFeed = null;
-      }
-    }
   }
 }

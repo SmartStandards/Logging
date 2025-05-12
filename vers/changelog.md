@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- **new Feature**: Look-back-buffer in case a debugger is attached later as logging started.
+*(none)*
+
+
+
+## v 2.5.0
+released **2025-05-12**, including:
+ - **new Feature**: Look-back-buffer in case a debugger is attached later as logging started.
 
 
 

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.4.6",
-  "currentVersionWithSuffix": "2.4.6",
+  "currentVersion": "2.5.0",
+  "currentVersionWithSuffix": "2.5.0",
   "releaseType": "official",
-  "previousVersion": "2.4.5",
-  "changeGrade": "patch",
+  "previousVersion": "2.4.6",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 4,
-  "currentPatch": 6,
+  "currentMinor": 5,
+  "currentPatch": 0,
   "versionDateInfo": "2025-05-12",
-  "versionTimeInfo": "13:25:22",
-  "versionNotes": "- Added Projects for Logging.AspSupport & Logging.Centralized (**Beta-Versions!!!**)\n- prepared for enablement of .NET8.0-Target\n- prepared TS/JS Package for WebApplications\n"
+  "versionTimeInfo": "15:35:12",
+  "versionNotes": "- new Feature: Look-back-buffer in case a debugger is attached later as logging started.\n"
 }

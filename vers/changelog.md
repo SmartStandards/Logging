@@ -4,9 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* prepared for enablement of .NET8.0-Target
-* prepared TS/JS Package for WebApplications
-* Added Projects for Logging.AspSupport & Logging.Centralized (**Beta-Versions!!!**)
+*(none)*
+
+
+
+## v 2.4.6
+released **2025-05-12**, including:
+ - Added Projects for Logging.AspSupport & Logging.Centralized (**Beta-Versions!!!**)
+ - prepared for enablement of .NET8.0-Target
+ - prepared TS/JS Package for WebApplications
 
 
 

@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Cent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.net8.0", "src\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj", "{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartStandards.Logging.Demo.net48", "demo\SmartStandards.Logging.Demo.net48\SmartStandards.Logging.Demo.net48.csproj", "{3903CFAC-E6FD-4F47-BD5C-59F568CA133B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +124,10 @@ Global
 		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3903CFAC-E6FD-4F47-BD5C-59F568CA133B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3903CFAC-E6FD-4F47-BD5C-59F568CA133B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3903CFAC-E6FD-4F47-BD5C-59F568CA133B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3903CFAC-E6FD-4F47-BD5C-59F568CA133B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +151,7 @@ Global
 		{7A25360F-0464-47A5-AFA8-53A453BA847A} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
 		{B0C15D43-EB7E-4246-A337-95B4694FD624} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
 		{D06B0D06-A15D-855F-7E5F-63AB6DD7F212} = {911E9786-3347-476A-89D8-6AB7EA3D6320}
+		{3903CFAC-E6FD-4F47-BD5C-59F568CA133B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2F37C1D-32F0-4BF2-AAEB-46B9D8C07D23}

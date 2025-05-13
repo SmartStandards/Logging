@@ -28,6 +28,8 @@ namespace Logging.SmartStandards.Transport {
 
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
+    public bool AutoFlush { get; set; } = true;
+
     private void FlushAndShutDownBuffer(TraceListener targetListener) {
 
       if (_DebuggingLookBackBuffer == null) return;
@@ -55,15 +57,19 @@ namespace Logging.SmartStandards.Transport {
       if (targetListener.IsThreadSafe) {
         if (args == null) {
           targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format);
+          if (this.AutoFlush) targetListener.Flush();
         } else {
           targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format, args);
+          if (this.AutoFlush) targetListener.Flush();
         }
       } else {
         lock (targetListener) {
           if (args == null) {
             targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format);
+            if (this.AutoFlush) targetListener.Flush();
           } else {
             targetListener.TraceEvent(eventCache, sourceContext, eventType, id, format, args);
+            if (this.AutoFlush) targetListener.Flush();
           }
         }
       }

@@ -8,14 +8,14 @@ namespace Logging.SmartStandards {
 
     static void Main(string[] args) {
 
-      // Support for legacy App.config file handling
-      //
-      // This will not compile when target framework is .NET 6 (must be 8), and you must include package
-      // "System.Configuration.ConfigurationManager"
-
-      TraceConfiguration.Register();
+      Trace.WriteLine("■Trace.WriteLine()■");
+      Trace.TraceInformation("■Trace.TraceInformation()■");
 
       // Initialization
+
+      Console.CancelKeyPress += OnCancelKeyPress;
+
+      AppDomain.CurrentDomain.ProcessExit += OnProcessExit; // not executing?
 
       Routing.UseConsoleSink();
 
@@ -90,5 +90,14 @@ namespace Logging.SmartStandards {
       }
 
     }
+
+    static private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e) {
+      Trace.WriteLine("■OnCancelKeyPress()■");
+    }
+
+    static private void OnProcessExit(object sender, EventArgs e) {
+      Trace.WriteLine("■OnProcessExit()■");
+    }
+
   }
 }

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.5.0",
-  "currentVersionWithSuffix": "2.5.0",
+  "currentVersion": "2.6.0",
+  "currentVersionWithSuffix": "2.6.0",
   "releaseType": "official",
-  "previousVersion": "2.4.6",
+  "previousVersion": "2.5.0",
   "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 5,
+  "currentMinor": 6,
   "currentPatch": 0,
-  "versionDateInfo": "2025-05-12",
-  "versionTimeInfo": "15:35:12",
-  "versionNotes": "- new Feature: Look-back-buffer in case a debugger is attached later as logging started.\n"
+  "versionDateInfo": "2025-05-14",
+  "versionTimeInfo": "07:28:47",
+  "versionNotes": "- new Feature: AutoFlush (enabled by default) for TraceBusFeed\n"
 }

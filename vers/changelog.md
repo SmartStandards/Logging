@@ -4,7 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
+*(none)*
+
+
+
+## v 2.6.0
+released **2025-05-14**, including:
  - **new Feature**: AutoFlush (enabled by default) for TraceBusFeed
+
+
 
 ## v 2.5.0
 released **2025-05-12**, including:

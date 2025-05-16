@@ -4,9 +4,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
-
-
+ - **new Feature**: Updated T4 template for usage without NuGet
 
 ## v 2.7.0
 released **2025-05-16**, including:

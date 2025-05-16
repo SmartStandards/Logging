@@ -129,7 +129,7 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region SourceLineId and UseCaseId and MessageTemplate
+    #region Ids and MessageTemplate
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
@@ -169,7 +169,7 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region SourceLineId and UseCaseEnumElement
+    #region Ids and useCaseEnumElement
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
@@ -205,46 +205,6 @@ namespace Logging.SmartStandards {
     public static void LogCritical(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
       Log(5, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    #endregion
-
-    #region SourceLineId and and UseCaseId and Exception
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, ex);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, ex);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, ex);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, ex);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, ex);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, ex);
     }
 
     #endregion

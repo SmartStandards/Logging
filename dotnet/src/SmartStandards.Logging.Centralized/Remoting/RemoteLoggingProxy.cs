@@ -20,19 +20,19 @@ namespace Logging.SmartStandards.Centralized {
           if (_Filter.IsMatch(logEvent)) {
             if (logEvent.Audience == BizLogger.AudienceToken) {
               BizLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 (string)logEvent.MessageTemplate
               );
             }
             else if (logEvent.Audience == InsLogger.AudienceToken) {
               InsLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 (string)logEvent.MessageTemplate
               );
             }
             else {
               DevLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 (string)logEvent.MessageTemplate
               );
             }
@@ -54,19 +54,19 @@ namespace Logging.SmartStandards.Centralized {
           if (_Filter.IsMatch(logEvent)) {
             if (logEvent.Audience == BizLogger.AudienceToken) {
               BizLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 logEvent.MessageTemplate
               );
             }
             else if (logEvent.Audience == InsLogger.AudienceToken) {
               InsLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 logEvent.MessageTemplate
               );
             }
             else {
               DevLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.KindId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
                 logEvent.MessageTemplate
               );
             }

@@ -53,7 +53,7 @@ namespace Logging.SmartStandards.Centralized {
 
       logEvent.Audience = this.Properties["Channel"]?.ToString();
       logEvent.Origin = this.Properties["Origin"]?.ToString();
-      logEvent.KindId = Convert.ToInt32(this.Properties["EventId"]);
+      logEvent.UseCaseId = Convert.ToInt32(this.Properties["EventId"]);
       logEvent.MessageTemplate = this.Properties["Message"]?.ToString();
 
       //TODO: noch nicht vollständig!

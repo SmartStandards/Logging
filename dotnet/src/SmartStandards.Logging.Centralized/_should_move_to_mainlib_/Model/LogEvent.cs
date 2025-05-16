@@ -47,7 +47,7 @@ namespace Logging.SmartStandards.Centralized {
 
     public long SourceLineId { get; set; } = 0;
 
-    public int KindId { get; set; }
+    public int UseCaseId { get; set; }
 
 
 

@@ -40,7 +40,7 @@ namespace Logging.SmartStandards.Transport {
 
         foreach (QueuedEvent e in _DebuggingLookBackBuffer) {
           TraceEventCache eventCache = new TraceEventCache();
-          InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.KindId, e.MessageTemplate, e.Args);
+          InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.UseCaseId, e.MessageTemplate, e.Args);
         }
 
         _DebuggingLookBackBuffer = null;
@@ -86,8 +86,8 @@ namespace Logging.SmartStandards.Transport {
       );
     }
 
-    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex) {
-      this.EmitMessage(audience, level, sourceContext, sourceLineId, kindId, ex.Message, new object[] { ex });
+    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
+      this.EmitMessage(audience, level, sourceContext, sourceLineId, useCaseId, ex.Message, new object[] { ex });
     }
 
     private DefaultTraceListener ForEachRelevantListener(Action<TraceListener> onProcessListener) {
@@ -128,7 +128,7 @@ namespace Logging.SmartStandards.Transport {
     /// </param>
     public void EmitMessage(
       string audience, int level, string sourceContext, long sourceLineId,
-      int kindId, string messageTemplate, params object[] args
+      int useCaseId, string messageTemplate, params object[] args
     ) {
 
       // Performance: Do not prepare a message that is never sent (or buffered)
@@ -203,11 +203,11 @@ namespace Logging.SmartStandards.Transport {
 
       // actual emit
 
-      ToAllRelevantListeners(eventType, sourceContext, kindId, formatStringBuilder.ToString(), args);
+      ToAllRelevantListeners(eventType, sourceContext, useCaseId, formatStringBuilder.ToString(), args);
 
       if (_DebuggingLookBackBuffer != null) {
         lock (this) {
-          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, kindId, formatStringBuilder.ToString(), args));
+          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, useCaseId, formatStringBuilder.ToString(), args));
         }
       }
 
@@ -219,16 +219,16 @@ namespace Logging.SmartStandards.Transport {
 
       public TraceEventType EventType { get; set; }
 
-      public int KindId { get; set; }
+      public int UseCaseId { get; set; }
 
       public string MessageTemplate { get; set; }
 
       public object[] Args { get; set; }
 
-      public QueuedEvent(string sourceContext, TraceEventType EventType, int kindId, string messageTemplate, object[] args) {
+      public QueuedEvent(string sourceContext, TraceEventType EventType, int useCaseId, string messageTemplate, object[] args) {
         SourceContext = sourceContext;
         this.EventType = EventType;
-        this.KindId = kindId;
+        this.UseCaseId = useCaseId;
         this.MessageTemplate = messageTemplate;
         this.Args = args;
       }

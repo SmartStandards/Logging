@@ -31,10 +31,11 @@ namespace Logging.SmartStandards.Sinks {
       Thread.Sleep(500);
       while (DateTime.Now < waitUntil) {
         lock (_MessageBuffer) {
-          if(_MessageBuffer.Count > this.AutoFlushMaxCount) {
+          if (_MessageBuffer.Count > this.AutoFlushMaxCount) {
             break;
           }
-        };
+        }
+        ;
         Thread.Sleep(500);
       }
       this.Flush();
@@ -52,8 +53,7 @@ namespace Logging.SmartStandards.Sinks {
       }
       try {
         this.Flush(snapshot);
-      }
-      catch {
+      } catch {
         lock (_MessageBuffer) {
           //put the current items back into the buffer to preserve them
           _MessageBuffer.InsertRange(0, snapshot);
@@ -79,7 +79,7 @@ namespace Logging.SmartStandards.Sinks {
 
     public virtual void WriteMessage(
       string audience, int level, string sourceContext, long sourceLineId,
-      int kindId, string messageTemplate, object[] args
+      int useCaseId, string messageTemplate, object[] args
     ) {
 
       var evt = new LogEvent {
@@ -87,7 +87,7 @@ namespace Logging.SmartStandards.Sinks {
         Level = level,
         SourceContext = sourceContext,
         SourceLineId = sourceLineId,
-        KindId = kindId,
+        UseCaseId = useCaseId,
         MessageTemplate = messageTemplate,
         TimestampUtc = DateTime.UtcNow
         //TODO: hier fehelen noch die args?
@@ -101,7 +101,7 @@ namespace Logging.SmartStandards.Sinks {
 
         _MessageBuffer.Add(evt);
 
-        if (_AutoFlushTask == null){
+        if (_AutoFlushTask == null) {
           _AutoFlushTask = Task.Run(this.AutoFlushAwaiter);
         }
 
@@ -110,7 +110,7 @@ namespace Logging.SmartStandards.Sinks {
 
     public virtual void WriteException(
       string audience, int level, string sourceContext, long sourceLineId,
-      int kindId, Exception ex
+      int useCaseId, Exception ex
     ) {
 
       var evt = new LogEvent {
@@ -118,7 +118,7 @@ namespace Logging.SmartStandards.Sinks {
         Level = level,
         SourceContext = sourceContext,
         SourceLineId = sourceLineId,
-        KindId = kindId,
+        UseCaseId = useCaseId,
         MessageTemplate = ExceptionRenderer.Render(ex, false),
         TimestampUtc = DateTime.UtcNow,
         Exception = ExceptionRenderer.Render(ex, true),
@@ -142,8 +142,7 @@ namespace Logging.SmartStandards.Sinks {
     public void Dispose() {
       try {
         this.Flush();
-      }
-      catch { }
+      } catch { }
     }
 
   }

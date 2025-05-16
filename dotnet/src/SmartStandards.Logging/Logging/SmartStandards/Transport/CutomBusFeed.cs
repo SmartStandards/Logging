@@ -9,9 +9,9 @@ namespace Logging.SmartStandards.Transport {
 
     public static bool ExceptionRenderingToggle { get; set; }
 
-    public delegate void EmitMessageDelegate(string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args);
+    public delegate void EmitMessageDelegate(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args);
 
-    public delegate void EmitExceptionDelegate(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex);
+    public delegate void EmitExceptionDelegate(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex);
 
     /// <summary>
     ///   Customizing hook. Will be called by any SmartStandards logger (if enabled).

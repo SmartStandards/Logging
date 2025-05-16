@@ -30,27 +30,27 @@ namespace Logging.Tests {
     }
 
     private static void PassTracedMessageToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
     ) {
-      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
     }
 
     private static void PassTracedExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
     ) {
-      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, kindId, ex);
+      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, useCaseId, ex);
     }
 
     private static void PassLogMessageToCustomBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
     ) {
-      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
     }
 
     private static void PassLogExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
     ) {
-      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, kindId, ex);
+      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, useCaseId, ex);
     }
 
   }

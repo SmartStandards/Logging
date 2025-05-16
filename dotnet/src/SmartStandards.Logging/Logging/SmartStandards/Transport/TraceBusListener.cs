@@ -21,9 +21,9 @@ namespace Logging.SmartStandards.Transport {
 
     public delegate bool FilterIncomingTraceEventDelegate(int eventType, string sourceName, string formatString);
 
-    public delegate void OnMessageReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, object[] args);
+    public delegate void OnMessageReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args);
 
-    public delegate void OnExceptionReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int kindId, Exception ex);
+    public delegate void OnExceptionReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex);
 
     public bool IsActive { get; set; } = true;
 
@@ -71,7 +71,7 @@ namespace Logging.SmartStandards.Transport {
     }
 
     public override void TraceEvent(
-      TraceEventCache eventCache, string sourceName, TraceEventType eventType, int kindId, string formatString, params object[] args
+      TraceEventCache eventCache, string sourceName, TraceEventType eventType, int useCaseId, string formatString, params object[] args
     ) {
 
       if (!this.IsActive || this.OnMessageReceived == null) {
@@ -110,9 +110,9 @@ namespace Logging.SmartStandards.Transport {
 
       if ((args != null) && (args.Length > 0) && (args[0] is Exception)) {
         Exception ex = (Exception)args[0];
-        this.OnExceptionReceived.Invoke(audienceToken, level, sourceName, sourceLineId, kindId, ex);
+        this.OnExceptionReceived.Invoke(audienceToken, level, sourceName, sourceLineId, useCaseId, ex);
       } else {
-        this.OnMessageReceived.Invoke(audienceToken, level, sourceName, sourceLineId, kindId, messageTemplate, args);
+        this.OnMessageReceived.Invoke(audienceToken, level, sourceName, sourceLineId, useCaseId, messageTemplate, args);
       }
     }
 

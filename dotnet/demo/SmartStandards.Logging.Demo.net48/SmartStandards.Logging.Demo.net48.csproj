@@ -37,7 +37,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Logging\SmartStandards\MyLogTemplate.cs" />
+    <Compile Include="Logging\SmartStandards\MyLogUseCase.cs" />
     <Compile Include="Logging\SmartStandards\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

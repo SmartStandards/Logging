@@ -75,7 +75,7 @@ namespace Logging.SmartStandards.Sinks {
           LogParaphRenderer.BuildParaphResolved(
             logParaphBuilder,
             bufferedEvent.Audience, bufferedEvent.Level, bufferedEvent.SourceContext, //TODO: hir fehken die args
-            bufferedEvent.SourceLineId, bufferedEvent.KindId, bufferedEvent.MessageTemplate, Array.Empty<object>()
+            bufferedEvent.SourceLineId, bufferedEvent.UseCaseId, bufferedEvent.MessageTemplate, Array.Empty<object>()
           );
           logParaphBuilder.AppendLine();
 

@@ -49,10 +49,10 @@ namespace Logging.SmartStandards {
       );
 
       Console.WriteLine();
-      Console.WriteLine("-- LogEventTemplate Coming From Enum Example --");
+      Console.WriteLine("-- Message Coming From LogUseCaseEnum Example --");
       Console.WriteLine();
 
-      BizLogger.LogInformation("MySourceContext", 2073054001366991604, MyLogTemplate.ZuVielFooImBar, "Batz");
+      BizLogger.LogInformation("MySourceContext", 2073054001366991604, MyLogUseCase.ZuVielFooImBar, "Batz");
 
       // Exception Example
 

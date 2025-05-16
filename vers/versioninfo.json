@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.7.0",
-  "currentVersionWithSuffix": "2.7.0",
+  "currentVersion": "2.8.0",
+  "currentVersionWithSuffix": "2.8.0",
   "releaseType": "official",
-  "previousVersion": "2.6.0",
+  "previousVersion": "2.7.0",
   "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 7,
+  "currentMinor": 8,
   "currentPatch": 0,
   "versionDateInfo": "2025-05-16",
-  "versionTimeInfo": "07:11:33",
-  "versionNotes": "- new Feature: Overload for emitting Exceptions with custom UseCaseId\n- new Feature: Wording \"UseCase\" instead of \"Kind\"\n"
+  "versionTimeInfo": "07:30:23",
+  "versionNotes": "- new Feature: Updated T4 template for usage without NuGet\n"
 }

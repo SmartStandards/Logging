@@ -3,11 +3,18 @@
 This files is automatically maintained using the ['KornSW-VersioningUtil'](https://github.com/KornSW/VersioningUtil)).
 
 ## Upcoming Changes
- 
- - **new Feature**: Wording "UseCase" instead of "Kind"
- 
+
+*(none)*
+
+
+
+## v 2.7.0
+released **2025-05-16**, including:
  - **new Feature**: Overload for emitting Exceptions with custom UseCaseId
- 
+ - **new Feature**: Wording "UseCase" instead of "Kind"
+
+
+
 ## v 2.6.0
 released **2025-05-14**, including:
  - **new Feature**: AutoFlush (enabled by default) for TraceBusFeed

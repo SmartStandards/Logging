@@ -1,6 +1,6 @@
-﻿using Logging.SmartStandards.Sinks;
+﻿using System;
+using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
-using System;
 
 namespace Logging.SmartStandards {
 
@@ -115,15 +115,15 @@ namespace Logging.SmartStandards {
     }
 
     private static void PassTracedMessageToCustomBus(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
-      CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      CustomBusFeed.OnEmitMessage?.Invoke(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     private static void PassTracedExceptionToCustomBus(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
-      CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, useCaseId, ex);
+      CustomBusFeed.OnEmitException?.Invoke(audience, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
   }

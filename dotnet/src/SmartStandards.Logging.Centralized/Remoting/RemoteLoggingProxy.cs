@@ -20,19 +20,17 @@ namespace Logging.SmartStandards.Centralized {
           if (_Filter.IsMatch(logEvent)) {
             if (logEvent.Audience == BizLogger.AudienceToken) {
               BizLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 (string)logEvent.MessageTemplate
               );
-            }
-            else if (logEvent.Audience == InsLogger.AudienceToken) {
+            } else if (logEvent.Audience == InsLogger.AudienceToken) {
               InsLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 (string)logEvent.MessageTemplate
               );
-            }
-            else {
+            } else {
               DevLogger.Log(
-                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                (int)logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 (string)logEvent.MessageTemplate
               );
             }
@@ -49,24 +47,22 @@ namespace Logging.SmartStandards.Centralized {
         foreach (LegacyLogEvent slogEvent in events) {
 
           //map to new structure!
-          LogEvent logEvent  = slogEvent.ToLogEvent();
+          LogEvent logEvent = slogEvent.ToLogEvent();
 
           if (_Filter.IsMatch(logEvent)) {
             if (logEvent.Audience == BizLogger.AudienceToken) {
               BizLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 logEvent.MessageTemplate
               );
-            }
-            else if (logEvent.Audience == InsLogger.AudienceToken) {
+            } else if (logEvent.Audience == InsLogger.AudienceToken) {
               InsLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 logEvent.MessageTemplate
               );
-            }
-            else {
+            } else {
               DevLogger.Log(
-                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.UseCaseId,
+                logEvent.Level, logEvent.SourceContext, logEvent.SourceLineId, logEvent.EventKindId,
                 logEvent.MessageTemplate
               );
             }

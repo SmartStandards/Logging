@@ -5,9 +5,9 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace Logging.SmartStandards.UseCaseManagement {
+namespace Logging.SmartStandards.EventKindManagement {
 
-  public class LogUseCaseEnumConverter : EnumConverter { // v 1.0.0
+  public class EventKindEnumConverter : EnumConverter { // v 1.0.0
 
     private Array _FlagValues;
 
@@ -15,7 +15,7 @@ namespace Logging.SmartStandards.UseCaseManagement {
 
     private Dictionary<CultureInfo, Dictionary<string, object>> _CachesPerLanguage = new Dictionary<CultureInfo, Dictionary<string, object>>();
 
-    public LogUseCaseEnumConverter(Type enumType) : base(enumType) {
+    public EventKindEnumConverter(Type enumType) : base(enumType) {
       if (enumType.GetCustomAttributes(typeof(FlagsAttribute), true).Any()) {
         _IsFlagEnum = true;
         _FlagValues = Enum.GetValues(enumType);

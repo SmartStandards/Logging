@@ -1,12 +1,10 @@
-﻿using Logging.SmartStandards.Centralized;
-using Logging.SmartStandards.Filtering;
-using Logging.SmartStandards.Textualization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Logging.SmartStandards.Centralized;
+using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Sinks {
 
@@ -52,20 +50,18 @@ namespace Logging.SmartStandards.Sinks {
 
           //create stream(s) on-demand and keep them open for the whole flush-operation
           FileStream targetStream = null;
-          if(!streamsPerFileName.TryGetValue(targetFileName, out targetStream)) {
+          if (!streamsPerFileName.TryGetValue(targetFileName, out targetStream)) {
             const int maxRetries = 5;
             for (int attempt = 0; attempt < maxRetries; attempt++) {
-              try { 
+              try {
                 targetStream = new FileStream(targetFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, bufferSize: 4096, useAsync: false);
-              }
-              catch (IOException)
-              {
+              } catch (IOException) {
                 Thread.Sleep(50);
-                if(attempt > maxRetries) {
+                if (attempt > maxRetries) {
                   throw;
                 }
               }
-            }       
+            }
             streamsPerFileName.Add(targetFileName, targetStream);
           }
 
@@ -75,7 +71,7 @@ namespace Logging.SmartStandards.Sinks {
           LogParaphRenderer.BuildParaphResolved(
             logParaphBuilder,
             bufferedEvent.Audience, bufferedEvent.Level, bufferedEvent.SourceContext, //TODO: hir fehken die args
-            bufferedEvent.SourceLineId, bufferedEvent.UseCaseId, bufferedEvent.MessageTemplate, Array.Empty<object>()
+            bufferedEvent.SourceLineId, bufferedEvent.EventKindId, bufferedEvent.MessageTemplate, Array.Empty<object>()
           );
           logParaphBuilder.AppendLine();
 

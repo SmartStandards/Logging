@@ -1,10 +1,10 @@
-﻿using Logging.SmartStandards.Centralized;
-using Logging.SmartStandards.Filtering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Logging.SmartStandards.Centralized;
+using Logging.SmartStandards.Filtering;
 
 namespace Logging.SmartStandards.Sinks {
 
@@ -27,7 +27,7 @@ namespace Logging.SmartStandards.Sinks {
     private Task _AutoFlushTask = null;
 
     private void AutoFlushAwaiter() {
-      DateTime waitUntil = DateTime.Now.AddSeconds(AutoFlushMaxAge);
+      DateTime waitUntil = DateTime.Now.AddSeconds(this.AutoFlushMaxAge);
       Thread.Sleep(500);
       while (DateTime.Now < waitUntil) {
         lock (_MessageBuffer) {
@@ -79,7 +79,7 @@ namespace Logging.SmartStandards.Sinks {
 
     public virtual void WriteMessage(
       string audience, int level, string sourceContext, long sourceLineId,
-      int useCaseId, string messageTemplate, object[] args
+      int eventKindId, string messageTemplate, object[] args
     ) {
 
       var evt = new LogEvent {
@@ -87,7 +87,7 @@ namespace Logging.SmartStandards.Sinks {
         Level = level,
         SourceContext = sourceContext,
         SourceLineId = sourceLineId,
-        UseCaseId = useCaseId,
+        EventKindId = eventKindId,
         MessageTemplate = messageTemplate,
         TimestampUtc = DateTime.UtcNow
         //TODO: hier fehelen noch die args?
@@ -110,7 +110,7 @@ namespace Logging.SmartStandards.Sinks {
 
     public virtual void WriteException(
       string audience, int level, string sourceContext, long sourceLineId,
-      int useCaseId, Exception ex
+      int eventKindId, Exception ex
     ) {
 
       var evt = new LogEvent {
@@ -118,7 +118,7 @@ namespace Logging.SmartStandards.Sinks {
         Level = level,
         SourceContext = sourceContext,
         SourceLineId = sourceLineId,
-        UseCaseId = useCaseId,
+        EventKindId = eventKindId,
         MessageTemplate = ExceptionRenderer.Render(ex, false),
         TimestampUtc = DateTime.UtcNow,
         Exception = ExceptionRenderer.Render(ex, true),

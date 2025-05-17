@@ -7,7 +7,7 @@ namespace Logging.SmartStandards.Textualization {
   /// </summary>
   /// <remarks>
   ///   Example LogParaph:
-  ///   [LevelAsAlpha3] SourceContext #useCaseId#  SourceLineId [AudienceToken]: MessageTemplate 
+  ///   [LevelAsAlpha3] SourceContext #eventKindId#  SourceLineId [AudienceToken]: MessageTemplate 
   ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
   /// </remarks>
   public partial class LogParaphRenderer { // v 1.0.0
@@ -48,16 +48,16 @@ namespace Logging.SmartStandards.Textualization {
     /// </summary>    
     /// <returns>
     ///   Example LogParaph:
-    ///   [LevelAsAlpha3] SourceContext #useCaseId#  SourceLineId [AudienceToken]: MessageTemplate 
+    ///   [LevelAsAlpha3] SourceContext #eventKindId#  SourceLineId [AudienceToken]: MessageTemplate 
     ///   [Err] MyApp.exe #4711# 2070198253252296432 [Ins]: File not found on Disk! 
     /// </returns>
     public static StringBuilder BuildParaphResolved(
       StringBuilder targetStringBuilder,
       string audienceToken, int level, string sourceContext, long sourceLineId,
-      int useCaseId, string messageTemplate, object[] args
+      int eventKindId, string messageTemplate, object[] args
     ) {
 
-      LogParaphRenderer.BuildParaphLeftPart(targetStringBuilder, level, sourceContext, useCaseId);
+      LogParaphRenderer.BuildParaphLeftPart(targetStringBuilder, level, sourceContext, eventKindId);
 
       LogParaphRenderer.BuildParaphRightPart(targetStringBuilder, sourceLineId, audienceToken, null);
 
@@ -76,14 +76,14 @@ namespace Logging.SmartStandards.Textualization {
     ///   S.th. like "[Err] MyApp.exe #4711#"
     /// </returns>
     public static StringBuilder BuildParaphLeftPart(
-      StringBuilder targetStringBuilder, int level, string sourceContext, int useCaseId
+      StringBuilder targetStringBuilder, int level, string sourceContext, int eventKindId
     ) {
       targetStringBuilder.Append('[');
       LogParaphRenderer.LevelToAlpha3(level, targetStringBuilder);
       targetStringBuilder.Append("] ");
       targetStringBuilder.Append(sourceContext);
       targetStringBuilder.Append(" #");
-      targetStringBuilder.Append(useCaseId);
+      targetStringBuilder.Append(eventKindId);
       targetStringBuilder.Append('#');
       return targetStringBuilder;
     }

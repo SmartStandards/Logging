@@ -47,7 +47,7 @@ namespace Logging.SmartStandards.Centralized {
 
     public long SourceLineId { get; set; } = 0;
 
-    public int UseCaseId { get; set; }
+    public int EventKindId { get; set; }
 
 
 

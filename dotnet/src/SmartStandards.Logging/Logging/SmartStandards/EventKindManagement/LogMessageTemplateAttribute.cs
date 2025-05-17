@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Logging.SmartStandards.UseCaseManagement {
+namespace Logging.SmartStandards.EventKindManagement {
 
   /// <summary>
-  ///   Defines a log message template per enum value (for LogUseCase enums).
+  ///   Defines a log message template per enum value (for EventKind enums).
   /// </summary>
   [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
   public class LogMessageTemplateAttribute : Attribute { // v 1.0.0

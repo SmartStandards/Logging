@@ -1,8 +1,8 @@
-﻿using Logging.SmartStandards;
+﻿using System;
+using Logging.SmartStandards;
 using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Logging.Tests {
 
@@ -30,27 +30,27 @@ namespace Logging.Tests {
     }
 
     private static void PassTracedMessageToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
-      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     private static void PassTracedExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
-      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     private static void PassLogMessageToCustomBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
-      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     private static void PassLogExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
-      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, useCaseId, ex);
+      CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
   }

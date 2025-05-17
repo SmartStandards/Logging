@@ -22,7 +22,7 @@ namespace Logging.SmartStandards {
       // Start
 
       Console.WriteLine("Syntax:");
-      Console.WriteLine("[LevelAsAlpha3] SourceContext #KindId# SourceLineId [AudienceToken]: ResolvedMessageTemplate");
+      Console.WriteLine("[LevelAsAlpha3] SourceContext #EventKindId# SourceLineId [AudienceToken]: ResolvedMessageTemplate");
 
       // Minimum Example
 
@@ -49,10 +49,10 @@ namespace Logging.SmartStandards {
       );
 
       Console.WriteLine();
-      Console.WriteLine("-- Message Coming From LogUseCaseEnum Example --");
+      Console.WriteLine("-- Message Coming From EventKindEnum Example --");
       Console.WriteLine();
 
-      BizLogger.LogInformation("MySourceContext", 2073054001366991604, MyLogUseCase.ZuVielFooImBar, "Batz");
+      BizLogger.LogInformation("MySourceContext", 2073054001366991604, MyLogEventKind.ZuVielFooImBar, "Batz");
 
       // Exception Example
 

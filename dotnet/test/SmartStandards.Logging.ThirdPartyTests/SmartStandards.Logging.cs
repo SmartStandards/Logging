@@ -1,8 +1,4 @@
-﻿using Logging.SmartStandards.Internal;
-using Logging.SmartStandards.Textualization;
-using Logging.SmartStandards.Transport;
-using Logging.SmartStandards.UseCaseManagement;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,6 +10,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Logging.SmartStandards.Internal;
+using Logging.SmartStandards.Textualization;
+using Logging.SmartStandards.Transport;
+using Logging.SmartStandards.UseCaseManagement;
 
 // This is a partial copy of the SmartStandards Logging Library.
 // It is intended to be used as an alternative when including the NuGet package is not feasible.
@@ -94,7 +94,7 @@ namespace Logging.SmartStandards.Transport {
 
         foreach (QueuedEvent e in _DebuggingLookBackBuffer) {
           TraceEventCache eventCache = new TraceEventCache();
-          InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.UseCaseId, e.MessageTemplate, e.Args);
+          this.InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.EventKindId, e.MessageTemplate, e.Args);
         }
 
         _DebuggingLookBackBuffer = null;
@@ -133,15 +133,15 @@ namespace Logging.SmartStandards.Transport {
 
       TraceEventCache eventCache = new TraceEventCache(); // same instance for many listeners
 
-      ForEachRelevantListener(
+      this.ForEachRelevantListener(
         (TraceListener listener) => {
-          InvokeListenerTraceEvent(listener, eventCache, eventType, sourceContext, id, format, args);
+          this.InvokeListenerTraceEvent(listener, eventCache, eventType, sourceContext, id, format, args);
         }
       );
     }
 
-    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      this.EmitMessage(audience, level, sourceContext, sourceLineId, useCaseId, ex.Message, new object[] { ex });
+    public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      this.EmitMessage(audience, level, sourceContext, sourceLineId, eventKindId, ex.Message, new object[] { ex });
     }
 
     private DefaultTraceListener ForEachRelevantListener(Action<TraceListener> onProcessListener) {
@@ -160,7 +160,7 @@ namespace Logging.SmartStandards.Transport {
 
           foundDefaultTraceListener = defaultTraceListener;
 
-          if (_DebuggingLookBackBuffer != null && isLogging) FlushAndShutDownBuffer(defaultTraceListener);
+          if (_DebuggingLookBackBuffer != null && isLogging) this.FlushAndShutDownBuffer(defaultTraceListener);
 
           // Is the default logger EmittingWorthy?
           if (!isLogging && String.IsNullOrWhiteSpace(defaultTraceListener.LogFileName)) continue;
@@ -182,7 +182,7 @@ namespace Logging.SmartStandards.Transport {
     /// </param>
     public void EmitMessage(
       string audience, int level, string sourceContext, long sourceLineId,
-      int useCaseId, string messageTemplate, params object[] args
+      int eventKindId, string messageTemplate, params object[] args
     ) {
 
       // Performance: Do not prepare a message that is never sent (or buffered)
@@ -191,13 +191,13 @@ namespace Logging.SmartStandards.Transport {
 
       DefaultTraceListener foundDefaultTraceListener = null;
 
-      foundDefaultTraceListener = ForEachRelevantListener((TraceListener listener) => { emittingWorthyListenersExist = true; });
+      foundDefaultTraceListener = this.ForEachRelevantListener((TraceListener listener) => { emittingWorthyListenersExist = true; });
 
       if (!Debugger.IsLogging() && foundDefaultTraceListener != null && _DebuggingLookBackBuffer == null) {
 
         _DebuggingLookBackBuffer = new MyCircularBuffer<QueuedEvent>(1000);
 
-        _DebuggingLookBackBuffer.StartAutoFlush(() => { if (Debugger.IsLogging()) FlushAndShutDownBuffer(foundDefaultTraceListener); }, 3000);
+        _DebuggingLookBackBuffer.StartAutoFlush(() => { if (Debugger.IsLogging()) this.FlushAndShutDownBuffer(foundDefaultTraceListener); }, 3000);
       }
 
       if (!emittingWorthyListenersExist && _DebuggingLookBackBuffer == null) return;
@@ -257,11 +257,11 @@ namespace Logging.SmartStandards.Transport {
 
       // actual emit
 
-      ToAllRelevantListeners(eventType, sourceContext, useCaseId, formatStringBuilder.ToString(), args);
+      this.ToAllRelevantListeners(eventType, sourceContext, eventKindId, formatStringBuilder.ToString(), args);
 
       if (_DebuggingLookBackBuffer != null) {
         lock (this) {
-          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, useCaseId, formatStringBuilder.ToString(), args));
+          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, eventKindId, formatStringBuilder.ToString(), args));
         }
       }
 
@@ -273,16 +273,16 @@ namespace Logging.SmartStandards.Transport {
 
       public TraceEventType EventType { get; set; }
 
-      public int UseCaseId { get; set; }
+      public int EventKindId { get; set; }
 
       public string MessageTemplate { get; set; }
 
       public object[] Args { get; set; }
 
-      public QueuedEvent(string sourceContext, TraceEventType EventType, int useCaseId, string messageTemplate, object[] args) {
+      public QueuedEvent(string sourceContext, TraceEventType EventType, int eventKindId, string messageTemplate, object[] args) {
         SourceContext = sourceContext;
         this.EventType = EventType;
-        this.UseCaseId = useCaseId;
+        this.EventKindId = eventKindId;
         this.MessageTemplate = messageTemplate;
         this.Args = args;
       }
@@ -401,12 +401,12 @@ namespace Logging.SmartStandards.Internal {
 
   internal partial class ExceptionAnalyzer { // v 1.0.0
 
-    internal static int InferUseCaseIdByException(Exception ex) {
+    internal static int InferEventKindIdByException(Exception ex) {
 
       // 'Zwiebel' durch Aufrufe via Reflection (InnerException ist mehr repräsentativ)
 
       if (ex is TargetInvocationException && ex.InnerException != null) {
-        return InferUseCaseIdByException(ex.InnerException);
+        return InferEventKindIdByException(ex.InnerException);
       }
 
       // 'Zwiebel' durch Task.Run (InnerException ist mehr repräsentativ)
@@ -417,17 +417,17 @@ namespace Logging.SmartStandards.Internal {
           castedAggregateException.InnerExceptions != null &&
           castedAggregateException.InnerExceptions.Count == 1 //falls nur 1 enthalten (macht MS gern)
         ) {
-          return InferUseCaseIdByException(castedAggregateException.InnerExceptions[0]);
+          return InferEventKindIdByException(castedAggregateException.InnerExceptions[0]);
         }
       }
 
-      // An einer Win32Exception hängt i.d.R. bereits eine useCaseId => diese verwenden
+      // An einer Win32Exception hängt i.d.R. bereits eine eventKindId => diese verwenden
 
       if (ex is Win32Exception) {
         return ((Win32Exception)ex).NativeErrorCode;
       }
 
-      // Falls der Absender die Konvention "MessageText #{useCaseId}" einhielt...
+      // Falls der Absender die Konvention "MessageText #{eventKindId}" einhielt...
 
       int hashTagIndex = ex.Message.LastIndexOf('#');
 
@@ -438,10 +438,10 @@ namespace Logging.SmartStandards.Internal {
       // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
       if (ex is ExceptionExtensions.WrappedException) {
-        return InferUseCaseIdByException(ex.InnerException);
+        return InferEventKindIdByException(ex.InnerException);
       }
 
-      // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine useCaseId ab.
+      // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine eventKindId ab.
 
       using (var md5 = MD5.Create()) {
         int hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(ex.GetType().Name)), 0);
@@ -465,7 +465,7 @@ namespace Logging.SmartStandards {
     public const string AudienceToken = "Biz";
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args
+      int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -474,26 +474,26 @@ namespace Logging.SmartStandards {
 
       if (args == null) args = new object[0];
 
-      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args
+      int level, string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args
     ) {
-      LogUseCaseRepository.GetUseCaseIdAndMessageTemplateByEnum(useCaseEnumElement, out int useCaseId, out string messageTemplate);
-      Log(level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      LogUseCaseRepository.GetEventKindIdAndMessageTemplateByEnum(eventKindEnumElement, out int eventKindId, out string messageTemplate);
+      Log(level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
-      int useCaseId = ExceptionAnalyzer.InferUseCaseIdByException(ex);
+      int eventKindId = ExceptionAnalyzer.InferEventKindIdByException(ex);
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
-    public static void Log(int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
+    public static void Log(int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
   }
@@ -505,96 +505,96 @@ namespace Logging.SmartStandards {
 
   internal partial class BizLogger {
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(0, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(0, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogTrace(string sourceContext, long sourceLineId, Exception ex) {
       Log(0, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(1, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(1, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogDebug(string sourceContext, long sourceLineId, Exception ex) {
       Log(1, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(2, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(2, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogInformation(string sourceContext, long sourceLineId, Exception ex) {
       Log(2, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(3, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(3, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogWarning(string sourceContext, long sourceLineId, Exception ex) {
       Log(3, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogError(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(4, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(4, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogError(string sourceContext, long sourceLineId, Exception ex) {
       Log(4, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(5, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(5, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogCritical(string sourceContext, long sourceLineId, Exception ex) {
@@ -652,42 +652,42 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region useCaseEnumElement only
+    #region eventKindEnumElement only
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(Enum useCaseEnumElement, params object[] args) {
+    public static void LogTrace(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogTrace(currentSourceContext, 0, useCaseEnumElement, args);
+      LogTrace(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(Enum useCaseEnumElement, params object[] args) {
+    public static void LogDebug(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogDebug(currentSourceContext, 0, useCaseEnumElement, args);
+      LogDebug(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(Enum useCaseEnumElement, params object[] args) {
+    public static void LogInformation(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogInformation(currentSourceContext, 0, useCaseEnumElement, args);
+      LogInformation(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(Enum useCaseEnumElement, params object[] args) {
+    public static void LogWarning(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogWarning(currentSourceContext, 0, useCaseEnumElement, args);
+      LogWarning(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(Enum useCaseEnumElement, params object[] args) {
+    public static void LogError(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogError(currentSourceContext, 0, useCaseEnumElement, args);
+      LogError(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(Enum useCaseEnumElement, params object[] args) {
+    public static void LogCritical(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogCritical(currentSourceContext, 0, useCaseEnumElement, args);
+      LogCritical(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     #endregion
@@ -732,122 +732,122 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region SourceLineId and UseCaseId and MessageTemplate
+    #region SourceLineId and EventKindId and MessageTemplate
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogTrace(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(0, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogDebug(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(1, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogInformation(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(2, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogWarning(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(3, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogError(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(4, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogCritical(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
-    }
-
-    #endregion
-
-    #region SourceLineId and UseCaseEnumElement
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseEnumElement, args);
+      Log(5, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     #endregion
 
-    #region SourceLineId and and UseCaseId and Exception
+    #region SourceLineId and EventKindEnumElement
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogTrace(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(0, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogDebug(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(1, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogInformation(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(2, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogWarning(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(3, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogError(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(4, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogCritical(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(5, currentSourceContext, sourceLineId, eventKindEnumElement, args);
+    }
+
+    #endregion
+
+    #region SourceLineId and EventKindId and Exception
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogTrace(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(0, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogDebug(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(1, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogInformation(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(2, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogWarning(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(3, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogError(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(4, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogCritical(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(5, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     #endregion
@@ -905,7 +905,7 @@ namespace Logging.SmartStandards {
     public const string AudienceToken = "Dev";
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args
+      int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -914,26 +914,26 @@ namespace Logging.SmartStandards {
 
       if (args == null) args = new object[0];
 
-      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args
+      int level, string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args
     ) {
-      LogUseCaseRepository.GetUseCaseIdAndMessageTemplateByEnum(useCaseEnumElement, out int useCaseId, out string messageTemplate);
-      Log(level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      LogUseCaseRepository.GetEventKindIdAndMessageTemplateByEnum(eventKindEnumElement, out int eventKindId, out string messageTemplate);
+      Log(level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
-      int useCaseId = ExceptionAnalyzer.InferUseCaseIdByException(ex);
+      int eventKindId = ExceptionAnalyzer.InferEventKindIdByException(ex);
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
-    public static void Log(int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
+    public static void Log(int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
   }
@@ -945,96 +945,96 @@ namespace Logging.SmartStandards {
 
   internal partial class DevLogger {
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(0, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(0, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogTrace(string sourceContext, long sourceLineId, Exception ex) {
       Log(0, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(1, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(1, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogDebug(string sourceContext, long sourceLineId, Exception ex) {
       Log(1, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(2, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(2, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogInformation(string sourceContext, long sourceLineId, Exception ex) {
       Log(2, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(3, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(3, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogWarning(string sourceContext, long sourceLineId, Exception ex) {
       Log(3, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogError(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(4, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(4, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogError(string sourceContext, long sourceLineId, Exception ex) {
       Log(4, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(5, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(5, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogCritical(string sourceContext, long sourceLineId, Exception ex) {
@@ -1092,42 +1092,42 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region useCaseEnumElement only
+    #region eventKindEnumElement only
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(Enum useCaseEnumElement, params object[] args) {
+    public static void LogTrace(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogTrace(currentSourceContext, 0, useCaseEnumElement, args);
+      LogTrace(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(Enum useCaseEnumElement, params object[] args) {
+    public static void LogDebug(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogDebug(currentSourceContext, 0, useCaseEnumElement, args);
+      LogDebug(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(Enum useCaseEnumElement, params object[] args) {
+    public static void LogInformation(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogInformation(currentSourceContext, 0, useCaseEnumElement, args);
+      LogInformation(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(Enum useCaseEnumElement, params object[] args) {
+    public static void LogWarning(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogWarning(currentSourceContext, 0, useCaseEnumElement, args);
+      LogWarning(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(Enum useCaseEnumElement, params object[] args) {
+    public static void LogError(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogError(currentSourceContext, 0, useCaseEnumElement, args);
+      LogError(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(Enum useCaseEnumElement, params object[] args) {
+    public static void LogCritical(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogCritical(currentSourceContext, 0, useCaseEnumElement, args);
+      LogCritical(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     #endregion
@@ -1172,122 +1172,122 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region SourceLineId and UseCaseId and MessageTemplate
+    #region SourceLineId and EventKindId and MessageTemplate
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogTrace(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(0, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogDebug(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(1, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogInformation(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(2, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogWarning(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(3, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogError(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(4, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogCritical(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
-    }
-
-    #endregion
-
-    #region SourceLineId and UseCaseEnumElement
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseEnumElement, args);
+      Log(5, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     #endregion
 
-    #region SourceLineId and and UseCaseId and Exception
+    #region SourceLineId and EventKindEnumElement
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogTrace(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(0, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogDebug(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(1, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogInformation(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(2, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogWarning(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(3, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogError(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(4, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogCritical(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(5, currentSourceContext, sourceLineId, eventKindEnumElement, args);
+    }
+
+    #endregion
+
+    #region SourceLineId and EventKindId and Exception
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogTrace(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(0, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogDebug(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(1, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogInformation(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(2, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogWarning(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(3, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogError(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(4, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogCritical(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(5, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     #endregion
@@ -1345,7 +1345,7 @@ namespace Logging.SmartStandards {
     public const string AudienceToken = "Ins";
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args
+      int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -1354,26 +1354,26 @@ namespace Logging.SmartStandards {
 
       if (args == null) args = new object[0];
 
-      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args
+      int level, string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args
     ) {
-      LogUseCaseRepository.GetUseCaseIdAndMessageTemplateByEnum(useCaseEnumElement, out int useCaseId, out string messageTemplate);
-      Log(level, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      LogUseCaseRepository.GetEventKindIdAndMessageTemplateByEnum(eventKindEnumElement, out int eventKindId, out string messageTemplate);
+      Log(level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
-      int useCaseId = ExceptionAnalyzer.InferUseCaseIdByException(ex);
+      int eventKindId = ExceptionAnalyzer.InferEventKindIdByException(ex);
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
-    public static void Log(int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
+    public static void Log(int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
 
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, useCaseId, ex);
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
   }
@@ -1385,96 +1385,96 @@ namespace Logging.SmartStandards {
 
   internal partial class InsLogger {
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(0, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogTrace(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(0, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogTrace(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(0, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogTrace(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(0, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogTrace(string sourceContext, long sourceLineId, Exception ex) {
       Log(0, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(1, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogDebug(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(1, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogDebug(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(1, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogDebug(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(1, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogDebug(string sourceContext, long sourceLineId, Exception ex) {
       Log(1, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(2, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogInformation(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(2, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogInformation(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(2, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogInformation(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(2, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogInformation(string sourceContext, long sourceLineId, Exception ex) {
       Log(2, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(3, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogWarning(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(3, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogWarning(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(3, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogWarning(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(3, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogWarning(string sourceContext, long sourceLineId, Exception ex) {
       Log(3, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(4, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogError(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(4, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogError(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(4, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogError(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(4, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogError(string sourceContext, long sourceLineId, Exception ex) {
       Log(4, sourceContext, sourceLineId, ex);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseId, messageTemplate, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      Log(5, sourceContext, sourceLineId, useCaseEnumElement, args);
+    public static void LogCritical(string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args) {
+      Log(5, sourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
-    public static void LogCritical(string sourceContext, long sourceLineId, int useCaseId, Exception ex) {
-      Log(5, sourceContext, sourceLineId, useCaseId, ex);
+    public static void LogCritical(string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+      Log(5, sourceContext, sourceLineId, eventKindId, ex);
     }
 
     public static void LogCritical(string sourceContext, long sourceLineId, Exception ex) {
@@ -1532,42 +1532,42 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region useCaseEnumElement only
+    #region eventKindEnumElement only
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(Enum useCaseEnumElement, params object[] args) {
+    public static void LogTrace(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogTrace(currentSourceContext, 0, useCaseEnumElement, args);
+      LogTrace(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(Enum useCaseEnumElement, params object[] args) {
+    public static void LogDebug(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogDebug(currentSourceContext, 0, useCaseEnumElement, args);
+      LogDebug(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(Enum useCaseEnumElement, params object[] args) {
+    public static void LogInformation(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogInformation(currentSourceContext, 0, useCaseEnumElement, args);
+      LogInformation(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(Enum useCaseEnumElement, params object[] args) {
+    public static void LogWarning(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogWarning(currentSourceContext, 0, useCaseEnumElement, args);
+      LogWarning(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(Enum useCaseEnumElement, params object[] args) {
+    public static void LogError(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogError(currentSourceContext, 0, useCaseEnumElement, args);
+      LogError(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(Enum useCaseEnumElement, params object[] args) {
+    public static void LogCritical(Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      LogCritical(currentSourceContext, 0, useCaseEnumElement, args);
+      LogCritical(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     #endregion
@@ -1612,122 +1612,122 @@ namespace Logging.SmartStandards {
 
     #endregion
 
-    #region SourceLineId and UseCaseId and MessageTemplate
+    #region SourceLineId and EventKindId and MessageTemplate
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogTrace(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(0, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogDebug(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(1, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogInformation(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(2, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogWarning(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(3, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogError(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
+      Log(4, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, string messageTemplate, params object[] args) {
+    public static void LogCritical(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, messageTemplate, args);
-    }
-
-    #endregion
-
-    #region SourceLineId and UseCaseEnumElement
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseEnumElement, args);
-    }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, Enum useCaseEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseEnumElement, args);
+      Log(5, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     #endregion
 
-    #region SourceLineId and and UseCaseId and Exception
+    #region SourceLineId and EventKindEnumElement
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogTrace(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogTrace(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(0, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(0, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogDebug(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogDebug(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(1, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(1, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogInformation(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogInformation(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(2, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(2, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogWarning(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogWarning(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(3, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(3, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogError(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogError(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(4, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(4, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void LogCritical(long sourceLineId, int useCaseId, Exception ex) {
+    public static void LogCritical(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
       string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
-      Log(5, currentSourceContext, sourceLineId, useCaseId, ex);
+      Log(5, currentSourceContext, sourceLineId, eventKindEnumElement, args);
+    }
+
+    #endregion
+
+    #region SourceLineId and EventKindId and Exception
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogTrace(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(0, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogDebug(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(1, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogInformation(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(2, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogWarning(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(3, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogError(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(4, currentSourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void LogCritical(long sourceLineId, int eventKindId, Exception ex) {
+      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      Log(5, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     #endregion
@@ -1804,16 +1804,16 @@ namespace Logging.SmartStandards {
     ///   Puts your envelope exception around an exception coming from elsewhere.
     /// </summary>
     /// <param name="extendee"> The 3rd party exception (becoming the inner exception). </param>
-    /// <param name="useCaseId"> Will be added as #-suffix to the message (SmartStandards compliant parsable). </param>
+    /// <param name="eventKindId"> Will be added as #-suffix to the message (SmartStandards compliant parsable). </param>
     /// <param name="message"> Your message adding value to the 3rd party exception. </param>
     /// <returns> A new WrappedException instance containing the extendee as inner exception. </returns>
     /// <remarks>
     ///   Purpose: The 3rd party exception might be generic (like null reference, etc.) and thus not very helpful.
     ///   Add specific information (like IDs etc.) in to the envelope's message.
     /// </remarks>
-    public static Exception Wrap(this Exception extendee, int useCaseId, string message) { // REQ #395397931
+    public static Exception Wrap(this Exception extendee, int eventKindId, string message) { // REQ #395397931
 
-      WrappedException wrappedException = new WrappedException(message + " #" + useCaseId.ToString(), extendee);
+      WrappedException wrappedException = new WrappedException(message + " #" + eventKindId.ToString(), extendee);
 
       return wrappedException;
     }
@@ -2074,21 +2074,21 @@ namespace Logging.SmartStandards.UseCaseManagement {
 
   internal static partial class LogUseCaseRepository { // v 1.0.0
 
-    internal static void GetUseCaseIdAndMessageTemplateByEnum(Enum useCaseEnumElement, out int useCaseId, out string messageTemplate) {
+    internal static void GetEventKindIdAndMessageTemplateByEnum(Enum eventKindEnumElement, out int eventKindId, out string messageTemplate) {
 
-      useCaseId = (int)(object)useCaseEnumElement;
+      eventKindId = (int)(object)eventKindEnumElement;
 
       messageTemplate = null;
 
       try {
-        TypeConverter typeConverter = TypeDescriptor.GetConverter(useCaseEnumElement);
+        TypeConverter typeConverter = TypeDescriptor.GetConverter(eventKindEnumElement);
         if (typeConverter != null && typeConverter.CanConvertTo(typeof(System.String))) {
-          messageTemplate = typeConverter.ConvertToString(useCaseEnumElement);
+          messageTemplate = typeConverter.ConvertToString(eventKindEnumElement);
         }
       } catch {
       }
       if (String.IsNullOrWhiteSpace(messageTemplate)) {
-        messageTemplate = Enum.GetName(useCaseEnumElement.GetType(), useCaseEnumElement);
+        messageTemplate = Enum.GetName(eventKindEnumElement.GetType(), eventKindEnumElement);
       }
     }
 

@@ -40,13 +40,13 @@ namespace Logging.SmartStandards.ThirdPartyTests {
     }
 
     private void PassLogMessageToCustomBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, string messageTemplate, object[] args
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
       _NumberOfMessages++;
     }
 
     private void PassLogExceptionToTraceBusSink(
-      string audience, int level, string sourceContext, long sourceLineId, int useCaseId, Exception ex
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
       _NumberOfExceptions++;
     }

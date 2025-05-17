@@ -1,8 +1,8 @@
-﻿using Logging.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading;
+using Logging.Tests;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Logging.SmartStandards {
 
@@ -108,12 +108,12 @@ namespace Logging.SmartStandards {
 
       //
 
-      Assert.AreEqual(i, AssemblyInitializer.TraceBusSink.CollectedUseCaseIds.Count - 1);
-      Assert.AreEqual(i, AssemblyInitializer.CustomBusSink.CollectedUseCaseIds.Count - 1);
+      Assert.AreEqual(i, AssemblyInitializer.TraceBusSink.CollectedEventKindIds.Count - 1);
+      Assert.AreEqual(i, AssemblyInitializer.CustomBusSink.CollectedEventKindIds.Count - 1);
     }
 
     [TestMethod()]
-    public void LogMethods_UseCaseFromEnum_ShouldResolveCorrectly() {
+    public void LogMethods_EventKindFromEnum_ShouldResolveCorrectly() {
 
       int i = 0;
 
@@ -122,20 +122,20 @@ namespace Logging.SmartStandards {
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogUseCase.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873991520386244, TestingLogEventKind.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogUseCase.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873991520386244, (int)TestingLogEventKind.ZuVielFooImBar,
           "There is too much foo within bar beacause of {0}!"
         );
 
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
 
         i++;
-        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogUseCase.ZuVielFooImBar);
+        DevLogger.LogWarning(AssemblyInitializer.SourceContext, 2071873995903461991, TestingLogEventKind.ZuVielFooImBar);
 
         MyAssert.BothSinksContain(
-          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogUseCase.ZuVielFooImBar,
+          i, "Dev", 3, Sc, 2071873995903461991, (int)TestingLogEventKind.ZuVielFooImBar,
           "Da ist zu viel Foo im Bar wegen {0}!"
         );
 

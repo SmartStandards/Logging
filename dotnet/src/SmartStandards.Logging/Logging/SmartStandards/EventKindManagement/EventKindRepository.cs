@@ -5,9 +5,9 @@ namespace Logging.SmartStandards.EventKindManagement {
 
   public static class EventKindRepository { // v 1.0.0
 
-    internal static void GetKindIdAndMessageTemplateByEnum(Enum eventKindEnumElement, out int useCaseId, out string messageTemplate) {
+    internal static void GetKindIdAndMessageTemplateByEnum(Enum eventKindEnumElement, out int eventKindId, out string messageTemplate) {
 
-      useCaseId = (int)(object)eventKindEnumElement;
+      eventKindId = (int)(object)eventKindEnumElement;
 
       messageTemplate = null;
 

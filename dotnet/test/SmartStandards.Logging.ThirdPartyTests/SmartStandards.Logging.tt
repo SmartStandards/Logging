@@ -39,9 +39,9 @@ string[] fileDownloadUrls = new string[] {
 
   "Logging/SmartStandards/ExceptionExtensions.cs",
   
-  "Logging/SmartStandards/UseCaseManagement/LogMessageTemplateAttribute.cs",
-  "Logging/SmartStandards/UseCaseManagement/LogUseCaseEnumConverter.cs",
-  "Logging/SmartStandards/UseCaseManagement/LogUseCaseRepository.cs",
+  "Logging/SmartStandards/EventKindManagement/LogMessageTemplateAttribute.cs",
+  "Logging/SmartStandards/EventKindManagement/EventKindEnumConverter.cs",
+  "Logging/SmartStandards/EventKindManagement/EventKindRepository.cs",
    
 };
 

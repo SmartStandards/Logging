@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.8.1",
-  "currentVersionWithSuffix": "2.8.1",
+  "currentVersion": "2.9.0",
+  "currentVersionWithSuffix": "2.9.0",
   "releaseType": "official",
-  "previousVersion": "2.8.0",
-  "changeGrade": "patch",
+  "previousVersion": "2.8.1",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 8,
-  "currentPatch": 1,
-  "versionDateInfo": "2025-05-17",
-  "versionTimeInfo": "14:47:11",
-  "versionNotes": "- new revision without significant changes\n"
+  "currentMinor": 9,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-05-19",
+  "versionTimeInfo": "05:31:32",
+  "versionNotes": "- new Feature: T4 Template \"EventKind\" instead of \"UseCase\"\n"
 }

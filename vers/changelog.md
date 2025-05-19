@@ -4,8 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
+*(none)*
 
+
+
+## v 2.9.0
+released **2025-05-19**, including:
  - **new Feature**: T4 Template "EventKind" instead of "UseCase"
+
+
 
 ## v 2.8.1
 released **2025-05-17**, including:

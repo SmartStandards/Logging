@@ -4,8 +4,14 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* **new Feature**: large Refactoring (*Logging.Centralized*-ONLY!) to match discussed requirements for high-level Sinks (Buffering, Filtering, Enhancements) 
-* **new Feature**: offering an official 'LogEntry' (dto) + 'ILogEntrySink' (Contract)
+*(none)*
+
+
+
+## v 2.10.0
+released **2025-05-27**, including:
+ - **new Feature**: large Refactoring (*Logging.Centralized*-ONLY!) to match discussed requirements for high-level Sinks (Buffering, Filtering, Enhancements)
+ - **new Feature**: offering an official 'LogEntry' (dto) + 'ILogEntrySink' (Contract)
 
 
 

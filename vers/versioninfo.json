@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.9.0",
-  "currentVersionWithSuffix": "2.9.0",
+  "currentVersion": "2.10.0",
+  "currentVersionWithSuffix": "2.10.0",
   "releaseType": "official",
-  "previousVersion": "2.8.1",
+  "previousVersion": "2.9.0",
   "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 9,
+  "currentMinor": 10,
   "currentPatch": 0,
-  "versionDateInfo": "2025-05-19",
-  "versionTimeInfo": "05:31:32",
-  "versionNotes": "- new Feature: T4 Template \"EventKind\" instead of \"UseCase\"\n"
+  "versionDateInfo": "2025-05-27",
+  "versionTimeInfo": "15:31:35",
+  "versionNotes": "- new Feature: large Refactoring (*Logging.Centralized*-ONLY!) to match discussed requirements for high-level Sinks (Buffering, Filtering, Enhancements)\n- new Feature: offering an official 'LogEntry' (dto) + 'ILogEntrySink' (Contract)\n"
 }

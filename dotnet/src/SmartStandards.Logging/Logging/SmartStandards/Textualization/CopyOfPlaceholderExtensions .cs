@@ -148,14 +148,14 @@ namespace Logging.SmartStandards.Textualization {
       return extendee;
     }
 
-    public static string ResolvePlaceholdersByDictionary(this string extendee, IDictionary<string, string> placeholders) {
+    public static string ResolvePlaceholdersByDictionary(this string extendee, IDictionary<string, object> placeholders) {
 
       if (extendee is null || extendee.Length < 3 || placeholders is null || placeholders.Count == 0) {
         return extendee;
       }
 
-      string onResolvePlaceholder(string placeholderName) {
-        string value = null;
+      object onResolvePlaceholder(string placeholderName) {
+        object value = null;
         if (placeholders.TryGetValue(placeholderName, out value)) {
           return value ?? ""; // Value is null => render empty string
         } else {
@@ -174,14 +174,14 @@ namespace Logging.SmartStandards.Textualization {
 
       if (extendee is null || extendee.Length < 3 || propertyBag is null) return extendee;
 
-      string onResolvePlaceholder(string placeholderName) {
+      object onResolvePlaceholder(string placeholderName) {
 
         PropertyInfo propertyInfo = propertyBag.GetType().GetProperty(
           placeholderName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance
         );
 
         if (propertyInfo != null) {
-          return propertyInfo.GetValue(propertyBag).ToString() ?? ""; // Property value is null => render empty string
+          return propertyInfo.GetValue(propertyBag) ?? ""; // Property value is null => render empty string
         } else {
           return null; // Property not existing => return null => leave placeholder unchanged
         }
@@ -203,7 +203,8 @@ namespace Logging.SmartStandards.Textualization {
     ///   Will be called for each placeholder in order of appearance.
     ///   (e.g. "audience", "answer").
     ///   The placeholder name will be passed (or null, if omitPlaceholderNames is set).
-    ///   The resolved placeholder value should be returned. 
+    ///   The resolved placeholder value should be returned 
+    ///   (Note: if the template contains a format-string siffix like ':yyyy-MM-dd', it is important, that the resolved placeholder value was not already converted into a string during resolving!). 
     ///   If null is returned, the placeholder will remain unchanged (including braces).
     ///   </param>
     /// <param name="omitPlaceholderNames">
@@ -213,7 +214,7 @@ namespace Logging.SmartStandards.Textualization {
     public static StringBuilder AppendResolving(
       this StringBuilder extendee,
       string template,
-      Func<string, string> onResolvePlaceholder,
+      Func<string, object> onResolvePlaceholder,
       bool omitPlaceholderNames = false
     ) {
 
@@ -224,12 +225,26 @@ namespace Logging.SmartStandards.Textualization {
         return extendee;
       }
 
-      bool onPlaceholderFound(string placeholderName) {
-        string value = onResolvePlaceholder.Invoke(placeholderName);
-        if (value != null) {
-          extendee.Append(value);
+      bool onPlaceholderFound(string placeholderNameOrExpression) {
+
+        string valueAsString = null;
+
+        int formatStringSeparatorIndex = placeholderNameOrExpression.IndexOf(':');
+        if (formatStringSeparatorIndex < 0) {
+          valueAsString = onResolvePlaceholder.Invoke(placeholderNameOrExpression)?.ToString();
+        }
+        else {
+          object value = onResolvePlaceholder.Invoke(placeholderNameOrExpression.Substring(0, formatStringSeparatorIndex));
+          if(value != null) {
+            string formatString = placeholderNameOrExpression.Substring(formatStringSeparatorIndex + 1);
+            valueAsString = string.Format("{0:" + formatString + "}", value);
+          }
+        }
+  
+        if (valueAsString != null) {
+          extendee.Append(valueAsString);
         } else {
-          extendee.Append('{').Append(placeholderName).Append('}');
+          extendee.Append('{').Append(placeholderNameOrExpression).Append('}');
         }
         return false;
       }
@@ -254,10 +269,10 @@ namespace Logging.SmartStandards.Textualization {
 
       int i = -1;
 
-      string onResolvePlaceholder(string dummyName) {
+      object onResolvePlaceholder(string dummyName) {
         i++;
         if (i <= maxIndex) {
-          return args[i]?.ToString();
+          return args[i];
         } else {
           return null;
         }

@@ -6,6 +6,11 @@ namespace Logging.SmartStandards.AspSupport {
 
   public static class AspLoggingSetupExtensions {
 
+    /// <summary>
+    /// Configures the ASP.NET Core logging system to initialize and use proxy-loggers,
+    /// which will redirect any log events into the SmartStandards DevLogger.
+    /// </summary>
+    /// <param name="builder"></param>
     public static void UseSmartStandardsLogging(this ILoggingBuilder builder) {
 
       builder.ClearProviders();

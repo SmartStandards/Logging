@@ -18,3 +18,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("999.0.0")]
 [assembly: AssemblyInformationalVersion("999.0.0-localbuild")]
 //DONT ADD: [assembly: AssemblyFileVersion] !!!
+
+[assembly: InternalsVisibleTo("SmartStandards.Logging.Centralized")]

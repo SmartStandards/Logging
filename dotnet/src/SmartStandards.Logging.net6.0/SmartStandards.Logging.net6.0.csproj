@@ -27,6 +27,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+    <InternalsVisibleTo Include="SmartStandards.Logging.Centralized" />
 		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
 		<InternalsVisibleTo Include="SmartStandards.Logging.Demo" />
 	</ItemGroup>

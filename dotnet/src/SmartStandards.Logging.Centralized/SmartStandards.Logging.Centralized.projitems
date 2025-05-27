@@ -9,23 +9,21 @@
     <Import_RootNamespace>Logging.SmartStandards.Centralized</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Consume\ILogEventFilteringRuleRepository.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LegacyLogLevelConfigurationDto.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Filtering\LogEventFilter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LegacyLogEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\Config\LoggingConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LogEventFilteringRule.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Remoting\RemoteLoggingProxy.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\LogEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Consume\ILogEventRepository.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Remoting\RemoteSinkRedirector.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SinkContract\ICentralizedLoggingSink.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Sinks\BufferedSink.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Sinks\CheapFileSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Centralized\[Contract]\ILogEventFilteringRuleRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Filtering\LogEntryFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Centralized\[Contract]\LogEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LogEntryCreator.LogEntryDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\LogEntryCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\LogEntryConsoleSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Configuration\LoggingConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Filtering\LogEntryFilteringRule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Centralized\RemoteLoggingProxy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Centralized\[Contract]\ILogEntryRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\LogEntryRemoteSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Centralized\[Contract]\ILogEntrySink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Sinks\LogEntryFileSink.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Remoting\" />
-    <Folder Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Model\Config\" />
-    <Folder Include="$(MSBuildThisFileDirectory)_should_move_to_mainlib_\Sinks\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Logging\SmartStandards\Configuration\" />
   </ItemGroup>
 </Project>

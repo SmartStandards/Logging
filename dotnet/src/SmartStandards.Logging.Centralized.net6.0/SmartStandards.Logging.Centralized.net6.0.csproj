@@ -25,6 +25,10 @@
     <FileVersion>999.0.0.0</FileVersion>
     <PackageTags></PackageTags>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\SmartStandards.Logging.Centralized.net8.0\[ExternalCode]\Snowflake44.cs" Link="[ExternalCode]\Snowflake44.cs" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="SmartStandards.Logging.Tests" />
@@ -39,7 +43,21 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
 
 	<Import Project="..\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems" Label="Shared" />
+
+	<ItemGroup>
+	  <None Update="C:\GIT-TK\SmartStandards.Logging\dotnet\src\SmartStandards.Logging.Centralized\[ExternalCode]\Snowflake44.tt">
+	    <LastGenOutput>Snowflake44.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="[ExternalCode]\" />
+	</ItemGroup>
 
 </Project>

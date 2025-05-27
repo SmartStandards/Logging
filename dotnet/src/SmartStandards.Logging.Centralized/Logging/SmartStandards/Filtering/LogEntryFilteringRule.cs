@@ -2,7 +2,7 @@
 
 namespace Logging.SmartStandards.Filtering {
 
-  public class LogEventFilteringRule {
+  public class LogEntryFilteringRule {
 
     /// <summary>
     /// LogLevelConfigurationRule's will be evaluated in ascending RuleOrder - 
@@ -32,15 +32,10 @@ namespace Logging.SmartStandards.Filtering {
     public string Application { get; set; } = "*";
 
     /// <summary>
-    /// Filtering pattern for the 'InfrastructureZone' ('MyCompany/MyProduct/SytemName/...') of processed LogEntries (Wildcard = '*')
-    /// </summary>
-    public string InfrastructureZone { get; set; } = string.Empty;
-
-    /// <summary>
     /// Filtering patterns for one or more custom fields of processed LogEntries (Wildcard = '*').
     /// (for Example another )
     /// </summary>
-    public Dictionary<string, object> CustomFieldFilters { get; set; } = null;
+    public Dictionary<string, string> CustomFieldFilters { get; set; } = null;
 
   }
 

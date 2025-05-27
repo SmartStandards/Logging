@@ -24,6 +24,28 @@
 	  <ProjectReference Include="..\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
 	<Import Project="..\SmartStandards.Logging.Centralized\SmartStandards.Logging.Centralized.projitems" Label="Shared" />
+
+	<ItemGroup>
+	  <Compile Update="[ExternalCode]\Snowflake44.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Snowflake44.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="C:\GIT-TK\SmartStandards.Logging\dotnet\src\SmartStandards.Logging.Centralized\[ExternalCode]\Snowflake44.tt">
+	    <LastGenOutput>Snowflake44.cs</LastGenOutput>
+	  </None>
+	  <None Update="[ExternalCode]\Snowflake44.tt">
+	    <LastGenOutput>Snowflake44.cs</LastGenOutput>
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	  </None>
+	</ItemGroup>
 
 </Project>

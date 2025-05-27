@@ -59,6 +59,9 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SmartStandards.Logging.Centralized.net8.0\[ExternalCode]\Snowflake44.cs">
+      <Link>[ExternalCode]\Snowflake44.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System;
+using Logging.SmartStandards.EventKindManagement;
 using Logging.SmartStandards.Internal;
-using Logging.SmartStandards.TemplateHousekeeping;
 using Logging.SmartStandards.Transport;
 
 namespace Logging.SmartStandards {
@@ -10,7 +10,7 @@ namespace Logging.SmartStandards {
     public const string AudienceToken = "Biz";
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, int kindId, string messageTemplate, params object[] args
+      int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, params object[] args
     ) {
 
       if (string.IsNullOrWhiteSpace(sourceContext)) sourceContext = "UnknownSourceContext";
@@ -21,44 +21,65 @@ namespace Logging.SmartStandards {
 
 #if !UsedByT4
       if (Routing.BizLoggerToTraceBus) {
-        Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+        Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
       }
 
       if (Routing.BizLoggerToCustomBus) {
-        CustomBusFeed.OnEmitMessage.Invoke(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+        CustomBusFeed.OnEmitMessage.Invoke(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
       }
 #else
-      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+      TraceBusFeed.Instance.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
 #endif
     }
 
     public static void Log(
-      int level, string sourceContext, long sourceLineId, Enum templateEnumElement, params object[] args
+      int level, string sourceContext, long sourceLineId, Enum eventKindEnumElement, params object[] args
     ) {
-      LogEventTemplateRepository.GetLogEventTemplateByEnum(templateEnumElement, out int kindId, out string messageTemplate);
-      Log(level, sourceContext, sourceLineId, kindId, messageTemplate, args);
+      EventKindRepository.GetKindIdAndMessageTemplateByEnum(eventKindEnumElement, out int eventKindId, out string messageTemplate);
+      Log(level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     public static void Log(int level, string sourceContext, long sourceLineId, Exception ex) {
 
-      int kindId = ExceptionAnalyzer.InferEventKindByException(ex);
+      int eventKindId = ExceptionAnalyzer.InferEventKindIdByException(ex);
 
 #if !UsedByT4
       if (Routing.BizLoggerToTraceBus) {
         if (Routing.TraceBusExceptionsTextualizedToggle) {
           string renderedException = ExceptionRenderer.Render(ex);
-          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, kindId, renderedException);
+          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, renderedException);
         } else {
-          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex);
+          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
         }
       }
 
       if (Routing.BizLoggerToCustomBus) {
-        CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, kindId, ex);
+        CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
       }
 #else
-      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, kindId, ex); 
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex); 
 #endif
     }
+
+    public static void Log(int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
+
+#if !UsedByT4
+      if (Routing.BizLoggerToTraceBus) {
+        if (Routing.TraceBusExceptionsTextualizedToggle) {
+          string renderedException = ExceptionRenderer.Render(ex);
+          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, renderedException);
+        } else {
+          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
+        }
+      }
+
+      if (Routing.BizLoggerToCustomBus) {
+        CustomBusFeed.OnEmitException.Invoke(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
+      }
+#else
+      TraceBusFeed.Instance.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex); 
+#endif
+    }
+
   }
 }

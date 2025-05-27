@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
-using Logging.SmartStandards.TemplateHousekeeping;
+using Logging.SmartStandards.EventKindManagement;
 
 namespace Logging.SmartStandards {
 
-  [TypeConverter(typeof(LogEventTemplateEnumConverter))]
-  public enum TestingLogEventTemplate {
+  [TypeConverter(typeof(EventKindEnumConverter))]
+  public enum TestingLogEventKind {
 
     /// <summary> There is too much foo within bar beacause of {0}! </summary>
     [LogMessageTemplate("There is too much foo within bar beacause of {0}!")]

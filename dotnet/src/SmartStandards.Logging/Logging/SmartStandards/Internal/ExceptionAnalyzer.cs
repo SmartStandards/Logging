@@ -8,12 +8,12 @@ namespace Logging.SmartStandards.Internal {
 
   internal class ExceptionAnalyzer { // v 1.0.0
 
-    internal static int InferEventKindByException(Exception ex) {
+    internal static int InferEventKindIdByException(Exception ex) {
 
       // 'Zwiebel' durch Aufrufe via Reflection (InnerException ist mehr repräsentativ)
 
       if (ex is TargetInvocationException && ex.InnerException != null) {
-        return InferEventKindByException(ex.InnerException);
+        return InferEventKindIdByException(ex.InnerException);
       }
 
       // 'Zwiebel' durch Task.Run (InnerException ist mehr repräsentativ)
@@ -24,17 +24,17 @@ namespace Logging.SmartStandards.Internal {
           castedAggregateException.InnerExceptions != null &&
           castedAggregateException.InnerExceptions.Count == 1 //falls nur 1 enthalten (macht MS gern)
         ) {
-          return InferEventKindByException(castedAggregateException.InnerExceptions[0]);
+          return InferEventKindIdByException(castedAggregateException.InnerExceptions[0]);
         }
       }
 
-      // An einer Win32Exception hängt i.d.R. bereits eine kindId => diese verwenden
+      // An einer Win32Exception hängt i.d.R. bereits eine eventKindId => diese verwenden
 
       if (ex is Win32Exception) {
         return ((Win32Exception)ex).NativeErrorCode;
       }
 
-      // Falls der Absender die Konvention "MessageText #{kindId}" einhielt...
+      // Falls der Absender die Konvention "MessageText #{eventKindId}" einhielt...
 
       int hashTagIndex = ex.Message.LastIndexOf('#');
 
@@ -45,10 +45,10 @@ namespace Logging.SmartStandards.Internal {
       // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
       if (ex is ExceptionExtensions.WrappedException) {
-        return InferEventKindByException(ex.InnerException);
+        return InferEventKindIdByException(ex.InnerException);
       }
 
-      // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine kindId ab.
+      // Fallback zuletzt: Wir leiten aus dem Exception-Typ eine eventKindId ab.
 
       using (var md5 = MD5.Create()) {
         int hash = BitConverter.ToInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(ex.GetType().Name)), 0);

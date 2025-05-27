@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.6.0",
-  "currentVersionWithSuffix": "2.6.0",
+  "currentVersion": "2.9.0",
+  "currentVersionWithSuffix": "2.9.0",
   "releaseType": "official",
-  "previousVersion": "2.5.0",
+  "previousVersion": "2.8.1",
   "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 6,
+  "currentMinor": 9,
   "currentPatch": 0,
-  "versionDateInfo": "2025-05-14",
-  "versionTimeInfo": "07:28:47",
-  "versionNotes": "- new Feature: AutoFlush (enabled by default) for TraceBusFeed\n"
+  "versionDateInfo": "2025-05-19",
+  "versionTimeInfo": "05:31:32",
+  "versionNotes": "- new Feature: T4 Template \"EventKind\" instead of \"UseCase\"\n"
 }

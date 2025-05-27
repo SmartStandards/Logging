@@ -8,13 +8,13 @@ namespace Logging.SmartStandards.Sinks {
 
     public static void WriteMessage(
       string audienceToken, int level, string sourceContext, long sourceLineId,
-      int kindId, string messageTemplate, object[] args
+      int eventKindId, string messageTemplate, object[] args
     ) {
 
       StringBuilder logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
 
       LogParaphRenderer.BuildParaphResolved(
-        logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, kindId, messageTemplate, args
+        logParaphBuilder, audienceToken, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args
       );
 
       WriteToConsole(level, logParaphBuilder);
@@ -69,10 +69,10 @@ namespace Logging.SmartStandards.Sinks {
 
     public static void WriteException(
       string audience, int level, string sourceContext, long sourceLineId,
-      int kindId, Exception ex
+      int eventKindId, Exception ex
     ) {
       string exAsString = ExceptionRenderer.Render(ex);
-      ConsoleSink.WriteMessage(audience, level, sourceContext, sourceLineId, kindId, exAsString, null);
+      ConsoleSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, exAsString, null);
     }
 
   }

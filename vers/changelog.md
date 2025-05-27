@@ -9,6 +9,31 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 2.9.0
+released **2025-05-19**, including:
+ - **new Feature**: T4 Template "EventKind" instead of "UseCase"
+
+
+
+## v 2.8.1
+released **2025-05-17**, including:
+ - new revision without significant changes
+
+
+
+## v 2.8.0
+released **2025-05-16**, including:
+ - **new Feature**: Updated T4 template for usage without NuGet
+
+
+
+## v 2.7.0
+released **2025-05-16**, including:
+ - **new Feature**: Overload for emitting Exceptions with custom UseCaseId
+ - **new Feature**: Wording "UseCase" instead of "Kind"
+
+
+
 ## v 2.6.0
 released **2025-05-14**, including:
  - **new Feature**: AutoFlush (enabled by default) for TraceBusFeed

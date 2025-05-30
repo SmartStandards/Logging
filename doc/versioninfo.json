@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.10.0",
-  "currentVersionWithSuffix": "2.10.0",
-  "releaseType": "official",
-  "previousVersion": "2.9.0",
-  "changeGrade": "minor",
+  "currentVersion": "2.10.1",
+  "currentVersionWithSuffix": "2.10.1",
+  "releaseType": "",
+  "previousVersion": "2.10.0",
+  "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 10,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-05-27",
-  "versionTimeInfo": "15:31:35",
-  "versionNotes": "- new Feature: large Refactoring (*Logging.Centralized*-ONLY!) to match discussed requirements for high-level Sinks (Buffering, Filtering, Enhancements)\n- new Feature: offering an official 'LogEntry' (dto) + 'ILogEntrySink' (Contract)\n"
+  "currentPatch": 1,
+  "versionDateInfo": "2025-05-30",
+  "versionTimeInfo": "08:47:42",
+  "versionNotes": "- Removed .NET 4.6-Targets and enabled .NET 8.0-Targets (while switching build-runner from Win-2019 to WIN-2022)\n"
 }

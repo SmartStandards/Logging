@@ -20,11 +20,11 @@
         <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />
         <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="9.0.4" />
       </group>
-			<!--<group targetFramework="net8.0">
+			<group targetFramework="net8.0">
         <dependency id="SmartStandards.Logging" version="999.0.0-localbuild" />
         <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />   
         <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="9.0.4" />    
-			</group>-->
+			</group>
     </dependencies>
   </metadata>
   <files>
@@ -35,8 +35,8 @@
     <file src="dist\bin-net6.0\SmartStandards.Logging.AspSupport.xml" target="lib/net6.0" />
     <file src="dist\bin-net6.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net6.0" />
 		<!-- .NET 8.0 -->
-		<!--<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.dll" target="lib/net8.0" />
+		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.dll" target="lib/net8.0" />
 		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.xml" target="lib/net8.0" />
-		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net8.0" />-->
+		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net8.0" />
   </files>
 </package>

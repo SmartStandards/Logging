@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* **new Feature**: now possible to override the default SourceContext name using an AssemblyMetadataAttribute (with keyName '*SourceContext*')
+*(none)*
+
+
+
+## v 2.11.0
+released **2025-06-06**, including:
+ - **new Feature**: now possible to override the default SourceContext name using an AssemblyMetadataAttribute (with keyName '*SourceContext*')
 
 
 

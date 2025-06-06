@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.10.1",
-  "currentVersionWithSuffix": "2.10.1",
+  "currentVersion": "2.11.0",
+  "currentVersionWithSuffix": "2.11.0",
   "releaseType": "",
-  "previousVersion": "2.10.0",
-  "changeGrade": "fix",
+  "previousVersion": "2.10.1",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 10,
-  "currentPatch": 1,
-  "versionDateInfo": "2025-05-30",
-  "versionTimeInfo": "08:47:42",
-  "versionNotes": "- Removed .NET 4.6-Targets and enabled .NET 8.0-Targets (while switching build-runner from Win-2019 to WIN-2022)\n"
+  "currentMinor": 11,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-06-06",
+  "versionTimeInfo": "13:07:39",
+  "versionNotes": "- new Feature: now possible to override the default SourceContext name using an AssemblyMetadataAttribute (with keyName '*SourceContext*')\n"
 }

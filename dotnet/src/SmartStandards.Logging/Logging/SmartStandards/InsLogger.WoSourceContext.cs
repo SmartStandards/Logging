@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -13,37 +15,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogTrace(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogDebug(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogInformation(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogWarning(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogError(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogCritical(currentSourceContext, 0, 0, messageTemplate, args);
     }
 
@@ -53,37 +55,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogTrace(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogDebug(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogInformation(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogWarning(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogError(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogCritical(currentSourceContext, 0, eventKindEnumElement, args);
     }
 
@@ -93,37 +95,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogTrace(currentSourceContext, 0, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogDebug(currentSourceContext, 0, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogInformation(currentSourceContext, 0, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogWarning(currentSourceContext, 0, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogError(currentSourceContext, 0, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       LogCritical(currentSourceContext, 0, ex);
     }
 
@@ -133,37 +135,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(0, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(1, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(2, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(3, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(4, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(long sourceLineId, int eventKindId, string messageTemplate, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(5, currentSourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
@@ -173,37 +175,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(0, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(1, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(2, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(3, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(4, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(long sourceLineId, Enum eventKindEnumElement, params object[] args) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(5, currentSourceContext, sourceLineId, eventKindEnumElement, args);
     }
 
@@ -213,37 +215,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(0, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(1, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(2, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(3, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(4, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(long sourceLineId, int eventKindId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(5, currentSourceContext, sourceLineId, eventKindId, ex);
     }
 
@@ -253,37 +255,37 @@ namespace Logging.SmartStandards {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogTrace(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(0, currentSourceContext, sourceLineId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogDebug(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(1, currentSourceContext, sourceLineId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogInformation(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(2, currentSourceContext, sourceLineId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogWarning(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(3, currentSourceContext, sourceLineId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogError(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(4, currentSourceContext, sourceLineId, ex);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void LogCritical(long sourceLineId, Exception ex) {
-      string currentSourceContext = Assembly.GetCallingAssembly().GetName().Name;
+      string currentSourceContext = DevLogger.GetSourceContextNameForAssembly(Assembly.GetCallingAssembly());
       Log(5, currentSourceContext, sourceLineId, ex);
     }
 

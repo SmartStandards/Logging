@@ -24,6 +24,7 @@ string[] fileDownloadUrls = new string[] {
   "Logging/SmartStandards/Transport/TraceBusFeed.Buffer.cs",
 
   "Logging/SmartStandards/Internal/ExceptionAnalyzer.cs",
+  "Logging/SmartStandards/Internal/SourceContextDiscoverer.cs",
 
   "Logging/SmartStandards/BizLogger.cs",
   "Logging/SmartStandards/BizLogger.PerLevel.cs",

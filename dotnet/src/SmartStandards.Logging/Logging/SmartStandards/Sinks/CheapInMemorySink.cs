@@ -29,6 +29,7 @@ namespace Logging.SmartStandards.Sinks {
       this.CollectedEventKindIds.Clear();
       this.CollectedMessageTemplates.Clear();
       this.CollectedMessageArgs.Clear();
+      this.CollectedExceptions.Clear();
     }
 
     public void WriteMessage(

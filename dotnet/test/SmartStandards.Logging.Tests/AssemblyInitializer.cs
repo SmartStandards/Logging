@@ -1,13 +1,18 @@
-﻿using System;
-using Logging.SmartStandards;
+﻿using Logging.SmartStandards;
 using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Reflection;
 
-namespace Logging.Tests {
+[assembly: AssemblyMetadata("SourceContext", "SmartStandards-Logging")]
+
+namespace Logging {
 
   [TestClass]
   public class AssemblyInitializer {
+
+    public const string MySourceContextName = "SmartStandards-Logging";
 
     public static TraceBusListener ExternalTraceBusListener { get; set; }
 
@@ -16,8 +21,6 @@ namespace Logging.Tests {
     public static CheapInMemorySink TraceBusSink { get; set; } = new CheapInMemorySink();
 
     public static CheapInMemorySink CustomBusSink { get; set; } = new CheapInMemorySink();
-
-    public const string SourceContext = "Logging.Tests";
 
     [AssemblyInitialize]
     public static void InitializeAssembly(TestContext testContext) {

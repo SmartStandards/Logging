@@ -1,6 +1,5 @@
-﻿using System;
-using Logging.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Logging.SmartStandards {
 

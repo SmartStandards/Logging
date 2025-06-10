@@ -4,9 +4,16 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- **Bug Fix:** CheapInMemorySink.Clear() did not clear CollectedExceptions
+*(none)*
 
-- Internal: Fixed architecture flaws around source context discovery
+
+
+## v 2.11.1
+released **2025-06-10**, including:
+ - **Bug Fix:** CheapInMemorySink.Clear() did not clear CollectedExceptions
+ - Internal: Fixed architecture flaws around source context discovery
+
+
 
 ## v 2.11.0
 released **2025-06-06**, including:

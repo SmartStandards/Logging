@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.0",
-  "currentVersionWithSuffix": "2.11.0",
+  "currentVersion": "2.11.1",
+  "currentVersionWithSuffix": "2.11.1",
   "releaseType": "",
-  "previousVersion": "2.10.1",
-  "changeGrade": "minor",
+  "previousVersion": "2.11.0",
+  "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 11,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-06-06",
-  "versionTimeInfo": "13:07:39",
-  "versionNotes": "- new Feature: now possible to override the default SourceContext name using an AssemblyMetadataAttribute (with keyName '*SourceContext*')\n"
+  "currentPatch": 1,
+  "versionDateInfo": "2025-06-10",
+  "versionTimeInfo": "07:04:12",
+  "versionNotes": "- **Bug Fix:** CheapInMemorySink.Clear() did not clear CollectedExceptions\n- Internal: Fixed architecture flaws around source context discovery\n"
 }

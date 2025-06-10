@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.1",
-  "currentVersionWithSuffix": "2.11.1",
+  "currentVersion": "2.11.2",
+  "currentVersionWithSuffix": "2.11.2",
   "releaseType": "",
-  "previousVersion": "2.11.0",
+  "previousVersion": "2.11.1",
   "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 11,
-  "currentPatch": 1,
+  "currentPatch": 2,
   "versionDateInfo": "2025-06-10",
-  "versionTimeInfo": "07:04:12",
-  "versionNotes": "- **Bug Fix:** CheapInMemorySink.Clear() did not clear CollectedExceptions\n- Internal: Fixed architecture flaws around source context discovery\n"
+  "versionTimeInfo": "12:27:01",
+  "versionNotes": "- new revision without significant changes\n"
 }

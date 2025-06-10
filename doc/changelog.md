@@ -8,6 +8,12 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 2.11.2
+released **2025-06-10**, including:
+ - new revision without significant changes
+
+
+
 ## v 2.11.1
 released **2025-06-10**, including:
  - **Bug Fix:** CheapInMemorySink.Clear() did not clear CollectedExceptions

@@ -83,10 +83,6 @@ namespace Logging.SmartStandards {
 
         }
 
-        if (_AutoFlushTask == null) {
-          _AutoFlushTask = Task.Run(AutoFlushAwaiter);
-        }
-
       }
 
       /// <summary>
@@ -131,15 +127,13 @@ namespace Logging.SmartStandards {
 
       private void AutoFlushAwaiter() {
         DateTime waitUntil = DateTime.Now.AddSeconds(AutoFlushMaxAge);
-        Thread.Sleep(500);
         while (DateTime.Now < waitUntil) {
           lock (_MessageBuffer) {
-            if (_MessageBuffer.Count > AutoFlushMaxCount) {
+            if (_MessageBuffer.Count >= AutoFlushMaxCount) {
               break;
             }
           }
-          ;
-          Thread.Sleep(500);
+          Thread.Sleep(300);
         }
         FlushToSink();
       }

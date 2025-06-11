@@ -43,7 +43,7 @@ namespace Logging.SmartStandards.Configuration {
 
     public LogEntryFilteringRule[] LogLevelRules { get; set; } = Array.Empty<LogEntryFilteringRule>();
 
-    public int BufferMaxAgeSec { get; set; } = 10;
+    public int BufferMaxAgeSec { get; set; } = 3;
 
     public int BufferMaxCount { get; set; } = 100;
 
@@ -63,7 +63,7 @@ namespace Logging.SmartStandards.Configuration {
 
     public int FilterReloadIntervalSec { get; set; } = 180;
 
-    public int BufferMaxAgeSec { get; set; } = 10;
+    public int BufferMaxAgeSec { get; set; } = 5;
 
     public int BufferMaxCount { get; set; } = 100;
 

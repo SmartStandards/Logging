@@ -4,7 +4,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+* Small fixes all arround the LogEntryCreator and LogEntryFileSink (added UnitTest)
 
 
 

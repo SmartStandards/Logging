@@ -2,10 +2,12 @@
 using Logging.SmartStandards.Transport;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.SmartStandards;
 
 namespace Logging.SmartStandards.Centralized {
 
+  [DebuggerDisplay("{Audience}: {MessageTemplate}|{Exception}")]
   public class LogEntry {
 
     /// <summary>

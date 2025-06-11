@@ -229,18 +229,23 @@ namespace Logging.SmartStandards.Textualization {
 
         string valueAsString = null;
 
-        int formatStringSeparatorIndex = placeholderNameOrExpression.IndexOf(':');
-        if (formatStringSeparatorIndex < 0) {
-          valueAsString = onResolvePlaceholder.Invoke(placeholderNameOrExpression)?.ToString();
-        }
-        else {
-          object value = onResolvePlaceholder.Invoke(placeholderNameOrExpression.Substring(0, formatStringSeparatorIndex));
-          if(value != null) {
-            string formatString = placeholderNameOrExpression.Substring(formatStringSeparatorIndex + 1);
-            valueAsString = string.Format("{0:" + formatString + "}", value);
+        if(placeholderNameOrExpression != null) {
+          int formatStringSeparatorIndex = placeholderNameOrExpression.IndexOf(':');
+          if (formatStringSeparatorIndex < 0) {
+            valueAsString = onResolvePlaceholder.Invoke(placeholderNameOrExpression)?.ToString();
+          }
+          else {
+            object value = onResolvePlaceholder.Invoke(placeholderNameOrExpression.Substring(0, formatStringSeparatorIndex));
+            if(value != null) {
+              string formatString = placeholderNameOrExpression.Substring(formatStringSeparatorIndex + 1);
+              valueAsString = string.Format("{0:" + formatString + "}", value);
+            }
           }
         }
-  
+        else {
+          valueAsString = onResolvePlaceholder.Invoke(null)?.ToString();
+        }
+
         if (valueAsString != null) {
           extendee.Append(valueAsString);
         } else {

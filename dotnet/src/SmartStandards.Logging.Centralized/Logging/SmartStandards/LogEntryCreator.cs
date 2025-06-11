@@ -15,7 +15,7 @@ namespace Logging.SmartStandards {
   /// This class provides enhanced convenience for:
   /// Conversion to 'LogEntries', Enrichment (custom fields) and Buffering
   /// </summary>
-  public  static partial class LogEntryCreator {
+  public static partial class LogEntryCreator {
 
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     private static List<LogEntryDispatcher> _Dispatchers = new List<LogEntryDispatcher>();
@@ -41,7 +41,7 @@ namespace Logging.SmartStandards {
       int eventKindId, string messageTemplate, object[] args
     ) {
 
-      var entry = CreateLogEntry(
+      LogEntry entry = CreateLogEntry(
         audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args, null
       );
 

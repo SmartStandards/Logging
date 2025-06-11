@@ -61,8 +61,8 @@ namespace Logging.SmartStandards.Sinks {
             logParaphBuilder.AppendFormat("{0:yyyy-MM-dd} | {0:HH:mm:dd} | ", logEntry.GetTimestampAsDateTime());
             LogParaphRenderer.BuildParaphResolved(
               logParaphBuilder,
-              logEntry.Audience, logEntry.Level, logEntry.SourceContext, //TODO: hir fehken die args
-              logEntry.SourceLineId, logEntry.EventKindId, logEntry.MessageTemplate, Array.Empty<object>()
+              logEntry.Audience, logEntry.Level, logEntry.SourceContext,
+              logEntry.SourceLineId, logEntry.EventKindId, logEntry.MessageTemplate, logEntry.CustomFields
             );
             logParaphBuilder.AppendLine();
 
@@ -109,7 +109,7 @@ namespace Logging.SmartStandards.Sinks {
 
     private static object ResolveFilenamePlaceholder(string placeholderExpression, LogEntry entry) {
       if (placeholderExpression.Equals(nameof(entry.Timestamp), StringComparison.CurrentCultureIgnoreCase)) {
-        entry.GetTimestampAsDateTime();
+        return entry.GetTimestampAsDateTime();
       }
       if (placeholderExpression.Equals(nameof(entry.Application), StringComparison.CurrentCultureIgnoreCase)) {
         return entry.Application ?? "";

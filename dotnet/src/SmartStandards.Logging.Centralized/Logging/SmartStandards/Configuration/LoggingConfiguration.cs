@@ -28,7 +28,7 @@ namespace Logging.SmartStandards.Configuration {
 
     public bool Enabled { get; set; } = true;
 
-    public int DefaultLogLevelFilter { get; set; } = 3;
+    public int DefaultLogLevelFilter { get; set; } = 2;
 
     public LogEntryFilteringRule[] LogLevelRules { get; set; } = Array.Empty<LogEntryFilteringRule>();
 
@@ -40,7 +40,7 @@ namespace Logging.SmartStandards.Configuration {
     
     public string TargetFileName { get; set; } = ".\\Logs\\{application}-{timestamp:yyyy-MM-dd}.log";
 
-    public int DefaultLogLevelFilter { get; set; } = 3;
+    public int DefaultLogLevelFilter { get; set; } = 2;
 
     public LogEntryFilteringRule[] LogLevelRules { get; set; } = Array.Empty<LogEntryFilteringRule>();
 
@@ -58,7 +58,7 @@ namespace Logging.SmartStandards.Configuration {
 
     public string AuthHeader { get; set; } = null;
 
-    public int DefaultLogLevelFilter { get; set; } = 3;
+    public int DefaultLogLevelFilter { get; set; } = 2;
 
     public LogEntryFilteringRule[] LogLevelRules { get; set; } = Array.Empty<LogEntryFilteringRule>();
 

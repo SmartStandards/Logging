@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.3",
-  "currentVersionWithSuffix": "2.11.3",
+  "currentVersion": "2.11.4",
+  "currentVersionWithSuffix": "2.11.4",
   "releaseType": "",
-  "previousVersion": "2.11.2",
+  "previousVersion": "2.11.3",
   "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 11,
-  "currentPatch": 3,
+  "currentPatch": 4,
   "versionDateInfo": "2025-06-11",
-  "versionTimeInfo": "07:59:53",
-  "versionNotes": "- Small fixes all arround the LogEntryCreator and LogEntryFileSink (added UnitTest)\n"
+  "versionTimeInfo": "09:24:58",
+  "versionNotes": "- Another small fixes on LoggingConfiguration-defaults and Path-Ressolving\n"
 }

@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* Another small fixes on LoggingConfiguration-defaults and Path-Ressolving
+*(none)*
+
+
+
+## v 2.11.4
+released **2025-06-11**, including:
+ - Another small fixes on LoggingConfiguration-defaults and Path-Ressolving
 
 
 

@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* changed config-based DefaultLogLevel
+*(none)*
+
+
+
+## v 2.11.5
+released **2025-06-11**, including:
+ - changed config-based DefaultLogLevel
 
 
 

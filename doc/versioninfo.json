@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.2",
-  "currentVersionWithSuffix": "2.11.2",
+  "currentVersion": "2.11.3",
+  "currentVersionWithSuffix": "2.11.3",
   "releaseType": "",
-  "previousVersion": "2.11.1",
+  "previousVersion": "2.11.2",
   "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 11,
-  "currentPatch": 2,
-  "versionDateInfo": "2025-06-10",
-  "versionTimeInfo": "12:27:01",
-  "versionNotes": "- new revision without significant changes\n"
+  "currentPatch": 3,
+  "versionDateInfo": "2025-06-11",
+  "versionTimeInfo": "07:59:53",
+  "versionNotes": "- Small fixes all arround the LogEntryCreator and LogEntryFileSink (added UnitTest)\n"
 }

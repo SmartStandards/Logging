@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* Small fixes all arround the LogEntryCreator and LogEntryFileSink (added UnitTest)
+*(none)*
+
+
+
+## v 2.11.3
+released **2025-06-11**, including:
+ - Small fixes all arround the LogEntryCreator and LogEntryFileSink (added UnitTest)
 
 
 

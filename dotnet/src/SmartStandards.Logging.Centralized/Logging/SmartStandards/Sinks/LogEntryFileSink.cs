@@ -22,7 +22,7 @@ namespace Logging.SmartStandards.Sinks {
     /// can contain placeholders: {timestamp:yyyy-mm-dd} {audience} {sourcecontext}
     /// </param>
     public LogEntryFileSink(string targetFileName) {
-      _TargetFileName = targetFileName;
+      _TargetFileName =Path.GetFullPath(targetFileName);
     }
 
     public void ReceiveLogEntries(LogEntry[] logEntries) {
@@ -42,7 +42,8 @@ namespace Logging.SmartStandards.Sinks {
             if(!streamsPerFileName.TryGetValue(targetFileName, out targetStream)) {
               const int maxRetries = 5;
               for (int attempt = 0; attempt < maxRetries; attempt++) {
-                try { 
+                try {
+                  Directory.CreateDirectory(Path.GetDirectoryName(targetFileName));
                   targetStream = new FileStream(targetFileName, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, bufferSize: 4096, useAsync: false);
                 }
                 catch (IOException)

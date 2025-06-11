@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.SmartStandards;
 
 namespace Logging.SmartStandards {
@@ -30,7 +31,13 @@ namespace Logging.SmartStandards {
 
     static LogEntryCreator() {
       try {
-        ApplicationName = Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName);
+        Assembly entryAssembly = Assembly.GetEntryAssembly();
+        if (entryAssembly != null) {
+          ApplicationName = entryAssembly.GetName().Name;
+        }
+        else if (Assembly.GetCallingAssembly() != null) {
+          ApplicationName = Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule?.FileName);
+        }   
       } catch { }
     }
 
@@ -220,7 +227,10 @@ namespace Logging.SmartStandards {
         ConsoleLoggingConfiguration cfg = configuration.ConsoleLogging;
         var sink = new LogEntryConsoleSink();
         if (cfg.LogLevelRules != null) {
+          int ruleFallbackOrder = 0;
           foreach (var rule in cfg.LogLevelRules) {
+            rule.RuleOrder = (rule.RuleOrder * 100) + ruleFallbackOrder;
+            ruleFallbackOrder++;
             sink.FilteringRules.Add(rule);
           }
         }
@@ -232,7 +242,10 @@ namespace Logging.SmartStandards {
         FileLoggingConfiguration cfg = configuration.FileLogging;
         var sink = new LogEntryFileSink(cfg.TargetFileName);
         if (cfg.LogLevelRules != null) {
+          int ruleFallbackOrder = 0;
           foreach (var rule in cfg.LogLevelRules) {
+            rule.RuleOrder = (rule.RuleOrder * 100) + ruleFallbackOrder;
+            ruleFallbackOrder++;
             sink.FilteringRules.Add(rule);
           }
         }
@@ -244,7 +257,10 @@ namespace Logging.SmartStandards {
         RemoteLoggingConfiguration cfg = configuration.RemoteLogging;
         var sink = new LogEntryRemoteSink(cfg.TargetSinkUrl);
         if (cfg.LogLevelRules != null) {
+          int ruleFallbackOrder = 0;
           foreach (var rule in cfg.LogLevelRules) {
+            rule.RuleOrder = (rule.RuleOrder * 100) + ruleFallbackOrder;
+            ruleFallbackOrder++;
             sink.LocalFilteringRules.Add(rule);
           }
         }

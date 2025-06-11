@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Logging.SmartStandards.AspSupport {
 
@@ -16,13 +18,20 @@ namespace Logging.SmartStandards.AspSupport {
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
-    public static void AddSmartStandardsLogging(this IServiceCollection services, IConfiguration configuration) {
+    /// <param name="applicationName"></param>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void AddSmartStandardsLogging(this IServiceCollection services, IConfiguration configuration, string applicationName = null) {
+
+      if (string.IsNullOrWhiteSpace(applicationName)) {
+        applicationName = Assembly.GetCallingAssembly().GetName().Name;
+      }
 
       LoggingConfiguration loggingConfiguration = configuration.GetSmartStandardsLoggingConfiguration();
 
-      services.AddSmartStandardsLogging(loggingConfiguration);
+      services.AddSmartStandardsLogging(loggingConfiguration, applicationName);
 
     }
+
     /// <summary>
     /// Configures the ASP.NET Core logging system to initialize and use proxy-loggers,
     /// which will redirect any log events into the SmartStandards DevLogger AND
@@ -30,8 +39,17 @@ namespace Logging.SmartStandards.AspSupport {
     /// </summary>
     /// <param name="services"></param>
     /// <param name="loggingConfiguration"></param>
-    public static void AddSmartStandardsLogging(this IServiceCollection services, LoggingConfiguration loggingConfiguration) {
-    
+    /// <param name="applicationName"></param>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void AddSmartStandardsLogging(this IServiceCollection services, LoggingConfiguration loggingConfiguration, string applicationName = null) {
+
+      if (string.IsNullOrWhiteSpace(applicationName)) {
+        LogEntryCreator.ApplicationName = Assembly.GetCallingAssembly().GetName().Name;
+      }
+      else {
+        LogEntryCreator.ApplicationName = applicationName;
+      }
+
       services.AddLogging((ILoggingBuilder loggingBuilder) => {
         loggingBuilder.UseSmartStandardsLogging(loggingConfiguration);
       });
@@ -66,6 +84,10 @@ namespace Logging.SmartStandards.AspSupport {
 
       builder.ClearProviders();
       builder.AddProvider(new SmartStandardsLoggerProvider());
+
+      if(configurationToSetup == null) {
+        configurationToSetup = new LoggingConfiguration();
+      }
 
       LogEntryCreator.Setup(
         configurationToSetup

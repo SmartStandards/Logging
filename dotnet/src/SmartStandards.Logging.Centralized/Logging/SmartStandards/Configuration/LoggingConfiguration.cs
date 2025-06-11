@@ -1,5 +1,6 @@
 ﻿using Logging.SmartStandards.Filtering;
 using System;
+using System.IO;
 
 namespace Logging.SmartStandards.Configuration {
 
@@ -8,9 +9,9 @@ namespace Logging.SmartStandards.Configuration {
   /// </summary>
   public class LoggingConfiguration {
 
-    public ConsoleLoggingConfiguration ConsoleLogging { get; set; } = null;
+    public ConsoleLoggingConfiguration ConsoleLogging { get; set; } = new ConsoleLoggingConfiguration();
 
-    public FileLoggingConfiguration FileLogging { get; set; } = null;
+    public FileLoggingConfiguration FileLogging { get; set; } = new FileLoggingConfiguration();
 
     public RemoteLoggingConfiguration RemoteLogging { get; set; } = null;
 
@@ -36,8 +37,8 @@ namespace Logging.SmartStandards.Configuration {
   public class FileLoggingConfiguration {
 
     public bool Enabled { get; set; } = true;
-
-    public string TargetFileName { get; set; } = null;
+    
+    public string TargetFileName { get; set; } = ".\\Logs\\{application}-{timestamp:yyyy-MM-dd}.log";
 
     public int DefaultLogLevelFilter { get; set; } = 3;
 

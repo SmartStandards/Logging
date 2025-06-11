@@ -126,7 +126,8 @@ namespace Logging.SmartStandards.Filtering {
         if (rule.Audience != "*" && !rule.Audience.Equals(logEntry.Audience, StringComparison.InvariantCultureIgnoreCase)) {
           continue;
         }
-        if (rule.SourceContext != "*" && !rule.SourceContext.Equals(logEntry.SourceContext, StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (rule.SourceContext != "*" && !logEntry.SourceContext.StartsWith(rule.SourceContext, StringComparison.InvariantCultureIgnoreCase)) {
           continue;
         }
 

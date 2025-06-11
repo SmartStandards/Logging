@@ -33,7 +33,7 @@ namespace Logging.SmartStandards.Centralized {
 
       //#### EXPERIMENTAL ####
 
-      //var fs = new LogEntryFileSink("C:\\Temp\\Logs\\test-{timestamp:yyyy-MM-dd-ss}--{application}-{audience}.log");
+      //var fs = new LogEntryFileSink(".\\Logs\\test-{timestamp:yyyy-MM-dd-ss}--{application}-{audience}.log");
       //LogEntryCreator.AddSink(fs, autoFlushMaxAge, autoFlushMaxCount, 3, filterReloadIntervalSec);
 
       //var cs = new LogEntryConsoleSink();

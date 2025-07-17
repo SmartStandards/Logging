@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.5",
-  "currentVersionWithSuffix": "2.11.5",
+  "currentVersion": "2.11.6",
+  "currentVersionWithSuffix": "2.11.6",
   "releaseType": "",
-  "previousVersion": "2.11.4",
+  "previousVersion": "2.11.5",
   "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 11,
-  "currentPatch": 5,
-  "versionDateInfo": "2025-06-11",
-  "versionTimeInfo": "10:26:19",
-  "versionNotes": "- changed config-based DefaultLogLevel\n"
+  "currentPatch": 6,
+  "versionDateInfo": "2025-07-17",
+  "versionTimeInfo": "10:07:33",
+  "versionNotes": "- (eg. containing german instead of english prepositions due to machine settings)\n- **Bug Fix:** ExceptionRenderer threw exceptions when the outcoming format of ex.StackTrace was not as expected\n"
 }

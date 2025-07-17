@@ -60,25 +60,33 @@ namespace Logging.SmartStandards {
           // split member / file
 
           // " in C:\..."
-          int fileSegmentStartIndex = originalStackTrace.IndexOf(" in ", lineStartIndex);
+          int fileSegmentStartIndex = originalStackTrace.IndexOf(" in ", lineStartIndex, lineEndIndex - lineStartIndex);
 
           if (fileSegmentStartIndex >= 0) fileSegmentStartIndex += 4;
 
           int fileSegmentEndIndex = lineEndIndex;
 
           // "   at MyNamespace..."
-          int memberSegmentStartIndex = lineStartIndex + 6;
+          int memberSegmentStartIndex = lineStartIndex;
+
+          if (originalStackTrace.IndexOf(" at ", lineStartIndex) >= 0) {
+            memberSegmentStartIndex = lineStartIndex + 6;
+          } else if (originalStackTrace.IndexOf(" bei ", lineStartIndex) >= 0) {
+            memberSegmentStartIndex = lineStartIndex + 7;
+          }
 
           int memberSegmentEndIndex = (fileSegmentStartIndex >= 0) ? fileSegmentStartIndex - 4 : lineEndIndex;
 
-          target.Append("@ ");
-          target.Append(originalStackTrace, memberSegmentStartIndex, memberSegmentEndIndex - memberSegmentStartIndex);
-          target.AppendLine();
-
-          if (fileSegmentStartIndex >= 0) {
-            target.Append("@   ");
-            target.Append(originalStackTrace, fileSegmentStartIndex, fileSegmentEndIndex - fileSegmentStartIndex);
+          if (memberSegmentStartIndex < memberSegmentEndIndex) {
+            target.Append("@ ");
+            target.Append(originalStackTrace, memberSegmentStartIndex, memberSegmentEndIndex - memberSegmentStartIndex);
             target.AppendLine();
+
+            if (fileSegmentStartIndex >= 0) {
+              target.Append("@   ");
+              target.Append(originalStackTrace, fileSegmentStartIndex, fileSegmentEndIndex - fileSegmentStartIndex);
+              target.AppendLine();
+            }
           }
 
           lineEndIndex = cursor;

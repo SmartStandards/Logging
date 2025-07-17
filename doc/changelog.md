@@ -4,8 +4,8 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
-
+- **Bug Fix:** ExceptionRenderer threw exceptions when the outcoming format of ex.StackTrace was not as expected 
+  (eg. containing german instead of english prepositions due to machine settings)
 
 
 ## v 2.11.5

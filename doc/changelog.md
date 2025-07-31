@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* **new Feature**: optimized Exception Logging from ASP
+*(none)*
+
+
+
+## v 2.12.0
+released **2025-07-31**, including:
+ - **new Feature**: optimized Exception Logging from ASP
 
 
 

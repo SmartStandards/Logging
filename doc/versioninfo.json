@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.6",
-  "currentVersionWithSuffix": "2.11.6",
+  "currentVersion": "2.12.0",
+  "currentVersionWithSuffix": "2.12.0",
   "releaseType": "",
-  "previousVersion": "2.11.5",
-  "changeGrade": "fix",
+  "previousVersion": "2.11.6",
+  "changeGrade": "minor",
   "currentMajor": 2,
-  "currentMinor": 11,
-  "currentPatch": 6,
-  "versionDateInfo": "2025-07-17",
-  "versionTimeInfo": "10:07:33",
-  "versionNotes": "- (eg. containing german instead of english prepositions due to machine settings)\n- **Bug Fix:** ExceptionRenderer threw exceptions when the outcoming format of ex.StackTrace was not as expected\n"
+  "currentMinor": 12,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-07-31",
+  "versionTimeInfo": "08:38:40",
+  "versionNotes": "- new Feature: optimized Exception Logging from ASP\n"
 }

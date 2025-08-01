@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.12.0",
-  "currentVersionWithSuffix": "2.12.0",
+  "currentVersion": "2.12.1",
+  "currentVersionWithSuffix": "2.12.1",
   "releaseType": "",
-  "previousVersion": "2.11.6",
-  "changeGrade": "minor",
+  "previousVersion": "2.12.0",
+  "changeGrade": "fix",
   "currentMajor": 2,
   "currentMinor": 12,
-  "currentPatch": 0,
-  "versionDateInfo": "2025-07-31",
-  "versionTimeInfo": "08:38:40",
-  "versionNotes": "- new Feature: optimized Exception Logging from ASP\n"
+  "currentPatch": 1,
+  "versionDateInfo": "2025-08-01",
+  "versionTimeInfo": "13:59:09",
+  "versionNotes": "- Enhancements for \"Wrapped\"-Exception (renamed to 'Concertized' because misleading name was client facing)\n"
 }

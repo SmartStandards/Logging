@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* Enhancements for "Wrapped"-Exception (renamed to 'Concertized' because misleading name was client facing)
+*(none)*
+
+
+
+## v 2.12.1
+released **2025-08-01**, including:
+ - Enhancements for "Wrapped"-Exception (renamed to 'Concertized' because misleading name was client facing)
 
 
 

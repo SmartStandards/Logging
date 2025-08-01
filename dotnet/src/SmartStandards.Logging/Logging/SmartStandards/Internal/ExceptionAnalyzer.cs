@@ -44,7 +44,7 @@ namespace Logging.SmartStandards.Internal {
 
       // 'Zwiebel' durch Exception.Wrap (InnerException ist mehr repräsentativ)
 
-      if (ex is ExceptionExtensions.WrappedException) {
+      if (ex is ConcretizedException) {
         return InferEventKindIdByException(ex.InnerException);
       }
 

@@ -16,7 +16,7 @@ namespace Logging.SmartStandards {
     /// </remarks>
     public static Exception Wrap(this Exception extendee, string message) { // REQ #395397931
 
-      WrappedException wrappedException = new WrappedException(message, extendee);
+      ConcretizedException wrappedException = new ConcretizedException(message, extendee);
 
       return wrappedException;
     }
@@ -34,18 +34,29 @@ namespace Logging.SmartStandards {
     /// </remarks>
     public static Exception Wrap(this Exception extendee, int eventKindId, string message) { // REQ #395397931
 
-      WrappedException wrappedException = new WrappedException(message + " #" + eventKindId.ToString(), extendee);
+      ConcretizedException wrappedException = new ConcretizedException(message + " #" + eventKindId.ToString(), extendee);
 
       return wrappedException;
     }
 
-    internal class WrappedException : Exception {
+  }
 
-      public WrappedException(string message, Exception inner) : base(message, inner) {
-      }
+  internal class ConcretizedException : Exception {
 
+    public ConcretizedException(string message, Exception inner) : base(message, inner) {
     }
 
+    public override string StackTrace {
+      get {
+        // if our StackTrace is empty (because usually this Wrapper wasnt thrown, either logged directly),
+        // return the InnerException's StackTrace.
+        if (string.IsNullOrWhiteSpace(base.StackTrace)) {
+          return InnerException.StackTrace;
+        }
+        return base.StackTrace;
+      }
+    }
+    
   }
 
 }

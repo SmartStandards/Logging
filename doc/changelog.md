@@ -4,7 +4,7 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+* Enhancements for "Wrapped"-Exception (renamed to 'Concertized' because misleading name was client facing)
 
 
 

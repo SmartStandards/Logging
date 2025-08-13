@@ -1,6 +1,6 @@
 {
   "name": "smartstandards-logging",
-  "version": "2.12.1",
+  "version": "3.0.0",
   "description": "Logging",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

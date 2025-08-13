@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.12.1",
-  "currentVersionWithSuffix": "2.12.1",
+  "currentVersion": "3.0.0",
+  "currentVersionWithSuffix": "3.0.0",
   "releaseType": "",
-  "previousVersion": "2.12.0",
-  "changeGrade": "fix",
-  "currentMajor": 2,
-  "currentMinor": 12,
-  "currentPatch": 1,
-  "versionDateInfo": "2025-08-01",
-  "versionTimeInfo": "13:59:09",
-  "versionNotes": "- Enhancements for \"Wrapped\"-Exception (renamed to 'Concertized' because misleading name was client facing)\n"
+  "previousVersion": "2.12.1",
+  "changeGrade": "major",
+  "currentMajor": 3,
+  "currentMinor": 0,
+  "currentPatch": 0,
+  "versionDateInfo": "2025-08-13",
+  "versionTimeInfo": "08:36:35",
+  "versionNotes": "- **Breaking Change**: Logging into TraceBus has changed from raw style to ready-to-read style.\n- **Breaking Change**: TraceBusExceptionsTextualizedToggle was removed as it is now the default style\n- **New Feature**: Convenience Class \"ReturnCodeLogger\" to simplify the logging of return codes and status messages coming from function calls.\n- **New Feature**: Routing.TraceBusRawMode can be used to register TraceListener names which want to receive the raw style.\n- **Bug Fix**: TraceBusListener's Write() and WriteLine() did not do anything - no they invoke the same callback as TraceEvent() - using the hard coded defaults \"Dev\" as audience.\n"
 }

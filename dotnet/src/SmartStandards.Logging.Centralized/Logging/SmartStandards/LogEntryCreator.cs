@@ -35,10 +35,12 @@ namespace Logging.SmartStandards {
         if (entryAssembly != null) {
           ApplicationName = entryAssembly.GetName().Name;
         }
-        else if (Assembly.GetCallingAssembly() != null) {
+        else {
           ApplicationName = Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule?.FileName);
         }   
-      } catch { }
+      }
+      catch { 
+      }
     }
 
     #endregion

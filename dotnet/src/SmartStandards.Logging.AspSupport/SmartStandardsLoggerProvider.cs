@@ -158,12 +158,14 @@ namespace Logging.SmartStandards.AspSupport {
         smartStandardsLevel = 1;
       }
 
-      var message = formatter(state, exception);
-
-      //TODO: ggf. extra Kanal für exception?
-      //TODO: ist ein routing für andere andience nötig?
-      DevLogger.Log(smartStandardsLevel, _Category, 0, eventId.Id, message);
-
+      string message = formatter(state, exception);
+      if(exception == null) {
+        DevLogger.Log(smartStandardsLevel, _Category, 0, eventId.Id, message);
+      }
+      else {
+        DevLogger.Log(smartStandardsLevel, _Category, 0, eventId.Id, exception.Wrap(message));      
+      }
+      
     }
 
   }

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "2.11.6",
-  "currentVersionWithSuffix": "2.11.6",
+  "currentVersion": "2.12.1",
+  "currentVersionWithSuffix": "2.12.1",
   "releaseType": "",
-  "previousVersion": "2.11.5",
+  "previousVersion": "2.12.0",
   "changeGrade": "fix",
   "currentMajor": 2,
-  "currentMinor": 11,
-  "currentPatch": 6,
-  "versionDateInfo": "2025-07-17",
-  "versionTimeInfo": "10:07:33",
-  "versionNotes": "- (eg. containing german instead of english prepositions due to machine settings)\n- **Bug Fix:** ExceptionRenderer threw exceptions when the outcoming format of ex.StackTrace was not as expected\n"
+  "currentMinor": 12,
+  "currentPatch": 1,
+  "versionDateInfo": "2025-08-01",
+  "versionTimeInfo": "13:59:09",
+  "versionNotes": "- Enhancements for \"Wrapped\"-Exception (renamed to 'Concertized' because misleading name was client facing)\n"
 }

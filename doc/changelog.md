@@ -14,6 +14,18 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
  - **Bug Fix**: TraceBusListener's Write() and WriteLine() did not do anything - no they invoke the same callback as TraceEvent() - using the hard coded defaults "Dev" as audience.
 
+## v 2.12.1
+released **2025-08-01**, including:
+ - Enhancements for "Wrapped"-Exception (renamed to 'Concertized' because misleading name was client facing)
+
+
+
+## v 2.12.0
+released **2025-07-31**, including:
+ - **new Feature**: optimized Exception Logging from ASP
+
+
+
 ## v 2.11.6
 released **2025-07-17**, including:
  - (eg. containing german instead of english prepositions due to machine settings)

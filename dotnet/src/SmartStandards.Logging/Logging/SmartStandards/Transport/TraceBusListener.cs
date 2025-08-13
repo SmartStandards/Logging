@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using Logging.SmartStandards.Textualization;
 
 [assembly: InternalsVisibleTo("Logging.Tests")]
 
@@ -18,8 +19,6 @@ namespace Logging.SmartStandards.Transport {
   ///      class name. Otherwise you'll run into naming collisionsif a 3rd party DLL references this library.
   /// </remarks>
   public class TraceBusListener : TraceListener {
-
-    public delegate bool FilterIncomingTraceEventDelegate(int eventType, string sourceName, string formatString);
 
     public delegate void OnMessageReceivedDelegate(string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args);
 
@@ -116,9 +115,23 @@ namespace Logging.SmartStandards.Transport {
       }
     }
 
-    public override void Write(string message) { } // Not needed
+    public override void Write(string message) {
 
-    public override void WriteLine(string message) { }// Not needed
+      if (!this.IsActive || this.OnMessageReceived == null) {
+        return;
+      }
+
+      this.OnMessageReceived.Invoke("Dev", 2, "", 0, 0, message, null);
+    }
+
+    public override void WriteLine(string message) {
+
+      if (!this.IsActive || this.OnMessageReceived == null) {
+        return;
+      }
+
+      this.OnMessageReceived.Invoke("Dev", 2, "", 0, 0, message, null);
+    }
 
   }
 }

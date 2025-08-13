@@ -12,13 +12,15 @@ namespace Logging.SmartStandards {
 
     [TestInitialize]
     public void InitializeBeforeEachTest() {
-      AssemblyInitializer.TraceBusSink.Clear();
+      AssemblyInitializer.ReadyToReadTraceBusSink.Clear();
+      AssemblyInitializer.RawTraceBusSink.Clear();
       AssemblyInitializer.CustomBusSink.Clear();
     }
 
     [TestCleanup]
     public void CleanupAfterEachTest() {
-      AssemblyInitializer.TraceBusSink.Clear();
+      AssemblyInitializer.ReadyToReadTraceBusSink.Clear();
+      AssemblyInitializer.RawTraceBusSink.Clear();
       AssemblyInitializer.CustomBusSink.Clear();
     }
 
@@ -48,6 +50,8 @@ namespace Logging.SmartStandards {
       MyAssert.BothSinksContain(i, "Ins", 3, _ExpliciteSourceContextName, 2071873946794501890, 7, "{thingy} space is low: {space} MB");
       Assert.AreEqual("Disk", AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][0]);
       Assert.AreEqual(5, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][1]);
+
+      MyAssert.ReadyToReadraceBusSinkContains(i, "[Wrn] ExpliciteSourceContextName #7# 2071873946794501890 [Ins]: Disk space is low: 5 MB");
 
       //
 
@@ -80,7 +84,7 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(_ExpliciteSourceContextName, 2071926793372485828, ex);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485828, 1969630032, null, ex);
+      MyAssert.RawTraceBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485828, 1969630032, null, ex);
       MyAssert.CustomBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485828, 1969630032, null, ex);
 
       // Exception wrapped
@@ -90,7 +94,7 @@ namespace Logging.SmartStandards {
       i++;
       DevLogger.LogCritical(_ExpliciteSourceContextName, 2071926793372485829, ex2);
 
-      MyAssert.TraceBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485829, 1234, null, ex2);
+      MyAssert.RawTraceBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485829, 1234, null, ex2);
       MyAssert.CustomBusSinkContains(i, "Dev", 5, _ExpliciteSourceContextName, 2071926793372485829, 1234, null, ex2);
 
       // Ensure PassThruTraceBusToCustomBus is working:
@@ -107,7 +111,7 @@ namespace Logging.SmartStandards {
 
       //
 
-      Assert.AreEqual(i, AssemblyInitializer.TraceBusSink.CollectedEventKindIds.Count - 1);
+      Assert.AreEqual(i, AssemblyInitializer.RawTraceBusSink.CollectedEventKindIds.Count - 1);
       Assert.AreEqual(i, AssemblyInitializer.CustomBusSink.CollectedEventKindIds.Count - 1);
     }
 

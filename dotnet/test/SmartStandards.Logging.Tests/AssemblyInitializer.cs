@@ -14,43 +14,68 @@ namespace Logging {
 
     public const string MySourceContextName = "SmartStandards-Logging";
 
-    public static TraceBusListener ExternalTraceBusListener { get; set; }
+    public static TraceBusListener ReadyToReadTraceBusListener { get; set; }
+
+    public static TraceBusListener RawTraceBusListener { get; set; }
 
     public static TraceBusFeed ExternalTraceBusFeed { get; set; }
 
-    public static CheapInMemorySink TraceBusSink { get; set; } = new CheapInMemorySink();
+    public static CheapInMemorySink ReadyToReadTraceBusSink { get; set; } = new CheapInMemorySink();
+
+    public static CheapInMemorySink RawTraceBusSink { get; set; } = new CheapInMemorySink();
 
     public static CheapInMemorySink CustomBusSink { get; set; } = new CheapInMemorySink();
 
     [AssemblyInitialize]
     public static void InitializeAssembly(TestContext testContext) {
 
-      ExternalTraceBusListener = new TraceBusListener(PassTracedMessageToTraceBusSink, PassTracedExceptionToTraceBusSink);
+      ReadyToReadTraceBusListener = new TraceBusListener(PassMessageToReadyToReadTraceBusSink, PassExceptionToReadyToReadTraceBusSink) {
+        Name = "ReadyToReadTraceBusListener"
+      };
+      RawTraceBusListener = new TraceBusListener(PassMessageToRawTraceBusSink, PassExceptionToRawTraceBusSink) {
+        Name = "RawTraceBusListener"
+      };
+      // ^ our implementation of TraceBusListener is self-registering to the global Trace.Listeners collection.
 
-      Routing.UseCustomBus(PassLogMessageToCustomBusSink, PassLogExceptionToTraceBusSink);
+      Routing.TraceBusRawMode.Add("RawTraceBusListener");
+
+      Routing.UseCustomBus(PassMessageToCustomBusSink, PassExceptionToCustomBusSink);
 
       ExternalTraceBusFeed = new TraceBusFeed();
+      ExternalTraceBusFeed.RawModeListeners.Add("RawTraceBusListener");
     }
 
-    private static void PassTracedMessageToTraceBusSink(
+    private static void PassMessageToReadyToReadTraceBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
-      TraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
+      ReadyToReadTraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    private static void PassTracedExceptionToTraceBusSink(
+    private static void PassExceptionToReadyToReadTraceBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
-      TraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);
+      ReadyToReadTraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);
     }
 
-    private static void PassLogMessageToCustomBusSink(
+    private static void PassMessageToRawTraceBusSink(
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
+    ) {
+      RawTraceBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
+    }
+
+    private static void PassExceptionToRawTraceBusSink(
+      string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
+    ) {
+      RawTraceBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);
+    }
+
+    private static void PassMessageToCustomBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate, object[] args
     ) {
       CustomBusSink.WriteMessage(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
     }
 
-    private static void PassLogExceptionToTraceBusSink(
+    private static void PassExceptionToCustomBusSink(
       string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex
     ) {
       CustomBusSink.WriteException(audience, level, sourceContext, sourceLineId, eventKindId, ex);

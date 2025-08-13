@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Reflection;
 
 namespace Logging.SmartStandards {
 
@@ -22,19 +23,19 @@ namespace Logging.SmartStandards {
 
     }
 
-    public static void TraceBusSinkContains(
+    public static void RawTraceBusSinkContains(
       int index, string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate,
       Exception ex = null
     ) {
-      Assert.AreEqual(audience, AssemblyInitializer.TraceBusSink.CollectedAudiences[index]);
-      Assert.AreEqual(level, AssemblyInitializer.TraceBusSink.CollectedLevels[index]);
-      Assert.AreEqual(sourceContext, AssemblyInitializer.TraceBusSink.CollectedSourceContexts[index]);
-      Assert.AreEqual(sourceLineId, AssemblyInitializer.TraceBusSink.CollectedSourceLineIds[index]);
-      Assert.AreEqual(eventKindId, AssemblyInitializer.TraceBusSink.CollectedEventKindIds[index]);
-      Assert.AreEqual(messageTemplate, AssemblyInitializer.TraceBusSink.CollectedMessageTemplates[index]);
+      Assert.AreEqual(audience, AssemblyInitializer.RawTraceBusSink.CollectedAudiences[index]);
+      Assert.AreEqual(level, AssemblyInitializer.RawTraceBusSink.CollectedLevels[index]);
+      Assert.AreEqual(sourceContext, AssemblyInitializer.RawTraceBusSink.CollectedSourceContexts[index]);
+      Assert.AreEqual(sourceLineId, AssemblyInitializer.RawTraceBusSink.CollectedSourceLineIds[index]);
+      Assert.AreEqual(eventKindId, AssemblyInitializer.RawTraceBusSink.CollectedEventKindIds[index]);
+      Assert.AreEqual(messageTemplate, AssemblyInitializer.RawTraceBusSink.CollectedMessageTemplates[index]);
 
       if (ex != null) {
-        Assert.AreEqual(ex, AssemblyInitializer.TraceBusSink.CollectedExceptions[index]);
+        Assert.AreEqual(ex, AssemblyInitializer.RawTraceBusSink.CollectedExceptions[index]);
       }
     }
 
@@ -42,8 +43,12 @@ namespace Logging.SmartStandards {
       int index, string audience, int level, string sourceContext, long sourceLineId, int eventKindId, string messageTemplate,
       Exception ex = null
     ) {
-      TraceBusSinkContains(index, audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, ex);
+      RawTraceBusSinkContains(index, audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, ex);
       CustomBusSinkContains(index, audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, ex);
+    }
+
+    public static void ReadyToReadraceBusSinkContains(int index, string text) {
+      Assert.AreEqual(text, AssemblyInitializer.ReadyToReadTraceBusSink.CollectedMessageTemplates[index]);
     }
 
   }

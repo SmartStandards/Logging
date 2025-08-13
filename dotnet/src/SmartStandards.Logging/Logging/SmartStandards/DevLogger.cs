@@ -1,7 +1,7 @@
-﻿using System;
-using Logging.SmartStandards.EventKindManagement;
+﻿using Logging.SmartStandards.EventKindManagement;
 using Logging.SmartStandards.Internal;
 using Logging.SmartStandards.Transport;
+using System;
 
 namespace Logging.SmartStandards {
 
@@ -45,12 +45,7 @@ namespace Logging.SmartStandards {
 
 #if !UsedByT4
       if (Routing.DevLoggerToTraceBus) {
-        if (Routing.TraceBusExceptionsTextualizedToggle) {
-          string renderedException = ExceptionRenderer.Render(ex);
-          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, renderedException);
-        } else {
-          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
-        }
+        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
       }
 
       if (Routing.DevLoggerToCustomBus) {
@@ -65,12 +60,7 @@ namespace Logging.SmartStandards {
 
 #if !UsedByT4
       if (Routing.DevLoggerToTraceBus) {
-        if (Routing.TraceBusExceptionsTextualizedToggle) {
-          string renderedException = ExceptionRenderer.Render(ex);
-          Routing.InternalTraceBusFeed.EmitMessage(AudienceToken, level, sourceContext, sourceLineId, eventKindId, renderedException);
-        } else {
-          Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
-        }
+        Routing.InternalTraceBusFeed.EmitException(AudienceToken, level, sourceContext, sourceLineId, eventKindId, ex);
       }
 
       if (Routing.DevLoggerToCustomBus) {

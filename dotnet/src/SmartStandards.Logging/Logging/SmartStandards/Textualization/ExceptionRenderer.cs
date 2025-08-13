@@ -5,20 +5,23 @@ namespace Logging.SmartStandards {
 
   public static class ExceptionRenderer {
 
+    public static void AppendToStringBuilder(StringBuilder sb, Exception ex, bool includeStacktrace = true) {
+      try {
+        int messageCursor = 0;
+        AppendRecursive(ex, sb, ref messageCursor, includeStacktrace);
+      } catch (Exception ex2) {
+        sb.Append(ex2);
+      }
+    }
+
     /// <summary>
     ///   Serializes an Exception in a way, that InnerExceptions and StackTraces are included
     ///   and returns a message string, which is highly optimized for logging requirements.
     /// </summary>
     public static string Render(Exception ex, bool includeStacktrace = true) {
-      try {
-        StringBuilder sb = new StringBuilder(1000);
-        int messageCursor = 0;
-        AppendRecursive(ex, sb, ref messageCursor, includeStacktrace);
-        return sb.ToString();
-
-      } catch (Exception ex2) {
-        return ex2.ToString();
-      }
+      StringBuilder sb = new StringBuilder(1000);
+      AppendToStringBuilder(sb, ex, includeStacktrace);
+      return sb.ToString();
     }
 
     private static void AppendRecursive(

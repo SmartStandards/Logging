@@ -4,9 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+ - **Breaking Change**: Logging into TraceBus has changed from raw style to ready-to-read style.
 
+ - **Breaking Change**: TraceBusExceptionsTextualizedToggle was removed as it is now the default style
+ 
+ - **New Feature**: Routing.TraceBusRawMode can be used to register TraceListener names which want to receive the raw style.
 
+ - **New Feature**: Convenience Class "ReturnCodeLogger" to simplify the logging of return codes and status messages coming from function calls.
+
+ - **Bug Fix**: TraceBusListener's Write() and WriteLine() did not do anything - no they invoke the same callback as TraceEvent() - using the hard coded defaults "Dev" as audience.
 
 ## v 2.11.6
 released **2025-07-17**, including:

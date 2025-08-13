@@ -85,7 +85,7 @@ namespace Logging.SmartStandards {
       Console.WriteLine();
 
       for (int i = 0; i < 500; i++) {
-        DevLogger.LogTrace($"■{DateTime.Now}■");
+        DevLogger.LogTrace(2077453432867983531L, 4321, "■{Now}■", DateTime.Now);
         Thread.Sleep(500);
       }
 

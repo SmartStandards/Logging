@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Logging.SmartStandards.Textualization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Logging.SmartStandards.Textualization;
 
 namespace Logging.SmartStandards.Transport {
 
   /// <summary>
   ///   Helper class for emitting messages into the (legacy) .NET System.Diagnostics.Trace concept
   /// </summary>
-  public partial class TraceBusFeed { // v 1.0.0
+  public partial class TraceBusFeed { // v 2.0.0
 
     private MyCircularBuffer<QueuedEvent> _DebuggingLookBackBuffer;
 
@@ -26,6 +26,8 @@ namespace Logging.SmartStandards.Transport {
       }
     }
 
+    public List<string> RawModeListeners { get; set; } = new List<string>() { "SmartStandards395316649" };
+
     public HashSet<string> IgnoredListeners { get; set; } = new HashSet<string>();
 
     public bool AutoFlush { get; set; } = true;
@@ -39,8 +41,7 @@ namespace Logging.SmartStandards.Transport {
         _DebuggingLookBackBuffer.StopAutoFlush();
 
         foreach (QueuedEvent e in _DebuggingLookBackBuffer) {
-          TraceEventCache eventCache = new TraceEventCache();
-          this.InvokeListenerTraceEvent(targetListener, eventCache, e.EventType, e.SourceContext, e.EventKindId, e.MessageTemplate, e.Args);
+          this.InvokeListener(targetListener, e.Audience, e.Level, e.SourceContext, e.SourceLineId, e.EventKindId, e.MessageTemplate, e.Args);
         }
 
         _DebuggingLookBackBuffer = null;
@@ -75,15 +76,83 @@ namespace Logging.SmartStandards.Transport {
       }
     }
 
-    private void ToAllRelevantListeners(TraceEventType eventType, string sourceContext, int id, string format, params object[] args) {
-
-      TraceEventCache eventCache = new TraceEventCache(); // same instance for many listeners
-
-      this.ForEachRelevantListener(
-        (TraceListener listener) => {
-          this.InvokeListenerTraceEvent(listener, eventCache, eventType, sourceContext, id, format, args);
+    private void InvokeListenerWriteLine(TraceListener targetListener, string text) {
+      if (targetListener.IsThreadSafe) {
+        targetListener.WriteLine(text);
+        if (this.AutoFlush) targetListener.Flush();
+      } else {
+        lock (targetListener) {
+          targetListener.WriteLine(text);
         }
-      );
+      }
+    }
+
+    /// <param name="targetListener"> If null, invoke all listeners. </param>
+    private void InvokeListener(
+      TraceListener targetListener,
+      string audience, int level, string sourceContext, long sourceLineId,
+      int eventKindId, string messageTemplate, params object[] args
+    ) {
+
+      StringBuilder logParaphBuilder = null;
+
+      TraceEventCache eventCache = null;
+      TraceEventType eventType = TraceEventType.Verbose;
+      StringBuilder rightPartOnlyBuilder = null;
+
+      // Lazily create stuff that is needed only in case we need to pass the log event as presentation-ready
+
+      Action onPreparePresentationReadyStuff = () => {
+        if (logParaphBuilder == null) {
+          logParaphBuilder = new StringBuilder(messageTemplate.Length + 20);
+          if (args.Length > 0 && args[0] is Exception) {
+            ExceptionRenderer.AppendToStringBuilder(logParaphBuilder, (Exception)args[0]);
+          } else {
+            LogParaphRenderer.BuildParaphResolved(
+              logParaphBuilder, audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args
+            );
+          }
+        }
+      };
+
+      // Lazily create stuff that is needed only in case we need to pass the log event as trace event
+
+      Action onPrepareTraceEventStuff = () => {
+        if (eventCache == null) {
+          eventCache = new TraceEventCache(); // same instance for many listeners
+          eventType = LevelToTraceEventType(level);
+
+          rightPartOnlyBuilder = new StringBuilder(messageTemplate.Length + 20);
+          LogParaphRenderer.BuildParaphRightPart(rightPartOnlyBuilder, sourceLineId, audience, messageTemplate);
+          rightPartOnlyBuilder.Replace("{", "{{").Replace("}", "}}");
+        }
+      };
+
+      // This is the inner snippet, actually invoking a listener
+
+      Action<TraceListener> onInvokeListener = (TraceListener listener) => {
+        bool useRawMode = this.RawModeListeners.Contains(listener.Name);
+        if (useRawMode) {
+          onPrepareTraceEventStuff.Invoke();
+          this.InvokeListenerTraceEvent(listener, eventCache, eventType, sourceContext, eventKindId, rightPartOnlyBuilder.ToString(), args);
+        } else {
+          onPreparePresentationReadyStuff.Invoke();
+          this.InvokeListenerWriteLine(listener, logParaphBuilder.ToString());
+        }
+      };
+
+      // this is the outer loop
+
+      if (targetListener != null) { // invoke only one specific listener
+
+        onInvokeListener(targetListener);
+
+      } else { // no specific listener -> invok all (relevant) listeners
+
+        this.ForEachRelevantListener(
+          (TraceListener listener) => { onInvokeListener(listener); }
+        );
+      }
     }
 
     public void EmitException(string audience, int level, string sourceContext, long sourceLineId, int eventKindId, Exception ex) {
@@ -154,85 +223,58 @@ namespace Logging.SmartStandards.Transport {
 
       if (messageTemplate == null) messageTemplate = "";
 
-      TraceEventType eventType;
-
-      switch (level) {
-
-        case 5: { // Critical (aka "Fatal")
-          eventType = TraceEventType.Critical; // 1
-          break;
-        }
-
-        case 4: { // Error
-          eventType = TraceEventType.Error; // 2
-          break;
-        }
-
-        case 3: { // Warning
-          eventType = TraceEventType.Warning; // 4
-          break;
-        }
-
-        case 2: { // Info
-          eventType = TraceEventType.Information; // 8
-          break;
-        }
-
-        case 1: { // Debug
-          eventType = TraceEventType.Transfer; // 4096 - ' There is no "Debug" EventType => use something else
-                                               // 0 "Trace" (aka "Verbose")
-          break;
-        }
-
-        default: { // Trace
-          eventType = TraceEventType.Verbose; // 16
-          break;
-        }
-
-      }
-
-      // Because we support named placeholders (like "Hello {person}") instead of old scool indexed place holders
-      // (like "Hello {0}") we need to double brace the placeholders - otherwise there will be exceptions coming from
-      // the .net TraceEvent Method.
-
-      StringBuilder formatStringBuilder = new StringBuilder(messageTemplate.Length + 20);
-
-      LogParaphRenderer.BuildParaphRightPart(formatStringBuilder, sourceLineId, audience, messageTemplate);
-
-      formatStringBuilder.Replace("{", "{{").Replace("}", "}}");
-
       // actual emit
 
-      this.ToAllRelevantListeners(eventType, sourceContext, eventKindId, formatStringBuilder.ToString(), args);
+      this.InvokeListener(null, audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args);
 
       if (_DebuggingLookBackBuffer != null) {
         lock (this) {
-          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(sourceContext, eventType, eventKindId, formatStringBuilder.ToString(), args));
+          _DebuggingLookBackBuffer.UnsafeEnqueue(new QueuedEvent(audience, level, sourceContext, sourceLineId, eventKindId, messageTemplate, args));
         }
       }
 
     }
 
-    internal class QueuedEvent {
-
-      public string SourceContext;
-
-      public TraceEventType EventType { get; set; }
-
-      public int EventKindId { get; set; }
-
-      public string MessageTemplate { get; set; }
-
-      public object[] Args { get; set; }
-
-      public QueuedEvent(string sourceContext, TraceEventType EventType, int eventKindId, string messageTemplate, object[] args) {
-        SourceContext = sourceContext;
-        this.EventType = EventType;
-        this.EventKindId = eventKindId;
-        this.MessageTemplate = messageTemplate;
-        this.Args = args;
+    private static TraceEventType LevelToTraceEventType(int level) {
+      switch (level) {
+        case 5: return TraceEventType.Critical; // 1 Critical (aka "Fatal")
+        case 4: return TraceEventType.Error; // 2
+        case 3: return TraceEventType.Warning; // 4
+        case 2: return TraceEventType.Information; // 8
+        case 1: return TraceEventType.Transfer; // 4096 - ' There is no "Debug" EventType => use something else                
+        default: return TraceEventType.Verbose; // 16 "Trace"
       }
+    }
 
+  }
+
+  internal class QueuedEvent {
+
+    public string Audience { get; set; }
+
+    public int Level { get; set; }
+
+    public string SourceContext { get; set; }
+
+    public long SourceLineId { get; set; }
+
+    public int EventKindId { get; set; }
+
+    public string MessageTemplate { get; set; }
+
+    public object[] Args { get; set; }
+
+    public QueuedEvent(
+      string audience, int level, string sourceContext, long sourceLineId,
+      int eventKindId, string messageTemplate, params object[] args
+    ) {
+      this.Audience = audience;
+      this.Level = level;
+      this.SourceContext = sourceContext;
+      this.SourceLineId = sourceLineId;
+      this.EventKindId = eventKindId;
+      this.MessageTemplate = messageTemplate;
+      this.Args = args;
     }
 
   }

@@ -1,6 +1,7 @@
-﻿using System;
-using Logging.SmartStandards.Sinks;
+﻿using Logging.SmartStandards.Sinks;
 using Logging.SmartStandards.Transport;
+using System;
+using System.Collections.Generic;
 
 namespace Logging.SmartStandards {
 
@@ -22,9 +23,23 @@ namespace Logging.SmartStandards {
     }
 
     /// <summary>
-    ///   Emit textualized exceptions (as message) to the TraceBus (instead of the original exception as arg).
+    ///   Determines how the TraceBus should pass LogEvents to each listener 
+    ///   - Ready-to-read: WriteLine() is called with MessageTemplate's placeholders resolved and exceptions textualized.
+    ///   - Raw: TraceEvent() is called with MessageTemplate and Args unresolved. Exceptions are passed as first arg.
     /// </summary>
-    public static bool TraceBusExceptionsTextualizedToggle { get; set; }
+    /// <remarks>
+    ///   Ready-to-read mode will call the Listeners' WriteLine() method instead of TraceEvent().
+    ///   This wil bypass WriteHeader(), WriteFooter() and anything depending on the TraceEvenType, because
+    ///   there is no TraceEvenType parameter in the WriteLine() method.
+    /// </remarks>
+    /// <returns>
+    ///   A list containing the names of the listeners to be handled in raw mode.
+    /// </returns>
+    public static List<string> TraceBusRawMode {
+      get {
+        return InternalTraceBusFeed.RawModeListeners;
+      }
+    }
 
     internal static TraceBusFeed InternalTraceBusFeed {
       get {
@@ -82,7 +97,15 @@ namespace Logging.SmartStandards {
       }
     }
 
-    public static void UseConsoleSink() {
+    /// <summary>
+    ///   Convenience method to wire up the built-in console sink to the custom bus.
+    /// </summary>
+    /// <param name="level">
+    ///   The minimum level to be written by the console sink (default is 0).
+    ///   0 = Trace, 1 = Debug, 2 = Information, 3 = Warning, 4 = Error, 5 = Critical
+    /// </param>
+    public static void UseConsoleSink(int level = 0) {
+      ConsoleSink.Level = level;
       Routing.UseCustomBus(ConsoleSink.WriteMessage, ConsoleSink.WriteException);
     }
 

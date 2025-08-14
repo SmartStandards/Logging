@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.0.0",
-  "currentVersionWithSuffix": "3.0.0",
+  "currentVersion": "3.1.0",
+  "currentVersionWithSuffix": "3.1.0",
   "releaseType": "",
-  "previousVersion": "2.12.1",
-  "changeGrade": "major",
+  "previousVersion": "3.0.0",
+  "changeGrade": "minor",
   "currentMajor": 3,
-  "currentMinor": 0,
+  "currentMinor": 1,
   "currentPatch": 0,
-  "versionDateInfo": "2025-08-13",
-  "versionTimeInfo": "08:36:35",
-  "versionNotes": "- **Breaking Change**: Logging into TraceBus has changed from raw style to ready-to-read style.\n- **Breaking Change**: TraceBusExceptionsTextualizedToggle was removed as it is now the default style\n- **New Feature**: Convenience Class \"ReturnCodeLogger\" to simplify the logging of return codes and status messages coming from function calls.\n- **New Feature**: Routing.TraceBusRawMode can be used to register TraceListener names which want to receive the raw style.\n- **Bug Fix**: TraceBusListener's Write() and WriteLine() did not do anything - no they invoke the same callback as TraceEvent() - using the hard coded defaults \"Dev\" as audience.\n"
+  "versionDateInfo": "2025-08-14",
+  "versionTimeInfo": "07:50:33",
+  "versionNotes": "- **New Feature**: ReturnCodeLogger.Textualize()\n- Minor change: ReturnCodeLogger maps >= 0 to \"Trace\" level instead of \"Information\"\n"
 }

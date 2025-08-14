@@ -6,9 +6,14 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 *(none)*
 
-- Minor change: ReturnCodeLogger maps >= 0 to "Trace" level instead of "Information"
 
-- **New Feature**: ReturnCodeLogger.Textualize()
+
+## v 3.1.0
+released **2025-08-14**, including:
+ - **New Feature**: ReturnCodeLogger.Textualize()
+ - Minor change: ReturnCodeLogger maps >= 0 to "Trace" level instead of "Information"
+
+
 
 ## v 3.0.0
 released **2025-08-13**, including:

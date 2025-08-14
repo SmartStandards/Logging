@@ -27,7 +27,7 @@ namespace Logging.SmartStandards {
       ReturnCodeLogger.DevLog(2078308604637680152L, "FooMethod", 0, null, null);
 
       MyAssert.BothSinksContain(
-        i, "Dev", 2, "SmartStandards-Logging", 2078308604637680152L,
+        i, "Dev", 0, "SmartStandards-Logging", 2078308604637680152L,
         0, "ReturnCode {ReturnCodeToBeLogged} from {CalledMethodToBeLogged}: "
       );
 
@@ -55,5 +55,18 @@ namespace Logging.SmartStandards {
 
     }
 
+    [TestMethod()]
+    public void Textualize_BasicCases_CreateExpectedStrings() {
+
+      string actual = ReturnCodeLogger.Textualize(
+        "FooMethod", -1, "Called Method's StatusMessageTemplate with a {Value} placeholder.", new object[] { "resolved" }
+      );
+
+      Assert.AreEqual(
+        "ReturnCode -1 from FooMethod: Called Method's StatusMessageTemplate with a resolved placeholder.",
+        actual
+      );
+
+    }
   }
 }

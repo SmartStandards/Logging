@@ -1,11 +1,24 @@
 ﻿using Logging.SmartStandards.Internal;
+using Logging.SmartStandards.Textualization;
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Logging.SmartStandards {
 
-  public class ReturnCodeLogger {
+  /// <summary>
+  ///   Convenience Class to simplify the logging of return codes and status messages coming from function calls.
+  ///   Return code will be mapped to error level like this:
+  ///     0 and above to Trace
+  ///     below 0 to Error
+  ///     below 500000000 to Critical
+  /// </summary>
+  /// <remarks>
+  ///   Suggested usage: Do not use this for permanent solutions - instead implement propper logging per return code.
+  ///   Do use this to quickly (and temporarily) add tracing of a function call into your code.
+  /// </remarks>
+  public static class ReturnCodeLogger {
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static void DevLog(long sourceLineId, string calledMethodName, int returnCode, string messageTemplate, object[] args) {
@@ -74,7 +87,7 @@ namespace Logging.SmartStandards {
       } else if (returnCode < 0) {
         return 4; // Error
       }
-      return 2; // Info
+      return 0; // Trace
     }
 
     private static string ComposeMessageTemplate(string statusMessageTemplate) {
@@ -94,6 +107,20 @@ namespace Logging.SmartStandards {
       if (args != null) Array.Copy(args, 0, composedArgs, 2, args.Length);
 
       return composedArgs;
+    }
+
+    public static void AppendReturnCode(this StringBuilder builder, string calledMethodName, int returnCode, string statusMessageTemplate, object[] statusMessageArgs) {
+      builder.Append("ReturnCode ").Append(returnCode).Append(" from ").Append(calledMethodName).Append(": ");
+      builder.AppendResolved(statusMessageTemplate, statusMessageArgs);
+    }
+
+    public static string Textualize(string calledMethodName, int returnCode, string statusMessageTemplate, object[] statusMessageArgs) {
+
+      StringBuilder builder = new StringBuilder(1024);
+
+      builder.AppendReturnCode(calledMethodName, returnCode, statusMessageTemplate, statusMessageArgs);
+
+      return builder.ToString();
     }
 
   }

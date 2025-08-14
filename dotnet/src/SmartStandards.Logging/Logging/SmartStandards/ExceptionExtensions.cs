@@ -9,16 +9,16 @@ namespace Logging.SmartStandards {
     /// </summary>
     /// <param name="extendee"> The 3rd party exception (becoming the inner exception). </param>
     /// <param name="message"> Your message adding value to the 3rd party exception. </param>
-    /// <returns> A new WrappedException instance containing the extendee as inner exception. </returns>
+    /// <returns> A new ConcretizedException instance containing the extendee as inner exception. </returns>
     /// <remarks>
     ///   Purpose: The 3rd party exception might be generic (like null reference, etc.) and thus not very helpful.
     ///   Add specific information (like IDs etc.) in to the envelope's message.
     /// </remarks>
     public static Exception Wrap(this Exception extendee, string message) { // REQ #395397931
 
-      ConcretizedException wrappedException = new ConcretizedException(message, extendee);
+      ConcretizedException concretizedException = new ConcretizedException(message, extendee);
 
-      return wrappedException;
+      return concretizedException;
     }
 
     /// <summary>
@@ -27,16 +27,16 @@ namespace Logging.SmartStandards {
     /// <param name="extendee"> The 3rd party exception (becoming the inner exception). </param>
     /// <param name="eventKindId"> Will be added as #-suffix to the message (SmartStandards compliant parsable). </param>
     /// <param name="message"> Your message adding value to the 3rd party exception. </param>
-    /// <returns> A new WrappedException instance containing the extendee as inner exception. </returns>
+    /// <returns> A new ConcretizedException instance containing the extendee as inner exception. </returns>
     /// <remarks>
     ///   Purpose: The 3rd party exception might be generic (like null reference, etc.) and thus not very helpful.
     ///   Add specific information (like IDs etc.) in to the envelope's message.
     /// </remarks>
     public static Exception Wrap(this Exception extendee, int eventKindId, string message) { // REQ #395397931
 
-      ConcretizedException wrappedException = new ConcretizedException(message + " #" + eventKindId.ToString(), extendee);
+      ConcretizedException concretizedException = new ConcretizedException(message + " #" + eventKindId.ToString(), extendee);
 
-      return wrappedException;
+      return concretizedException;
     }
 
   }
@@ -56,7 +56,7 @@ namespace Logging.SmartStandards {
         return base.StackTrace;
       }
     }
-    
+
   }
 
 }

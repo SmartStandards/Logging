@@ -24,19 +24,23 @@ namespace Logging.SmartStandards {
 
       int i = 0;
 
+      // Return code 0 => Log level 0 "Trace"
+
       ReturnCodeLogger.DevLog(2078308604637680152L, "FooMethod", 0, null, null);
 
       MyAssert.BothSinksContain(
-        i, "Dev", 0, "SmartStandards-Logging", 2078308604637680152L,
+        i, "Dev", 0, "SmartStandards-Logging", 2078308604637680152L, // 0 = Trace level
         0, "ReturnCode {ReturnCodeToBeLogged} from {CalledMethodToBeLogged}: "
       );
+
+      // Return code -1 => Log level 0 "Trace"
 
       i++;
 
       ReturnCodeLogger.InsLog(2078309453599183369L, "FooMethod", -1, "StatusMessageTemplate and {FooValue} of FooMethod.", new object[] { 4711 });
 
       MyAssert.BothSinksContain(
-        i, "Ins", 4, "SmartStandards-Logging", 2078309453599183369L,
+        i, "Ins", 0, "SmartStandards-Logging", 2078309453599183369L, // 0 = Trace level
         0, "ReturnCode {ReturnCodeToBeLogged} from {CalledMethodToBeLogged}: StatusMessageTemplate and {FooValue} of FooMethod."
       );
 
@@ -44,14 +48,27 @@ namespace Logging.SmartStandards {
       Assert.AreEqual("FooMethod", AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][1]);
       Assert.AreEqual(4711, AssemblyInitializer.CustomBusSink.CollectedMessageArgs[i][2]);
 
+      // Return code -300000000 => Log level 4 "error"
+
       i++;
 
-      ReturnCodeLogger.BizLog("FooSourceContext", 2078309617814558529L, "FooMethod", -1, "StatusMessageTemplate and {FooValue} of FooMethod.", new object[] { 4711 });
+      ReturnCodeLogger.BizLog("FooSourceContext", 2078309617814558529L, "FooMethod", -300000000, "StatusMessageTemplate and {FooValue} of FooMethod.", new object[] { 4711 });
 
       MyAssert.BothSinksContain(
         i, "Biz", 4, "FooSourceContext", 2078309617814558529L,
         0, "ReturnCode {ReturnCodeToBeLogged} from {CalledMethodToBeLogged}: StatusMessageTemplate and {FooValue} of FooMethod."
       );
+
+      // Return code -400000000 => Log level 5 "critical"
+
+      i++;
+
+      ReturnCodeLogger.DevLog("FooSourceContext", 2078532114646466475L, "FooMethod", -400000000, "Invalid Argument {FooArgument} of FooMethod.", new object[] { "broken" });
+
+      MyAssert.BothSinksContain(
+       i, "Dev", 5, "FooSourceContext", 2078532114646466475L,
+       0, "ReturnCode {ReturnCodeToBeLogged} from {CalledMethodToBeLogged}: Invalid Argument {FooArgument} of FooMethod."
+     );
 
     }
 

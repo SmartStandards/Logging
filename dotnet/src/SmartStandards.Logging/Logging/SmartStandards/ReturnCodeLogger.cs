@@ -11,8 +11,8 @@ namespace Logging.SmartStandards {
   ///   Convenience Class to simplify the logging of return codes and status messages coming from function calls.
   ///   Return code will be mapped to error level like this:
   ///     0 and above to Trace
-  ///     below 0 to Error
-  ///     below 500000000 to Critical
+  ///     below -300000000 to Error
+  ///     below -400000000 to Critical
   /// </summary>
   /// <remarks>
   ///   Suggested usage: Do not use this for permanent solutions - instead implement propper logging per return code.
@@ -82,9 +82,9 @@ namespace Logging.SmartStandards {
     }
 
     private static int InferLevel(int returnCode) {
-      if (returnCode <= -500000000) {
+      if (returnCode <= -400000000) {
         return 5;// Critical
-      } else if (returnCode < 0) {
+      } else if (returnCode <= -300000000) {
         return 4; // Error
       }
       return 0; // Trace

@@ -6,7 +6,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 *(none)*
 
-- Fix: ReturnCodeLogger mapping corrected
+
+
+## v 3.1.1
+released **2025-08-18**, including:
+ - Fix: ReturnCodeLogger mapping corrected
+
+
 
 ## v 3.1.0
 released **2025-08-14**, including:

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.2.0",
-  "currentVersionWithSuffix": "3.2.0",
+  "currentVersion": "3.2.1",
+  "currentVersionWithSuffix": "3.2.1",
   "releaseType": "",
-  "previousVersion": "3.1.1",
-  "changeGrade": "minor",
+  "previousVersion": "3.2.0",
+  "changeGrade": "fix",
   "currentMajor": 3,
   "currentMinor": 2,
-  "currentPatch": 0,
+  "currentPatch": 1,
   "versionDateInfo": "2025-08-22",
-  "versionTimeInfo": "08:14:23",
-  "versionNotes": "- **New Feature**: SecLogger\n"
+  "versionTimeInfo": "08:42:39",
+  "versionNotes": "- new revision without significant changes\n"
 }

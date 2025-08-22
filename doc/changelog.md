@@ -8,6 +8,12 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 3.2.1
+released **2025-08-22**, including:
+ - new revision without significant changes
+
+
+
 ## v 3.2.0
 released **2025-08-22**, including:
  - **New Feature**: SecLogger

@@ -4,7 +4,15 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
+*(none)*
+
+
+
+## v 3.2.2
+released **2025-08-22**, including:
  - Fix: T4 template adapted to current implementations
+
+
 
 ## v 3.2.1
 released **2025-08-22**, including:

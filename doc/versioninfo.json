@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.2.1",
-  "currentVersionWithSuffix": "3.2.1",
+  "currentVersion": "3.2.2",
+  "currentVersionWithSuffix": "3.2.2",
   "releaseType": "",
-  "previousVersion": "3.2.0",
+  "previousVersion": "3.2.1",
   "changeGrade": "fix",
   "currentMajor": 3,
   "currentMinor": 2,
-  "currentPatch": 1,
+  "currentPatch": 2,
   "versionDateInfo": "2025-08-22",
-  "versionTimeInfo": "08:42:39",
-  "versionNotes": "- new revision without significant changes\n"
+  "versionTimeInfo": "09:03:53",
+  "versionNotes": "- Fix: T4 template adapted to current implementations\n"
 }

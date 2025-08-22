@@ -11,7 +11,7 @@
 // packages.
 // Sources will directly be downloaded from git and aggregated into one monolithic .cs file.
 
-string ttVersion = "1.0.0"; // (compatible with SmartStandards.Logging 2.4.1)
+string ttVersion = "2.0.0"; // (compatible with SmartStandards.Logging 3.2.0)
 
 string projectUrl = "https://github.com/SmartStandards/Logging";
 
@@ -37,6 +37,10 @@ string[] fileDownloadUrls = new string[] {
   "Logging/SmartStandards/InsLogger.cs",
   "Logging/SmartStandards/InsLogger.PerLevel.cs",
   "Logging/SmartStandards/InsLogger.WoSourceContext.cs",
+
+  "Logging/SmartStandards/SecLogger.cs",
+  "Logging/SmartStandards/SecLogger.PerLevel.cs",
+  "Logging/SmartStandards/SecLogger.WoSourceContext.cs",
 
   "Logging/SmartStandards/ExceptionExtensions.cs",
   

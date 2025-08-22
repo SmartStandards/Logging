@@ -73,9 +73,9 @@ namespace Logging.SmartStandards {
       //
 
       i++;
-      DevLogger.LogCritical(_ExpliciteSourceContextName, 2071876994403864019, -12345, null, null);
+      SecLogger.LogCritical(_ExpliciteSourceContextName, 2071876994403864019, -12345, null, null);
 
-      MyAssert.BothSinksContain(i, "Dev", 5, _ExpliciteSourceContextName, 2071876994403864019, -12345, "");
+      MyAssert.BothSinksContain(i, "Sec", 5, _ExpliciteSourceContextName, 2071876994403864019, -12345, "");
 
       // Exception
 

@@ -70,6 +70,11 @@ namespace Logging.SmartStandards {
     public static bool BizLoggerToTraceBus { get; set; } = true;
 
     /// <summary>
+    ///   Enable/disable logging to .NET System.Diagnostics.Trace (via TraceBusFeed)
+    /// </summary>
+    public static bool SecLoggerToTraceBus { get; set; } = true;
+
+    /// <summary>
     ///   Enable/disable logging to CustomBusFeed
     /// </summary>
     public static bool DevLoggerToCustomBus { get; set; }
@@ -84,6 +89,10 @@ namespace Logging.SmartStandards {
     /// </summary>
     public static bool BizLoggerToCustomBus { get; set; }
 
+    /// <summary>
+    ///   Enable/disable logging to CustomBusFeed
+    /// </summary>
+    public static bool SecLoggerToCustomBus { get; set; }
 
     /// <summary>
     ///   Enable/disable passing through events from System.Diagnostics.Trace to CustomBusFeed.
@@ -135,6 +144,7 @@ namespace Logging.SmartStandards {
       DevLoggerToCustomBus = true;
       InsLoggerToCustomBus = true;
       BizLoggerToCustomBus = true;
+      SecLoggerToCustomBus = true;
     }
 
     private static void PassTracedMessageToCustomBus(

@@ -20,6 +20,7 @@ string repositoryRootUrl = "https://raw.githubusercontent.com/SmartStandards/Log
 string[] fileDownloadUrls = new string[] {
 
   "Logging/SmartStandards/Textualization/LogParaphRenderer.Minimum.cs",
+  "Logging/SmartStandards/Textualization/ExceptionRenderer.cs",
   "Logging/SmartStandards/Transport/TraceBusFeed.cs",
   "Logging/SmartStandards/Transport/TraceBusFeed.Buffer.cs",
 
@@ -29,7 +30,7 @@ string[] fileDownloadUrls = new string[] {
   "Logging/SmartStandards/BizLogger.cs",
   "Logging/SmartStandards/BizLogger.PerLevel.cs",
   "Logging/SmartStandards/BizLogger.WoSourceContext.cs",
-
+  
   "Logging/SmartStandards/DevLogger.cs",
   "Logging/SmartStandards/DevLogger.PerLevel.cs",
   "Logging/SmartStandards/DevLogger.WoSourceContext.cs",

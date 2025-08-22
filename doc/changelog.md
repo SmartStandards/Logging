@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* - **New Feature**: SecLogger
+*(none)*
+
+
+
+## v 3.2.0
+released **2025-08-22**, including:
+ - **New Feature**: SecLogger
 
 
 

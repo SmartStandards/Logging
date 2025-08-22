@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using Logging.SmartStandards.Transport;
+﻿using Logging.SmartStandards.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Diagnostics;
 
 namespace Logging.SmartStandards.ThirdPartyTests {
 
@@ -26,6 +26,7 @@ namespace Logging.SmartStandards.ThirdPartyTests {
         DevLogger.LogInformation("3rdPartySourceContext", 2072642824847130735, 42, "3rdParty Dev said: ", $"Hello {i}.");
         InsLogger.LogInformation("3rdPartySourceContext", 2073414608004986393, 43, "3rdParty Ins said: ", $"Hello {i}.");
         BizLogger.LogInformation("3rdPartySourceContext", 2073414611222994455, 44, "3rdParty Biz said: ", $"Hello {i}.");
+        SecLogger.LogInformation("3rdPartySourceContext", 2078719086756592152, 45, "3rdParty Sec said: ", $"Hello {i}.");
       }
 
       // SmartStandardsListener will implicitely registered by the following line of code...

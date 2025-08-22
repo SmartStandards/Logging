@@ -11,7 +11,7 @@
 // packages.
 // Sources will directly be downloaded from git and aggregated into one monolithic .cs file.
 
-string ttVersion = "2.0.0"; // (compatible with SmartStandards.Logging 3.2.0)
+string ttVersion = "2.0.0"; // (compatible with SmartStandards.Logging 3.2.2)
 
 string projectUrl = "https://github.com/SmartStandards/Logging";
 
@@ -19,6 +19,7 @@ string repositoryRootUrl = "https://raw.githubusercontent.com/SmartStandards/Log
 
 string[] fileDownloadUrls = new string[] {
 
+  "Logging/SmartStandards/Textualization/CopyOfPlaceholderExtensions .cs",
   "Logging/SmartStandards/Textualization/LogParaphRenderer.Minimum.cs",
   "Logging/SmartStandards/Textualization/ExceptionRenderer.cs",
   "Logging/SmartStandards/Transport/TraceBusFeed.cs",

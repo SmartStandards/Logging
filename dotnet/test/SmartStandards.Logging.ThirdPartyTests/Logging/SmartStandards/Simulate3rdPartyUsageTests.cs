@@ -1,4 +1,5 @@
-﻿using Logging.SmartStandards.CopyForFitzeFatze.Transport;
+﻿using Logging.SmartStandards.CopyForFitzeFatze;
+using Logging.SmartStandards.CopyForFitzeFatze.Transport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;

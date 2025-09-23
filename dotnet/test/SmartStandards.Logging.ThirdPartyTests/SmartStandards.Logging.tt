@@ -11,7 +11,7 @@
 // packages.
 // Sources will directly be downloaded from git and aggregated into one monolithic .cs file.
 
-string ttVersion = "2.2.0"; // (compatible with SmartStandards.Logging 3.x)
+string ttVersion = "2.2.1"; // (compatible with SmartStandards.Logging 3.x)
 
 bool ttVersionCheck = true;
 
@@ -152,6 +152,7 @@ try {
   // Hint: If CustomToolNamespace is empty, the MS-API uses the root namespace of the project containing the T4.
 
   aggregatedContent = aggregatedContent.Replace("namespace Logging.SmartStandards.","namespace Logging.SmartStandards.CopyFor" + leecherName + ".");
+  aggregatedContent = aggregatedContent.Replace("namespace Logging.SmartStandards {","namespace Logging.SmartStandards.CopyFor" + leecherName + " {");
   aggregatedContent = aggregatedContent.Replace("partial class ", "class ");
   aggregatedContent = aggregatedContent.Replace("public class ", "internal class ");
   aggregatedContent = aggregatedContent.Replace("public static class ", "\n  internal static class ");

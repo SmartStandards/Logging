@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.3.0",
-  "currentVersionWithSuffix": "3.3.0",
+  "currentVersion": "3.3.1",
+  "currentVersionWithSuffix": "3.3.1",
   "releaseType": "",
-  "previousVersion": "3.2.2",
-  "changeGrade": "minor",
+  "previousVersion": "3.3.0",
+  "changeGrade": "fix",
   "currentMajor": 3,
   "currentMinor": 3,
-  "currentPatch": 0,
+  "currentPatch": 1,
   "versionDateInfo": "2025-09-23",
-  "versionTimeInfo": "06:13:27",
-  "versionNotes": "- **New Feature**: T4 template adds a sub namespace named \"CopyFor{CustomToolNamespace}\" to \"Logging.SmartStandards.*\" in order to avoid ambiguous class names.\n- T4 template has now an automatic self-version-check\n- Hint: If CustomToolNamespace is empty, the MS-API uses the root namespace of the project containing the T4.\n"
+  "versionTimeInfo": "06:51:02",
+  "versionNotes": "- Fix: T4 template sub namespace was missing for namespace Logging.SmartStandards\n"
 }

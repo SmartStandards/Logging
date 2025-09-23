@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-- Fix: T4 template sub namespace was missing for namespace Logging.SmartStandards
+*(none)*
+
+
+
+## v 3.3.1
+released **2025-09-23**, including:
+ - Fix: T4 template sub namespace was missing for namespace Logging.SmartStandards
 
 
 

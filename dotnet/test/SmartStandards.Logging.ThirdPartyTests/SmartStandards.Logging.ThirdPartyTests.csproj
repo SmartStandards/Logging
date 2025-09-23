@@ -17,6 +17,7 @@
    <None Update="SmartStandards.Logging.tt">
      <Generator>TextTemplatingFileGenerator</Generator>
      <LastGenOutput>SmartStandards.Logging.cs</LastGenOutput>
+     <CustomToolNamespace>FitzeFatze</CustomToolNamespace>
    </None>
  </ItemGroup>
 

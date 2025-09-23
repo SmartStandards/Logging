@@ -4,11 +4,17 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
+*(none)*
 
-- **New Feature**: T4 template adds a sub namespace named "CopyFor{CustomToolNamespace}" to "Logging.SmartStandards.*" in order to avoid ambiguous class names.
-  Hint: If CustomToolNamespace is empty, the MS-API uses the root namespace of the project containing the T4.
 
-- T4 template has now an automatic self-version-check
+
+## v 3.3.0
+released **2025-09-23**, including:
+ - **New Feature**: T4 template adds a sub namespace named "CopyFor{CustomToolNamespace}" to "Logging.SmartStandards.*" in order to avoid ambiguous class names.
+ - T4 template has now an automatic self-version-check
+ - Hint: If CustomToolNamespace is empty, the MS-API uses the root namespace of the project containing the T4.
+
+
 
 ## v 3.2.2
 released **2025-08-22**, including:

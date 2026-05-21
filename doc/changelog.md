@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* Fix Change log
+*(none)*
+
+
+
+## v 3.4.1
+released **2026-05-21**, including:
+ - Fix Change log
 
 
 

@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.3.1",
-  "currentVersionWithSuffix": "3.3.1",
+  "currentVersion": "3.4.1",
+  "currentVersionWithSuffix": "3.4.1",
   "releaseType": "",
-  "previousVersion": "3.3.0",
+  "previousVersion": "3.4.0",
   "changeGrade": "fix",
   "currentMajor": 3,
-  "currentMinor": 3,
+  "currentMinor": 4,
   "currentPatch": 1,
-  "versionDateInfo": "2025-09-23",
-  "versionTimeInfo": "06:51:02",
-  "versionNotes": "- Fix: T4 template sub namespace was missing for namespace Logging.SmartStandards\n"
+  "versionDateInfo": "2026-05-21",
+  "versionTimeInfo": "09:15:40",
+  "versionNotes": "- Fix Change log\n"
 }

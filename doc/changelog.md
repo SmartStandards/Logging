@@ -8,6 +8,12 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 3.4.2
+released **2026-05-21**, including:
+ - new revision without significant changes
+
+
+
 ## v 3.4.1
 released **2026-05-21**, including:
  - Fix Change log

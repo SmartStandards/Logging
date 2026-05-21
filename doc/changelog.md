@@ -4,7 +4,13 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-* Fixed Package-Refernce FUSE-fx.RepositoryContract to 1.0.2
+*(none)*
+
+
+
+## v 3.4.3
+released **2026-05-21**, including:
+ - Fixed Package-Refernce FUSE-fx.RepositoryContract to 1.0.2
 
 
 

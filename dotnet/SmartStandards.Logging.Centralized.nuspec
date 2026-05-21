@@ -17,17 +17,17 @@
     <dependencies>
 			<group targetFramework=".NETFramework4.8">
         <dependency id="SmartStandards.Logging" version="[3.4.2]" />
-        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
+        <dependency id="FUSE-fx.RepositoryContract" version="1.0.2" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
       <group targetFramework="net8.0">
         <dependency id="SmartStandards.Logging" version="[3.4.2]" />
-        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
+        <dependency id="FUSE-fx.RepositoryContract" version="1.0.2" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
 			<group targetFramework="net10.0">
         <dependency id="SmartStandards.Logging" version="[3.4.2]" />
-        <dependency id="FUSE-fx.RepositoryContract" version="0.5.3" />
+        <dependency id="FUSE-fx.RepositoryContract" version="1.0.2" />
         <dependency id="Newtonsoft.Json" version="13.0.4" />
 			</group>
     </dependencies>

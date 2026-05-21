@@ -4,19 +4,19 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+* Fixed Package-Refernce FUSE-fx.RepositoryContract to 1.0.2
 
 
 
 ## v 3.4.2
 released **2026-05-21**, including:
- - new revision without significant changes
+ - Retriggered because of Pipeline-Issue
 
 
 
 ## v 3.4.1
 released **2026-05-21**, including:
- - Fix Change log
+ - Retriggered because of Pipeline-Issue
 
 
 

@@ -4,7 +4,9 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 ## Upcoming Changes
 
-*(none)*
+* **new Feature**: now offering a Target for .NET 10
+
+* (.NET 6 was removed)
 
 
 

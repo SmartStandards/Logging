@@ -36,17 +36,17 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FUSE-fx.EntityAnnotations, Version=999.0.0.25205, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\vendor\nuget\FUSE-fx.EntityAnnotations.4.1.2\lib\net48\FUSE-fx.EntityAnnotations.dll</HintPath>
+    <Reference Include="FUSE-fx.EntityAnnotations, Version=4.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\vendor\nuget\FUSE-fx.EntityAnnotations.4.2.2\lib\net48\FUSE-fx.EntityAnnotations.dll</HintPath>
     </Reference>
-    <Reference Include="FUSE-fx.ModelDescription, Version=1.0.0.38878, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\vendor\nuget\FUSE-fx.ModelDescription.2.0.16\lib\net48\FUSE-fx.ModelDescription.dll</HintPath>
+    <Reference Include="FUSE-fx.ModelDescription, Version=2.0.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\vendor\nuget\FUSE-fx.ModelDescription.2.0.22\lib\net48\FUSE-fx.ModelDescription.dll</HintPath>
     </Reference>
-    <Reference Include="FUSE-fx.ModelReader, Version=0.1.0.25353, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\vendor\nuget\FUSE-fx.ModelReader.0.2.8\lib\net48\FUSE-fx.ModelReader.dll</HintPath>
+    <Reference Include="FUSE-fx.ModelReader, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\vendor\nuget\FUSE-fx.ModelReader.0.2.19\lib\net48\FUSE-fx.ModelReader.dll</HintPath>
     </Reference>
-    <Reference Include="FUSE-fx.RepositoryContract, Version=0.5.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\vendor\nuget\FUSE-fx.RepositoryContract.0.5.3\lib\net48\FUSE-fx.RepositoryContract.dll</HintPath>
+    <Reference Include="FUSE-fx.RepositoryContract, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\vendor\nuget\FUSE-fx.RepositoryContract.1.0.2\lib\net48\FUSE-fx.RepositoryContract.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\vendor\nuget\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>

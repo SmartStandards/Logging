@@ -15,30 +15,31 @@
     <icon>PackageIcon.png</icon>
     <projectUrl>https://github.com/SmartStandards/Logging</projectUrl>
     <dependencies>
-      <group targetFramework="net6.0">
+      <group targetFramework="net8.0">
         <dependency id="SmartStandards.Logging" version="[3.3.1]" />
         <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />
         <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="9.0.6" />
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="9.0.6" />
       </group>
-			<group targetFramework="net8.0">
+			<group targetFramework="net10.0">
         <dependency id="SmartStandards.Logging" version="[3.3.1]" />
-        <dependency id="Microsoft.Extensions.Logging" version="9.0.4" />   
-        <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="9.0.6" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="9.0.6" />
+        <!--<dependency id="SmartStandards.WebApiDependencies.AspNetCore.net10.0" version="10.0.0" /> --> 
+        <!--<dependency id="Microsoft.Extensions.Logging" version="9.0.4" /> -->
+        <!--<dependency id="Microsoft.Extensions.Configuration.Abstractions" version="9.0.6" /> -->
+        <!--<dependency id="Microsoft.Extensions.Configuration.Binder" version="9.0.6" /> -->
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package#from-a-convention-based-working-directory -->
     <file src="PackageIcon.png" target="" />
-    <!-- .NET 6.0 -->
-    <file src="dist\bin-net6.0\SmartStandards.Logging.AspSupport.dll" target="lib/net6.0" />
-    <file src="dist\bin-net6.0\SmartStandards.Logging.AspSupport.xml" target="lib/net6.0" />
-    <file src="dist\bin-net6.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net6.0" />
 		<!-- .NET 8.0 -->
 		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.dll" target="lib/net8.0" />
 		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.xml" target="lib/net8.0" />
 		<file src="dist\bin-net8.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net8.0" />
+    <!-- .NET 10.0 -->
+    <file src="dist\bin-net10.0\SmartStandards.Logging.AspSupport.dll" target="lib/net10.0" />
+    <file src="dist\bin-net10.0\SmartStandards.Logging.AspSupport.xml" target="lib/net10.0" />
+    <file src="dist\bin-net10.0\SmartStandards.Logging.AspSupport.pdb" target="lib/net10.0" />
   </files>
 </package>

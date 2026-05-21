@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace></RootNamespace>
     <Nullable>disable</Nullable>    
     <IsPackable>false</IsPackable>   
@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SmartStandards.Logging.Centralized.net6.0\SmartStandards.Logging.Centralized.net6.0.csproj" />
-    <ProjectReference Include="..\..\src\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
+    <ProjectReference Include="..\..\src\SmartStandards.Logging.Centralized.net8.0\SmartStandards.Logging.Centralized.net8.0.csproj" />
+    <ProjectReference Include="..\..\src\SmartStandards.Logging.net8.0\SmartStandards.Logging.net8.0.csproj" />
   </ItemGroup>
 
 </Project>

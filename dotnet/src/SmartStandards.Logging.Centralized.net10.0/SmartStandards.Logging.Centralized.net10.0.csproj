@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <AssemblyName>SmartStandards.Logging.Centralized</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <OutputPath>..\..\dist\bin-net6.0\</OutputPath>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputPath>..\..\dist\bin-net10.0\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <DocumentationFile>..\..\dist\bin-net6.0\SmartStandards.Logging.Centralized.xml</DocumentationFile>
+    <DocumentationFile>..\..\dist\bin-net10.0\SmartStandards.Logging.Centralized.xml</DocumentationFile>
     <RootNamespace>Logging</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <DefineConstants>TRACE;DEBUG;NET6</DefineConstants>
@@ -36,12 +36,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="FUSE-fx.RepositoryContract" Version="0.5.3" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="FUSE-fx.RepositoryContract" Version="1.0.2" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <ProjectReference Include="..\SmartStandards.Logging.net6.0\SmartStandards.Logging.net6.0.csproj" />
+	  <ProjectReference Include="..\SmartStandards.Logging.net10.0\SmartStandards.Logging.net10.0.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

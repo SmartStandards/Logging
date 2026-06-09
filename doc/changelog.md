@@ -8,6 +8,12 @@ This files is automatically maintained using the ['KornSW-VersioningUtil'](https
 
 
 
+## v 3.4.4
+released **2026-06-09**, including:
+ - New revision without significant changes
+
+
+
 ## v 3.4.3
 released **2026-05-21**, including:
  - Fixed Package-Refernce FUSE-fx.RepositoryContract to 1.0.2

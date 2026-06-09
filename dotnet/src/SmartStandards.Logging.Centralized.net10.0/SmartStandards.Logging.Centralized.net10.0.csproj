@@ -19,10 +19,10 @@
     <Product>SmartStandards.Logging.Centralized</Product>
     <Company>(public domain)</Company>
     <Copyright>SmartStandards</Copyright>
-    <Version>3.4.3</Version>
-    <AssemblyVersion>3.4.3</AssemblyVersion>
+    <Version>3.4.4</Version>
+    <AssemblyVersion>3.4.4</AssemblyVersion>
     <Authors>SmartStandards</Authors>
-    <FileVersion>3.4.3</FileVersion>
+    <FileVersion>3.4.4</FileVersion>
     <PackageTags></PackageTags>
   </PropertyGroup>
   

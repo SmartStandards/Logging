@@ -1,13 +1,13 @@
 {
-  "currentVersion": "3.4.3",
-  "currentVersionWithSuffix": "3.4.3",
+  "currentVersionWithSuffix": "3.4.4",
   "releaseType": "",
-  "previousVersion": "3.4.2",
-  "changeGrade": "fix",
+  "currentVersion": "3.4.4",
   "currentMajor": 3,
   "currentMinor": 4,
-  "currentPatch": 3,
-  "versionDateInfo": "2026-05-21",
-  "versionTimeInfo": "09:49:38",
-  "versionNotes": "- Fixed Package-Refernce FUSE-fx.RepositoryContract to 1.0.2\n"
+  "currentFix": 4,
+  "previousVersion": "0.0.0",
+  "changeGrade": "initial",
+  "versionTimeInfo": "00:00:00",
+  "versionDateInfo": "1900-01-01",
+  "versionNotes": ""
 }

@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("3.4.3")]
-[assembly: AssemblyFileVersion("3.4.3")]
+[assembly: AssemblyVersion("3.4.4")]
+[assembly: AssemblyFileVersion("3.4.4")]
 
 [assembly: InternalsVisibleTo("SmartStandards.Logging.Centralized")]
